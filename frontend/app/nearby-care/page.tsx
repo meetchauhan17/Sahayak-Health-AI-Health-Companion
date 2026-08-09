@@ -25,8 +25,11 @@ interface CareEntry {
   name: string;
   address: string;
   phone: string;
+  phoneDisplay?: string;
   distance: string;
   type: CareType;
+  lat?: number;
+  lng?: number;
 }
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -66,10 +69,13 @@ function TypeBadge({ type }: { type: CareType }) {
 
 // ─── Care Card ───────────────────────────────────────────────────────────────
 
-function CareCard({ entry }: { entry: CareEntry }) {
-  const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(
-    entry.name + ", Surat, Gujarat"
-  )}`;
+function CareCard({ entry, userLat, userLng }: { entry: CareEntry; userLat?: number; userLng?: number }) {
+  const directionsUrl =
+    entry.lat && entry.lng
+      ? `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${userLat || 21.1702}%2C${userLng || 72.8311}%3B${entry.lat}%2C${entry.lng}`
+      : `https://maps.google.com/?q=${encodeURIComponent(entry.name + ", " + entry.address)}`;
+
+  const callHref = entry.phone.startsWith("tel:") ? entry.phone : `tel:${entry.phone}`;
 
   return (
     <div className="bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-4 shadow-xs hover:shadow-md transition-all hover:border-teal-200 dark:hover:border-teal-800">
@@ -95,22 +101,23 @@ function CareCard({ entry }: { entry: CareEntry }) {
       {/* Action buttons */}
       <div className="flex gap-2">
         <a
-          href={entry.phone}
+          href={callHref}
+          title={entry.phoneDisplay || entry.phone}
           aria-label={`Call ${entry.name}`}
           className="flex-1 inline-flex items-center justify-center gap-1.5 bg-teal-600 hover:bg-teal-700 active:scale-95 text-white text-xs font-semibold px-3 py-2 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-1"
         >
           <Phone className="w-3.5 h-3.5" />
-          Call Now
+          <span>Call ({entry.phoneDisplay || "108"})</span>
         </a>
         <a
-          href={mapsUrl}
+          href={directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`Get directions to ${entry.name}`}
+          aria-label={`Get free OpenStreetMap OSRM directions to ${entry.name}`}
           className="flex-1 inline-flex items-center justify-center gap-1.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-teal-300 dark:hover:border-teal-600 active:scale-95 text-gray-700 dark:text-gray-200 hover:text-teal-700 dark:hover:text-teal-300 text-xs font-semibold px-3 py-2 rounded-xl transition-all focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-1"
         >
           <Navigation2 className="w-3.5 h-3.5" />
-          Directions
+          <span>Free OSRM Route</span>
         </a>
       </div>
     </div>
@@ -187,7 +194,7 @@ export default function NearbyCare() {
       try {
         const query = encodeURIComponent(`hospital in ${userCity}`);
         const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=16`
+          `https://nominatim.openstreetmap.org/search?q=${query}&format=json&limit=16&extratags=1`
         );
         const data = await res.json();
 
@@ -211,13 +218,28 @@ export default function NearbyCare() {
             const shortName = displayNameParts[0] || item.name || `Medical Center ${idx + 1}`;
             const address = displayNameParts.slice(1, 4).join(",").trim() || item.display_name;
 
+            // Extract real phone from OpenStreetMap extratags
+            const rawPhone =
+              item.extratags?.phone ||
+              item.extratags?.["contact:phone"] ||
+              item.extratags?.["phone:mobile"] ||
+              item.extratags?.["emergency:phone"];
+
+            const phoneClean = rawPhone ? rawPhone.replace(/[^0-9+]/g, "") : "";
+            const defaultHelpline = type === "hospital" ? "108" : type === "clinic" ? "104" : "112";
+            const phone = phoneClean ? `tel:${phoneClean}` : `tel:${defaultHelpline}`;
+            const phoneDisplay = rawPhone || (phoneClean ? phoneClean : defaultHelpline);
+
             return {
               id: `osm-${item.place_id || idx}`,
               name: shortName,
               address: address || userCity,
-              phone: "tel:108",
+              phone,
+              phoneDisplay,
               distance: distStr,
               type,
+              lat: isNaN(itemLat) ? userLat : itemLat,
+              lng: isNaN(itemLon) ? userLng : itemLon,
             };
           });
           setCityEntries(parsed);
@@ -493,7 +515,7 @@ export default function NearbyCare() {
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {filtered.map((entry) => (
-              <CareCard key={entry.id} entry={entry} />
+              <CareCard key={entry.id} entry={entry} userLat={userLat} userLng={userLng} />
             ))}
           </div>
         </>
