@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, useRef, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { User, Calendar, Globe, ArrowRight, ArrowLeft, MapPin, Navigation2, Activity } from "lucide-react";
@@ -28,22 +28,38 @@ export default function OnboardingPage() {
   const [suggestions, setSuggestions] = useState<{ displayName: string; lat: number; lng: number }[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isSearchingSuggestions, setIsSearchingSuggestions] = useState(false);
+  const isManualSelectionRef = useRef(false);
+  const locationBoxRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const p = getUserProfile();
     if (p) {
       setHasExistingProfile(true);
-      setName(p.name || "");
-      setAge(p.age ? String(p.age) : "");
-      setGender(p.gender || "");
+      if (p.name) setName(p.name);
+      if (p.age) setAge(String(p.age));
+      if (p.gender) setGender(p.gender);
       if (p.language) setLanguage(p.language);
-      if (p.city) setCity(p.city);
+      if (p.city) {
+        isManualSelectionRef.current = true;
+        setCity(p.city);
+      }
       if (p.lat) setLat(p.lat);
       if (p.lng) setLng(p.lng);
     }
   }, []);
 
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (locationBoxRef.current && !locationBoxRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const handleCityChange = (value: string) => {
+    isManualSelectionRef.current = false;
     setCity(value);
     if (value.trim().length < 3) {
       setSuggestions([]);
@@ -53,6 +69,13 @@ export default function OnboardingPage() {
   };
 
   useEffect(() => {
+    if (isManualSelectionRef.current) {
+      isManualSelectionRef.current = false;
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
     if (!city || city.trim().length < 3) {
       setSuggestions([]);
       setShowSuggestions(false);
@@ -116,10 +139,17 @@ export default function OnboardingPage() {
             "Surat";
           const detectedState = addr.state || "Gujarat";
           const formatted = `${detectedCity}, ${detectedState}`;
+          isManualSelectionRef.current = true;
           setCity(formatted);
+          setSuggestions([]);
+          setShowSuggestions(false);
           setLocStatus(`Detected: ${formatted}`);
         } catch {
-          setCity(`${latitude.toFixed(2)}°N, ${longitude.toFixed(2)}°E`);
+          const coordsStr = `${latitude.toFixed(2)}°N, ${longitude.toFixed(2)}°E`;
+          isManualSelectionRef.current = true;
+          setCity(coordsStr);
+          setSuggestions([]);
+          setShowSuggestions(false);
           setLocStatus("Coordinates acquired!");
         } finally {
           setLocating(false);
@@ -249,7 +279,7 @@ export default function OnboardingPage() {
             </div>
           </div>
 
-          <div className="relative">
+          <div ref={locationBoxRef} className="relative">
             <div className="flex items-center justify-between mb-1.5">
               <label className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-blue-500" />
@@ -288,9 +318,11 @@ export default function OnboardingPage() {
                       key={idx}
                       type="button"
                       onClick={() => {
+                        isManualSelectionRef.current = true;
                         setCity(mainName + (subName ? `, ${subName}` : ""));
                         setLat(sugg.lat);
                         setLng(sugg.lng);
+                        setSuggestions([]);
                         setShowSuggestions(false);
                         setLocStatus(`Selected: ${mainName}`);
                       }}
