@@ -30,6 +30,7 @@ interface Tip {
 const LANGUAGES: UserProfile["language"][] = ["English", "हिंदी", "ગુજરાતી"];
 
 export default function DashboardPage() {
+  const [mounted, setMounted] = useState(false);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [streak, setStreak] = useState<StreakData>({ count: 0, lastDate: "" });
   const [recentChecks, setRecentChecks] = useState<CheckInItem[]>([]);
@@ -37,6 +38,7 @@ export default function DashboardPage() {
   const [langOpen, setLangOpen] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Read user profile
     const p = getUserProfile();
     setProfile(p);
@@ -80,6 +82,12 @@ export default function DashboardPage() {
   // Compute ring percentage for streak (max 7-day milestone loop)
   const streakCount = streak.count;
   const streakPercent = Math.min(100, Math.max(10, ((streakCount % 7) || (streakCount > 0 ? 7 : 0)) * (100 / 7)));
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full transition-colors overflow-x-hidden" />
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 animate-fade-up max-w-6xl mx-auto w-full transition-colors overflow-x-hidden">

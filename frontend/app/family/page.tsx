@@ -252,6 +252,7 @@ function MemberCard({
 // ─── Main Page ─────────────────────────────────────────────────────────────
 
 export default function FamilyPage() {
+  const [mounted, setMounted] = useState(false);
   const [members, setMembers] = useState<FamilyMember[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [checkInCounts, setCheckInCounts] = useState<Record<string, number>>(
@@ -259,6 +260,7 @@ export default function FamilyPage() {
   );
 
   useEffect(() => {
+    setMounted(true);
     const m = getFamilyMembers();
     setMembers(m);
 
@@ -286,6 +288,12 @@ export default function FamilyPage() {
       setMembers((prev) => prev.filter((m) => m.id !== id));
     }
   };
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 transition-colors overflow-x-hidden" />
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 transition-colors overflow-x-hidden">
