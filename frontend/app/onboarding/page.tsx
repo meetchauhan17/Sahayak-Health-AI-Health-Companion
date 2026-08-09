@@ -42,9 +42,9 @@ export default function OnboardingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white via-teal-50/30 to-white flex flex-col items-center justify-center p-4 sm:p-6 animate-fade-up">
+    <main className="min-h-screen bg-gradient-to-b from-white via-teal-50/30 to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 flex flex-col items-center justify-center p-4 sm:p-6 animate-fade-up transition-colors">
       {/* ── Top brand bar ── */}
-      <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-xl overflow-hidden">
+      <div className="w-full max-w-md bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl overflow-hidden">
         <div className="bg-gradient-to-r from-teal-500 to-cyan-500 px-6 py-6 text-white text-center relative">
           <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center mx-auto mb-3 shadow-inner">
             <Heart className="w-6 h-6 text-white" strokeWidth={2.5} />
@@ -58,7 +58,7 @@ export default function OnboardingPage() {
         {/* ── Form ── */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-xs px-3 py-2 rounded-xl flex items-center gap-2">
+            <div className="bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-xs px-3 py-2 rounded-xl flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
               <span>{error}</span>
             </div>
@@ -66,8 +66,8 @@ export default function OnboardingPage() {
 
           {/* Name */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <User className="w-3.5 h-3.5 text-teal-600" />
+            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+              <User className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
               Your Name <span className="text-red-500">*</span>
             </label>
             <input
@@ -76,14 +76,14 @@ export default function OnboardingPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Rahul Sharma"
-              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white transition-all text-gray-800 placeholder-gray-400"
+              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white dark:focus:bg-slate-900 transition-all text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
 
           {/* Age */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-teal-600" />
+            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
               Age <span className="text-red-500">*</span>
             </label>
             <input
@@ -94,14 +94,14 @@ export default function OnboardingPage() {
               value={age}
               onChange={(e) => setAge(e.target.value)}
               placeholder="e.g. 28"
-              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white transition-all text-gray-800 placeholder-gray-400"
+              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white dark:focus:bg-slate-900 transition-all text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             />
           </div>
 
           {/* Gender */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-              Gender <span className="text-gray-400 font-normal text-[10px]">(Optional)</span>
+            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1.5">
+              Gender <span className="text-gray-400 dark:text-gray-500 font-normal text-[10px]">(Optional)</span>
             </label>
             <div className="grid grid-cols-2 gap-2">
               {GENDERS.map((g) => (
@@ -111,8 +111,8 @@ export default function OnboardingPage() {
                   onClick={() => setGender(g === gender ? "" : g)}
                   className={`text-xs font-medium py-2 px-3 rounded-xl border transition-all ${
                     gender === g
-                      ? "bg-teal-50 border-teal-500 text-teal-700 font-semibold shadow-xs"
-                      : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100"
+                      ? "bg-teal-50 dark:bg-teal-950/80 border-teal-500 text-teal-700 dark:text-teal-300 font-semibold shadow-xs"
+                      : "bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
                   }`}
                 >
                   {g}
@@ -123,8 +123,8 @@ export default function OnboardingPage() {
 
           {/* Preferred Language */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-              <Globe className="w-3.5 h-3.5 text-teal-600" />
+            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+              <Globe className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
               Preferred Language
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -136,7 +136,7 @@ export default function OnboardingPage() {
                   className={`text-xs font-medium py-2.5 px-2 rounded-xl border text-center transition-all ${
                     language === lang
                       ? "bg-teal-500 border-teal-500 text-white font-bold shadow-sm"
-                      : "bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100"
+                      : "bg-gray-50 dark:bg-slate-900 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700"
                   }`}
                 >
                   {lang}
@@ -148,15 +148,15 @@ export default function OnboardingPage() {
           {/* Submit */}
           <button
             type="submit"
-            className="w-full mt-2 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-semibold text-sm py-3 px-4 rounded-xl shadow-md shadow-teal-200 hover:shadow-lg active:scale-98 transition-all"
+            className="w-full mt-2 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-semibold text-sm py-3 px-4 rounded-xl shadow-md shadow-teal-200 dark:shadow-none hover:shadow-lg active:scale-98 transition-all"
           >
             <span>Continue to Health Assistant</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
-        <div className="bg-gray-50 px-6 py-3 border-t border-gray-100 text-center">
-          <p className="text-[11px] text-gray-400">
+        <div className="bg-gray-50 dark:bg-slate-900/60 px-6 py-3 border-t border-gray-100 dark:border-gray-700/60 text-center">
+          <p className="text-[11px] text-gray-400 dark:text-gray-500">
             Your information is stored locally on your device for personalizing assistance.
           </p>
         </div>

@@ -18,11 +18,11 @@ export default function HospitalFinder() {
   );
 
   return (
-    <div className="mt-3 bg-slate-50 border border-slate-200 rounded-xl p-3 shadow-sm max-w-full">
+    <div className="mt-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/70 rounded-xl p-3 shadow-sm max-w-full">
       {/* Header */}
       <div className="flex items-center gap-1.5 mb-2.5">
         <MapPin className="w-3.5 h-3.5 text-rose-500 flex-shrink-0" />
-        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+        <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-widest">
           Nearby Help
         </span>
       </div>
@@ -32,18 +32,18 @@ export default function HospitalFinder() {
         {hospitals.map((hospital) => (
           <div
             key={hospital.id}
-            className="bg-white border border-slate-100 rounded-lg p-2.5 flex items-center justify-between gap-2 hover:border-teal-200 transition-colors"
+            className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-700 rounded-lg p-2.5 flex items-center justify-between gap-2 hover:border-teal-200 dark:hover:border-teal-800 transition-colors"
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
-                <h4 className="text-xs font-semibold text-gray-900 truncate leading-tight">
+                <h4 className="text-xs font-semibold text-gray-900 dark:text-white truncate leading-tight">
                   {hospital.name}
                 </h4>
-                <span className="inline-block bg-teal-50 text-teal-700 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-teal-100 flex-shrink-0">
+                <span className="inline-block bg-teal-50 dark:bg-teal-950/80 text-teal-700 dark:text-teal-300 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-teal-100 dark:border-teal-800 flex-shrink-0">
                   {hospital.distance}
                 </span>
               </div>
-              <p className="text-[10px] text-gray-400 leading-tight truncate">
+              <p className="text-[10px] text-gray-400 dark:text-gray-400 leading-tight truncate">
                 {hospital.address}
               </p>
             </div>

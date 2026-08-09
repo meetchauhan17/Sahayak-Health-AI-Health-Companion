@@ -35,17 +35,17 @@ const FIELDS: {
   {
     key: "symptoms_discussed",
     label: "Symptoms Discussed",
-    icon: <Activity className="w-3.5 h-3.5 text-blue-500" strokeWidth={2.5} />,
+    icon: <Activity className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" strokeWidth={2.5} />,
   },
   {
     key: "advice_given",
     label: "Advice Given",
-    icon: <Stethoscope className="w-3.5 h-3.5 text-teal-500" strokeWidth={2.5} />,
+    icon: <Stethoscope className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" strokeWidth={2.5} />,
   },
   {
     key: "recommendation",
     label: "Recommendation",
-    icon: <Lightbulb className="w-3.5 h-3.5 text-amber-500" strokeWidth={2.5} />,
+    icon: <Lightbulb className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" strokeWidth={2.5} />,
   },
 ];
 
@@ -87,9 +87,9 @@ export default function HealthSummary({
   };
 
   return (
-    <div className="w-full bg-white border border-teal-100 rounded-2xl shadow-md overflow-hidden animate-msg-in">
+    <div className="w-full bg-white dark:bg-slate-900 border border-teal-100 dark:border-teal-900/60 rounded-2xl shadow-md overflow-hidden animate-msg-in">
       {/* Gradient header */}
-      <div className="bg-gradient-to-r from-teal-500 to-cyan-500 px-4 py-3.5 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-600 dark:to-cyan-700 px-4 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
             <Heart className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
@@ -110,31 +110,31 @@ export default function HealthSummary({
       </div>
 
       {/* Severity row */}
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-50/60 border-b border-slate-100">
-        <ShieldCheck className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" strokeWidth={2.5} />
-        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+      <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-50/60 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800">
+        <ShieldCheck className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0" strokeWidth={2.5} />
+        <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
           Overall Severity
         </span>
         <SeverityBadge severity={summary.overall_severity} />
       </div>
 
       {/* Summary fields */}
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-slate-100 dark:divide-slate-800">
         {FIELDS.map(({ key, label, icon }) => (
           <div key={key} className="px-4 py-3.5">
             <div className="flex items-center gap-1.5 mb-1.5">
               {icon}
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
                 {label}
               </span>
             </div>
-            <p className="text-sm text-slate-800 leading-relaxed">{summary[key]}</p>
+            <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed">{summary[key]}</p>
           </div>
         ))}
       </div>
 
       {/* Download PDF + Disclaimer footer */}
-      <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex flex-col gap-2">
+      <div className="px-4 py-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-2">
         <button
           onClick={handleDownloadPDF}
           disabled={downloading}
@@ -143,7 +143,7 @@ export default function HealthSummary({
           <Download className="w-3.5 h-3.5" />
           {downloading ? "Generating PDF…" : "Download PDF Report"}
         </button>
-        <p className="text-[10px] text-slate-400 text-center leading-relaxed">
+        <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center leading-relaxed">
           For informational purposes only · Not a substitute for professional medical advice
         </p>
       </div>

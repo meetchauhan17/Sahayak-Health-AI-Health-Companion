@@ -23,19 +23,19 @@ export default function SeverityBadge({ severity }: SeverityBadgeProps) {
 
   const config = {
     green: {
-      bg: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+      bg: "bg-emerald-50 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800",
       icon: CheckCircle,
       label: "Self-Care",
       pulse: "",
     },
     yellow: {
-      bg: "bg-amber-50 text-amber-700 border border-amber-200",
+      bg: "bg-amber-50 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800",
       icon: AlertTriangle,
       label: "See a Doctor",
       pulse: "",
     },
     red: {
-      bg: "bg-red-50 text-red-700 border border-red-200",
+      bg: "bg-red-50 dark:bg-red-950/80 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800",
       icon: AlertOctagon,
       label: "Emergency — Seek Help Now",
       pulse: "animate-pulse",

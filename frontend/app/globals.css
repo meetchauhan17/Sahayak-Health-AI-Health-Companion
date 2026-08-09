@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* ─── Tailwind v4 dark mode: class strategy ─────────────────────────────── */
+@variant dark (&:where(.dark, .dark *));
+
 /* ─── Design Tokens ─────────────────────────────────────────────────────────
    Primary:  teal-500 / teal-600  (#14b8a6 / #0d9488)
    Accent:   cyan-500             (#06b6d4)
@@ -11,8 +14,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+}
 
-  /* Disable OS-level dark mode override so the design stays consistent */
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
 }
 
 @theme inline {

@@ -19,9 +19,7 @@ export const metadata: Metadata = {
   description:
     "Sahayak Health is a free, multilingual AI health companion that helps you understand your symptoms in English, Hindi, and Gujarati. Not a substitute for professional medical advice.",
   icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-    ],
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     apple: "/favicon.svg",
   },
   openGraph: {
@@ -43,11 +41,28 @@ export default function RootLayout({ children }: LayoutProps) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-white text-gray-900 pb-16 md:pb-0">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var theme = localStorage.getItem('sahayak_theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col md:flex-row bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 pb-16 md:pb-0 transition-colors">
         <OnboardingGuard>
           <Navigation />
-          <div className="flex-1 flex flex-col">{children}</div>
+          <div className="flex-1 flex flex-col min-w-0">{children}</div>
         </OnboardingGuard>
       </body>
     </html>

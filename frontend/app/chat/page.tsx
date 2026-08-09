@@ -65,7 +65,7 @@ function SymptomChips({ onChipClick, disabled }: { onChipClick: (msg: string) =>
           key={chip.label}
           onClick={() => onChipClick(chip.message)}
           disabled={disabled}
-          className="flex-shrink-0 flex items-center gap-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-full px-3 py-1.5 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 active:scale-95 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex-shrink-0 flex items-center gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-full px-3 py-1.5 hover:bg-blue-50 dark:hover:bg-slate-700 hover:border-blue-300 dark:hover:border-blue-500 hover:text-blue-700 dark:hover:text-blue-300 active:scale-95 transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           <span>{chip.emoji}</span>
           <span>{chip.label}</span>
@@ -81,10 +81,10 @@ function TypingIndicator() {
   return (
     <div className="flex items-end gap-2 mb-4">
       {/* Avatar */}
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center">
-        <Heart className="w-4 h-4 text-teal-600" />
+      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-950/80 flex items-center justify-center">
+        <Heart className="w-4 h-4 text-teal-600 dark:text-teal-400" />
       </div>
-      <div className="bg-white border border-gray-200 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
+      <div className="bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm">
         <div className="flex gap-1 items-center h-4">
           <span
             className="w-2 h-2 rounded-full bg-teal-400 animate-bounce"
@@ -116,16 +116,16 @@ function ErrorBubble({
   return (
     <div className="flex items-end gap-2.5 mb-4 flex-row animate-msg-in">
       {/* Avatar */}
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shadow-sm">
+      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 dark:bg-red-950/80 flex items-center justify-center shadow-sm">
         <Heart className="w-4 h-4 text-red-400" />
       </div>
 
       {/* Bubble */}
-      <div className="max-w-[75%] sm:max-w-[65%] px-4 py-3 shadow-sm text-sm leading-relaxed bg-red-50 border border-red-200 rounded-2xl rounded-bl-sm">
-        <p className="text-red-700 mb-2">{message.content}</p>
+      <div className="max-w-[75%] sm:max-w-[65%] px-4 py-3 shadow-sm text-sm leading-relaxed bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800 rounded-2xl rounded-bl-sm">
+        <p className="text-red-700 dark:text-red-300 mb-2">{message.content}</p>
         <button
           onClick={onRetry}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-white border border-red-200 rounded-full px-3 py-1 hover:bg-red-50 active:scale-95 transition-all"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-300 bg-white dark:bg-slate-800 border border-red-200 dark:border-red-700 rounded-full px-3 py-1 hover:bg-red-50 dark:hover:bg-slate-700 active:scale-95 transition-all"
         >
           <RefreshCw className="w-3 h-3" />
           Retry
@@ -151,13 +151,13 @@ function ChatBubble({ message }: { message: Message }) {
         className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shadow-sm ${
           isUser
             ? "bg-blue-500 text-white"
-            : "bg-teal-100 text-teal-700"
+            : "bg-teal-100 dark:bg-teal-950/80 text-teal-700 dark:text-teal-300"
         }`}
       >
         {isUser ? (
           "U"
         ) : (
-          <Heart className="w-4 h-4 text-teal-600" />
+          <Heart className="w-4 h-4 text-teal-600 dark:text-teal-400" />
         )}
       </div>
 
@@ -166,7 +166,7 @@ function ChatBubble({ message }: { message: Message }) {
         className={`max-w-[75%] sm:max-w-[65%] px-4 py-3 shadow-sm text-sm leading-relaxed whitespace-pre-wrap ${
           isUser
             ? "bg-blue-500 text-white rounded-2xl rounded-br-sm"
-            : "bg-white text-gray-800 border border-gray-200 rounded-2xl rounded-bl-sm"
+            : "bg-white dark:bg-slate-800 text-gray-800 dark:text-slate-100 border border-gray-200 dark:border-gray-700 rounded-2xl rounded-bl-sm"
         }`}
       >
         {message.content}
@@ -210,18 +210,18 @@ function LanguageSelector({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-xl px-3 py-1.5 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400"
+        className="flex items-center gap-1.5 text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-1.5 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400"
         aria-haspopup="listbox"
         aria-expanded={open}
       >
         {language}
         <ChevronDown
-          className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+          className={`w-3.5 h-3.5 text-gray-500 dark:text-gray-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
         />
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-1.5 w-36 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+        <div className="absolute right-0 mt-1.5 w-36 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50 overflow-hidden">
           {LANGUAGES.map((lang) => (
             <button
               key={lang}
@@ -231,8 +231,8 @@ function LanguageSelector({
               }}
               className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
                 lang === language
-                  ? "bg-teal-50 text-teal-700 font-semibold"
-                  : "text-gray-700 hover:bg-gray-50"
+                  ? "bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 font-semibold"
+                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700"
               }`}
             >
               {lang}
@@ -258,13 +258,13 @@ function EmptyState() {
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 text-center px-6 py-12 select-none">
-      <div className="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center mb-4">
-        <Heart className="w-8 h-8 text-teal-500" />
+      <div className="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-950/80 flex items-center justify-center mb-4">
+        <Heart className="w-8 h-8 text-teal-500 dark:text-teal-400" />
       </div>
-      <h2 className="text-lg font-semibold text-gray-800 mb-1">
+      <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-1">
         Hello{userName}! How can I help you today?
       </h2>
-      <p className="text-sm text-gray-500 max-w-xs">
+      <p className="text-sm text-gray-500 dark:text-slate-400 max-w-xs">
         Describe your symptoms or ask a health question. I&apos;ll do my best to
         assist you in your preferred language.
       </p>
@@ -276,7 +276,7 @@ function EmptyState() {
         ].map((hint) => (
           <span
             key={hint}
-            className="text-xs bg-teal-50 text-teal-700 border border-teal-200 rounded-full px-3 py-1"
+            className="text-xs bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-200 dark:border-teal-800/60 rounded-full px-3 py-1"
           >
             {hint}
           </span>
@@ -512,18 +512,18 @@ function ChatInner() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
+    <div className="flex flex-col h-screen bg-gray-50 dark:bg-slate-950 transition-colors">
       {/* ── Header ── */}
-      <header className="flex-shrink-0 bg-white border-b border-gray-200 shadow-sm z-10">
+      <header className="flex-shrink-0 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-gray-800 shadow-sm z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between px-4 py-3">
           {/* Brand */}
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center shadow-sm flex-shrink-0">
               <Heart className="w-4 h-4 text-white" strokeWidth={2.5} />
             </div>
-            <span className="font-bold text-gray-900 text-base sm:text-lg tracking-tight">
+            <span className="font-bold text-gray-900 dark:text-white text-base sm:text-lg tracking-tight">
               Sahayak{" "}
-              <span className="text-teal-600">Health</span>
+              <span className="text-teal-600 dark:text-teal-400">Health</span>
             </span>
           </div>
 
@@ -533,13 +533,13 @@ function ChatInner() {
 
         {/* Family member banner */}
         {forMember && (
-          <div className="bg-teal-50 border-t border-teal-100 px-4 py-2">
-            <div className="max-w-3xl mx-auto flex items-center gap-2 text-xs font-semibold text-teal-800">
-              <Users className="w-3.5 h-3.5 text-teal-600 flex-shrink-0" />
+          <div className="bg-teal-50 dark:bg-teal-950/80 border-t border-teal-100 dark:border-teal-800/80 px-4 py-2">
+            <div className="max-w-3xl mx-auto flex items-center gap-2 text-xs font-semibold text-teal-800 dark:text-teal-200">
+              <Users className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 flex-shrink-0" />
               Checking symptoms for{" "}
               <span className="font-bold">{forMember.name}</span>
-              <span className="text-teal-600">({forMember.relation}, {forMember.age} yrs)</span>
-              <span className="ml-auto text-[10px] font-normal text-teal-600">
+              <span className="text-teal-600 dark:text-teal-400">({forMember.relation}, {forMember.age} yrs)</span>
+              <span className="ml-auto text-[10px] font-normal text-teal-600 dark:text-teal-400">
                 History saved separately
               </span>
             </div>
@@ -567,7 +567,7 @@ function ChatInner() {
 
           {/* Health Summary card rendered inline above scroll anchor */}
           {summaryLoading && (
-            <div className="flex items-center gap-2 text-sm text-teal-600 py-4 justify-center">
+            <div className="flex items-center gap-2 text-sm text-teal-600 dark:text-teal-400 py-4 justify-center">
               <span className="w-4 h-4 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
               Generating summary…
             </div>
@@ -580,6 +580,9 @@ function ChatInner() {
               <HealthSummary
                 summary={summaryData}
                 onClose={() => setSummaryData(null)}
+                familyMemberId={forMember?.id}
+                familyMemberName={forMember?.name}
+                familyMemberRelation={forMember?.relation}
               />
             </div>
           )}
@@ -589,7 +592,7 @@ function ChatInner() {
       </main>
 
       {/* ── Input Area ── */}
-      <footer className="flex-shrink-0 bg-white border-t border-gray-200 shadow-[0_-1px_8px_rgba(0,0,0,0.05)]">
+      <footer className="flex-shrink-0 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-gray-800 shadow-[0_-1px_8px_rgba(0,0,0,0.05)]">
         <div className="max-w-3xl mx-auto px-4 pt-3 pb-1">
           {/* Get Health Summary button — appears once 3+ messages exist */}
           {messages.length >= 3 && (
@@ -613,7 +616,7 @@ function ChatInner() {
           <SymptomChips onChipClick={sendWithText} disabled={loading} />
         </div>
         <div className="max-w-3xl mx-auto px-4 py-3">
-          <div className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2 focus-within:border-teal-400 focus-within:ring-2 focus-within:ring-teal-100 transition-all">
+          <div className="flex items-end gap-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-2 focus-within:border-teal-400 focus-within:ring-2 focus-within:ring-teal-100 dark:focus-within:ring-teal-900 transition-all">
             <textarea
               ref={inputRef}
               rows={1}
@@ -632,7 +635,7 @@ function ChatInner() {
                     ? "તમારો પ્રશ્ન અહીં લખો..."
                     : "Describe your symptoms..."
               }
-              className="flex-1 resize-none bg-transparent text-sm text-gray-800 placeholder-gray-400 outline-none leading-relaxed max-h-[120px] overflow-y-auto"
+              className="flex-1 resize-none bg-transparent text-sm text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none leading-relaxed max-h-[120px] overflow-y-auto"
               disabled={loading}
               autoFocus
             />
@@ -646,10 +649,10 @@ function ChatInner() {
                 aria-label={isListening ? "Stop recording" : "Start voice input"}
                 className={`flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 ${
                   loading
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                    ? "bg-gray-200 dark:bg-slate-700 text-gray-400 dark:text-slate-500 cursor-not-allowed"
                     : isListening
-                      ? "bg-red-50 border border-red-200 text-red-500 hover:bg-red-100"
-                      : "bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700"
+                      ? "bg-red-50 dark:bg-red-950/80 border border-red-200 dark:border-red-800 text-red-500 hover:bg-red-100 dark:hover:bg-red-900"
+                      : "bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600 hover:text-gray-700 dark:hover:text-white"
                 }`}
               >
                 {isListening ? (
@@ -670,7 +673,7 @@ function ChatInner() {
               className={`flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 ${
                 canSend
                   ? "bg-teal-500 hover:bg-teal-600 text-white shadow-sm hover:shadow-md active:scale-95"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-200 dark:bg-slate-700 text-gray-400 dark:text-slate-500 cursor-not-allowed"
               }`}
             >
               <Send className="w-4 h-4" />
@@ -682,9 +685,9 @@ function ChatInner() {
             <p className="text-center text-xs text-red-500 mt-1">{voiceError}</p>
           )}
 
-          <p className="text-center text-xs text-gray-400 mt-1.5">
+          <p className="text-center text-xs text-gray-400 dark:text-slate-500 mt-1.5">
             Press{" "}
-            <kbd className="font-mono bg-gray-100 border border-gray-200 rounded px-1 text-[10px]">
+            <kbd className="font-mono bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded px-1 text-[10px] text-gray-600 dark:text-gray-300">
               Enter
             </kbd>{" "}
             to send · Shift+Enter for new line
@@ -692,10 +695,10 @@ function ChatInner() {
         </div>
 
         {/* ── Emergency disclaimer strip ── */}
-        <div className="border-t border-gray-100 bg-gray-50 px-4 py-2">
-          <p className="text-center text-[10px] text-gray-400 leading-relaxed max-w-2xl mx-auto">
+        <div className="border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-slate-950 px-4 py-2">
+          <p className="text-center text-[10px] text-gray-400 dark:text-slate-500 leading-relaxed max-w-2xl mx-auto">
             This is an AI assistant for general guidance only and is{" "}
-            <strong className="text-gray-500">not</strong> a substitute for professional medical advice.
+            <strong className="text-gray-500 dark:text-slate-400">not</strong> a substitute for professional medical advice.
             {" "}In an emergency, call your local emergency number immediately.
           </p>
         </div>
