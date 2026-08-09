@@ -44,7 +44,7 @@ export default function RootLayout({ children }: LayoutProps) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col md:flex-row bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-100 pb-16 md:pb-0 transition-colors">
+      <body className="h-full flex flex-col md:flex-row bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-100 transition-colors md:overflow-hidden">
         <Script
           id="sahayak-theme-init"
           strategy="beforeInteractive"
@@ -63,7 +63,9 @@ export default function RootLayout({ children }: LayoutProps) {
         />
         <OnboardingGuard>
           <Navigation />
-          <div className="flex-1 flex flex-col min-w-0 bg-gray-50 dark:bg-slate-950">{children}</div>
+          <div className="flex-1 flex flex-col min-w-0 bg-gray-50 dark:bg-slate-950 md:h-screen md:overflow-y-auto pb-16 md:pb-0">
+            {children}
+          </div>
         </OnboardingGuard>
       </body>
     </html>

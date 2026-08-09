@@ -549,7 +549,7 @@ function ChatInner() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 dark:bg-slate-950 transition-colors">
+    <div className="flex flex-col h-full bg-gray-50 dark:bg-slate-950 transition-colors">
       {/* ── Sub Header ── */}
       <header className="flex-shrink-0 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-gray-800 shadow-2xs z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between px-4 py-2">
