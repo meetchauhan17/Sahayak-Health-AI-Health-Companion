@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -43,8 +44,10 @@ export default function RootLayout({ children }: LayoutProps) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        <script
+      <body className="min-h-full flex flex-col md:flex-row bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 pb-16 md:pb-0 transition-colors">
+        <Script
+          id="sahayak-theme-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               try {
@@ -58,8 +61,6 @@ export default function RootLayout({ children }: LayoutProps) {
             `,
           }}
         />
-      </head>
-      <body className="min-h-full flex flex-col md:flex-row bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 pb-16 md:pb-0 transition-colors">
         <OnboardingGuard>
           <Navigation />
           <div className="flex-1 flex flex-col min-w-0">{children}</div>

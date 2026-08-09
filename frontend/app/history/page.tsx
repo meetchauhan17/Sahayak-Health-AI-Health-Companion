@@ -73,6 +73,7 @@ function HistoryInner() {
   const searchParams = useSearchParams();
   const forMemberId = searchParams.get("for");
 
+  const [mounted, setMounted] = useState(false);
   const [allHistory, setAllHistory] = useState<HistoryEntry[]>([]);
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
@@ -83,6 +84,7 @@ function HistoryInner() {
   const [filterBy, setFilterBy] = useState<string>("self");
 
   useEffect(() => {
+    setMounted(true);
     setAllHistory(getHistory()); // unfiltered
     setFamilyMembers(getFamilyMembers());
 
@@ -174,6 +176,12 @@ function HistoryInner() {
       : filterBy === "self"
       ? "Myself"
       : familyMembers.find((m) => m.id === filterBy)?.name ?? "Family Member";
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full transition-colors pb-24 md:pb-8" />
+    );
+  }
 
   return (
     <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full transition-colors pb-24 md:pb-8">
@@ -499,7 +507,11 @@ function HistoryInner() {
 
 export default function HistoryPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full transition-colors pb-24 md:pb-8" />
+      }
+    >
       <HistoryInner />
     </Suspense>
   );
