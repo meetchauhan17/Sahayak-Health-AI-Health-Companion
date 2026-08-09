@@ -312,7 +312,7 @@ export default function DashboardPage() {
                 >
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-bold text-gray-800 truncate">
-                      {item.symptom}
+                      {item.symptom_query}
                     </p>
                     <p className="text-[10px] text-gray-400 mt-0.5">{item.date}</p>
                   </div>

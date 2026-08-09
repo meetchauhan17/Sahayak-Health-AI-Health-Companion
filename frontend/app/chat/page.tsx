@@ -8,7 +8,7 @@ import HospitalFinder from "@/components/HospitalFinder";
 import HealthSummary, { type HealthSummaryData } from "@/components/HealthSummary";
 import { getUserProfile } from "@/lib/userProfile";
 import { recordCheckIn } from "@/lib/streak";
-import { saveCheckIn } from "@/lib/history";
+import { addHistoryEntry } from "@/lib/history";
 
 // Allow TypeScript to see webkitSpeechRecognition on window
 declare global {
@@ -429,10 +429,11 @@ export default function Home() {
       // Record daily streak and save to history
       try {
         recordCheckIn();
-        saveCheckIn({
-          symptom: trimmed,
+        addHistoryEntry({
+          date: new Date().toISOString(),
+          symptom_query: trimmed,
+          ai_response: data.response ?? data.message ?? "",
           severity: data.severity || "yellow",
-          advice: data.advice,
         });
       } catch (err) {
         console.error("Failed to record check-in history:", err);
