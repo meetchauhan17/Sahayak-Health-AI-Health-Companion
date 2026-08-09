@@ -1,14 +1,16 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, KeyboardEvent } from "react";
+import { useState, useRef, useEffect, useCallback, KeyboardEvent, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import axios from "axios";
-import { Send, Heart, ChevronDown, Mic, FileText, X, RefreshCw } from "lucide-react";
+import { Send, Heart, ChevronDown, Mic, FileText, X, RefreshCw, Users } from "lucide-react";
 import SeverityBadge from "@/components/SeverityBadge";
 import HospitalFinder from "@/components/HospitalFinder";
 import HealthSummary, { type HealthSummaryData } from "@/components/HealthSummary";
 import { getUserProfile } from "@/lib/userProfile";
 import { recordCheckIn } from "@/lib/streak";
 import { addHistoryEntry } from "@/lib/history";
+import { getFamilyMembers, FamilyMember } from "@/lib/family";
 
 // Allow TypeScript to see webkitSpeechRecognition on window
 declare global {
@@ -286,18 +288,29 @@ function EmptyState() {
 
 // ─── Main Page ──────────────────────────────────────────────────────────────
 
-export default function Home() {
+function ChatInner() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [language, setLanguage] = useState<Language>("English");
   const [loading, setLoading] = useState(false);
+
+  // Family member context from ?for= query param
+  const searchParams = useSearchParams();
+  const forMemberId = searchParams.get("for");
+  const [forMember, setForMember] = useState<FamilyMember | null>(null);
 
   useEffect(() => {
     const profile = getUserProfile();
     if (profile?.language) {
       setLanguage(profile.language);
     }
-  }, []);
+    // Resolve family member from ?for= param
+    if (forMemberId) {
+      const members = getFamilyMembers();
+      const found = members.find((m) => m.id === forMemberId) ?? null;
+      setForMember(found);
+    }
+  }, [forMemberId]);
 
   // Base URL for backend API — set NEXT_PUBLIC_API_URL in .env.local for production
   const API_BASE =
@@ -434,6 +447,8 @@ export default function Home() {
           symptom_query: trimmed,
           ai_response: data.response ?? data.message ?? "",
           severity: data.severity || "yellow",
+          // Tag with family member ID if checking for someone else
+          familyMemberId: forMember?.id,
         });
       } catch (err) {
         console.error("Failed to record check-in history:", err);
@@ -515,6 +530,21 @@ export default function Home() {
           {/* Language selector */}
           <LanguageSelector language={language} onChange={setLanguage} />
         </div>
+
+        {/* Family member banner */}
+        {forMember && (
+          <div className="bg-teal-50 border-t border-teal-100 px-4 py-2">
+            <div className="max-w-3xl mx-auto flex items-center gap-2 text-xs font-semibold text-teal-800">
+              <Users className="w-3.5 h-3.5 text-teal-600 flex-shrink-0" />
+              Checking symptoms for{" "}
+              <span className="font-bold">{forMember.name}</span>
+              <span className="text-teal-600">({forMember.relation}, {forMember.age} yrs)</span>
+              <span className="ml-auto text-[10px] font-normal text-teal-600">
+                History saved separately
+              </span>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* ── Messages ── */}
@@ -671,5 +701,13 @@ export default function Home() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={null}>
+      <ChatInner />
+    </Suspense>
   );
 }

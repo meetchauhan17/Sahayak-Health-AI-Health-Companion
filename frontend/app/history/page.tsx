@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
   Sparkles,
+  Users,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -22,7 +23,13 @@ import {
   CartesianGrid,
 } from "recharts";
 
-import { getHistory, addHistoryEntry, clearHistory as clearStorageHistory, HistoryEntry } from "@/lib/history";
+import {
+  getHistory,
+  addHistoryEntry,
+  clearHistory as clearStorageHistory,
+  HistoryEntry,
+} from "@/lib/history";
+import { getFamilyMembers, FamilyMember } from "@/lib/family";
 import SeverityBadge from "@/components/SeverityBadge";
 
 // Map severity string to numeric values for Recharts (green=1, yellow=2, red=3)
@@ -30,7 +37,7 @@ function mapSeverityToValue(sev: string): number {
   const norm = (sev || "").toLowerCase().trim();
   if (norm === "green" || norm === "low" || norm === "self-care") return 1;
   if (norm === "red" || norm === "high" || norm === "emergency") return 3;
-  return 2; // default yellow
+  return 2;
 }
 
 function mapValueToSeverityLabel(val: number): string {
@@ -55,21 +62,38 @@ function formatDate(isoStr: string): string {
 }
 
 export default function HistoryPage() {
-  const [history, setHistory] = useState<HistoryEntry[]>([]);
+  const [allHistory, setAllHistory] = useState<HistoryEntry[]>([]);
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
+
+  // "self" = main user; a member id = filter that member; "" = all
+  const [filterBy, setFilterBy] = useState<string>("self");
 
   useEffect(() => {
-    setHistory(getHistory());
+    setAllHistory(getHistory()); // unfiltered
+    setFamilyMembers(getFamilyMembers());
   }, []);
+
+  // Compute the displayed history based on the filter
+  const history =
+    filterBy === ""
+      ? allHistory
+      : filterBy === "self"
+      ? allHistory.filter((e) => !e.familyMemberId)
+      : allHistory.filter((e) => e.familyMemberId === filterBy);
 
   const handleClearHistory = () => {
     if (
       window.confirm(
-        "Are you sure you want to clear your entire health history? This action cannot be undone."
+        filterBy === ""
+          ? "Clear ALL health history? This cannot be undone."
+          : filterBy === "self"
+          ? "Clear your own health history? Family members' history is kept."
+          : `Clear history for ${familyMembers.find((m) => m.id === filterBy)?.name ?? "this member"}? This cannot be undone.`
       )
     ) {
-      clearStorageHistory();
-      setHistory([]);
+      clearStorageHistory(filterBy === "" ? null : filterBy);
+      setAllHistory(getHistory());
       setExpandedIds({});
     }
   };
@@ -78,19 +102,25 @@ export default function HistoryPage() {
     setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Recharts chart data preparation (chronological order: oldest to newest for trend chart)
-  const chartData = [...history]
-    .reverse()
-    .map((item) => ({
-      date: formatDate(item.date),
-      severityVal: mapSeverityToValue(item.severity),
-      symptom: item.symptom_query,
-    }));
+  // Recharts data — chronological order (oldest → newest)
+  const chartData = [...history].reverse().map((item) => ({
+    date: formatDate(item.date),
+    severityVal: mapSeverityToValue(item.severity),
+    symptom: item.symptom_query,
+  }));
+
+  // Label for the currently selected filter
+  const filterLabel =
+    filterBy === ""
+      ? "Everyone"
+      : filterBy === "self"
+      ? "Myself"
+      : familyMembers.find((m) => m.id === filterBy)?.name ?? "Family Member";
 
   return (
-    <main className="min-h-screen bg-gray-50/60 p-4 sm:p-6 lg:p-8 animate-fade-up max-w-4xl mx-auto w-full">
+    <main className="min-h-screen bg-gray-50/60 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full">
       {/* ── Header ── */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
@@ -103,7 +133,9 @@ export default function HistoryPage() {
               <Clock className="w-6 h-6 text-teal-600" />
               Health History
             </h1>
-            <p className="text-xs text-gray-500">Track past symptom consultations and health trends</p>
+            <p className="text-xs text-gray-500">
+              Track past symptom consultations and health trends
+            </p>
           </div>
         </div>
 
@@ -113,21 +145,49 @@ export default function HistoryPage() {
             className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 px-3.5 py-2 rounded-xl transition-all active:scale-95"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            <span>Clear History</span>
+            <span>Clear</span>
           </button>
         )}
       </div>
 
-      {/* ── Severity Trend Section ── */}
+      {/* ── Family Filter Dropdown ── */}
+      <div className="bg-white border border-gray-200/80 rounded-2xl px-4 py-3 mb-4 shadow-xs flex items-center gap-3 flex-wrap">
+        <Users className="w-4 h-4 text-teal-600 flex-shrink-0" />
+        <span className="text-xs font-semibold text-gray-700">
+          Show history for:
+        </span>
+        <div className="relative">
+          <select
+            value={filterBy}
+            onChange={(e) => { setFilterBy(e.target.value); setExpandedIds({}); }}
+            className="appearance-none text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200 rounded-xl pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-teal-400 cursor-pointer"
+          >
+            <option value="self">Myself</option>
+            {familyMembers.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.name} ({m.relation})
+              </option>
+            ))}
+            <option value="">Everyone</option>
+          </select>
+          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-teal-600 pointer-events-none" />
+        </div>
+        <span className="text-[11px] text-gray-400">
+          {history.length} {history.length === 1 ? "entry" : "entries"} for{" "}
+          <strong>{filterLabel}</strong>
+        </span>
+      </div>
+
+      {/* ── Severity Trend Chart ── */}
       <div className="bg-white border border-gray-200/80 rounded-2xl p-5 mb-6 shadow-xs">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center gap-1.5">
             <TrendingUp className="w-4 h-4 text-teal-600" />
-            Severity Trend Over Time
+            Severity Trend — {filterLabel}
           </h2>
           {history.length >= 3 && (
             <span className="text-[10px] font-semibold text-teal-700 bg-teal-50 border border-teal-100 px-2 py-0.5 rounded-full">
-              {history.length} Check-ins Logged
+              {history.length} Check-ins
             </span>
           )}
         </div>
@@ -135,7 +195,10 @@ export default function HistoryPage() {
         {history.length >= 3 ? (
           <div className="h-48 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 10, right: 15, left: 0, bottom: 5 }}>
+              <LineChart
+                data={chartData}
+                margin={{ top: 10, right: 15, left: 0, bottom: 5 }}
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
                 <XAxis
                   dataKey="date"
@@ -152,13 +215,16 @@ export default function HistoryPage() {
                 <Tooltip
                   content={({ active, payload }) => {
                     if (active && payload && payload.length) {
-                      const data = payload[0].payload;
-                      const sevLabel = mapValueToSeverityLabel(data.severityVal);
+                      const d = payload[0].payload;
                       return (
                         <div className="bg-gray-900 text-white p-2.5 rounded-xl text-xs shadow-lg space-y-1">
-                          <p className="font-bold text-teal-300">{data.date}</p>
-                          <p className="text-gray-200 truncate max-w-xs">{data.symptom}</p>
-                          <p className="font-semibold text-amber-300">Severity: {sevLabel}</p>
+                          <p className="font-bold text-teal-300">{d.date}</p>
+                          <p className="text-gray-200 truncate max-w-xs">
+                            {d.symptom}
+                          </p>
+                          <p className="font-semibold text-amber-300">
+                            Severity: {mapValueToSeverityLabel(d.severityVal)}
+                          </p>
                         </div>
                       );
                     }
@@ -183,77 +249,96 @@ export default function HistoryPage() {
               Check in a few more times to see your health trend
             </p>
             <p className="text-[11px] text-gray-400 mt-0.5">
-              Requires 3 or more entries to render the severity timeline chart.
+              Requires 3+ entries to render the severity chart.
             </p>
           </div>
         )}
       </div>
 
-      {/* ── Timeline List (Most Recent First) ── */}
+      {/* ── Timeline ── */}
       {history.length === 0 ? (
         <div className="bg-white border border-gray-200 rounded-2xl p-10 text-center shadow-xs">
           <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-gray-800">No History Recorded</h3>
+          <h3 className="text-base font-bold text-gray-800">
+            No History for {filterLabel}
+          </h3>
           <p className="text-xs text-gray-500 max-w-xs mx-auto mt-1 mb-4">
-            Perform symptom checks in the Chat assistant to track your health trends here.
+            {filterBy !== "self" && filterBy !== ""
+              ? `Perform a symptom check for ${filterLabel} to record their history.`
+              : "Perform symptom checks in the Chat assistant to track health trends here."}
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Link
-              href="/chat"
+              href={
+                filterBy !== "self" && filterBy !== ""
+                  ? `/chat?for=${filterBy}`
+                  : "/chat"
+              }
               className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-xs hover:shadow-md active:scale-95 transition-all"
             >
               <MessageSquare className="w-4 h-4" />
-              Start Symptom Check
+              {filterBy !== "self" && filterBy !== ""
+                ? `Check Symptoms for ${filterLabel}`
+                : "Start Symptom Check"}
             </Link>
 
-            <button
-              type="button"
-              onClick={() => {
-                const sampleEntries: HistoryEntry[] = [
-                  {
-                    id: "demo_1",
-                    date: new Date(Date.now() - 86400000 * 2).toISOString(),
-                    symptom_query: "I have a mild runny nose and cold",
-                    ai_response:
-                      "Rest, drink warm fluids like ginger tea or broth, and take over-the-counter decongestants if needed.",
-                    severity: "green",
-                  },
-                  {
-                    id: "demo_2",
-                    date: new Date(Date.now() - 86400000).toISOString(),
-                    symptom_query: "Persistent headache and mild nausea for 2 days",
-                    ai_response:
-                      "Stay hydrated, rest in a dark room, and consider seeing a doctor if symptoms do not improve within 24 hours.",
-                    severity: "yellow",
-                  },
-                  {
-                    id: "demo_3",
-                    date: new Date().toISOString(),
-                    symptom_query: "Sudden severe chest tightness and breathlessness",
-                    ai_response:
-                      "Emergency: Seek immediate medical attention or call emergency medical services immediately.",
-                    severity: "red",
-                  },
-                ];
-                sampleEntries.forEach((entry) => addHistoryEntry(entry));
-                setHistory(getHistory());
-              }}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-700 bg-teal-50 border border-teal-200 hover:bg-teal-100 px-4 py-2.5 rounded-xl transition-all"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-teal-600" />
-              Load Sample Health Entries
-            </button>
+            {/* Demo seed button — only show for "self" with 0 entries */}
+            {(filterBy === "self" || filterBy === "") && (
+              <button
+                type="button"
+                onClick={() => {
+                  const sampleEntries: HistoryEntry[] = [
+                    {
+                      id: "demo_1",
+                      date: new Date(Date.now() - 86400000 * 2).toISOString(),
+                      symptom_query: "I have a mild runny nose and cold",
+                      ai_response:
+                        "Rest, drink warm fluids like ginger tea or broth, and take over-the-counter decongestants if needed.",
+                      severity: "green",
+                    },
+                    {
+                      id: "demo_2",
+                      date: new Date(Date.now() - 86400000).toISOString(),
+                      symptom_query: "Persistent headache and mild nausea for 2 days",
+                      ai_response:
+                        "Stay hydrated, rest in a dark room, and consider seeing a doctor if symptoms do not improve within 24 hours.",
+                      severity: "yellow",
+                    },
+                    {
+                      id: "demo_3",
+                      date: new Date().toISOString(),
+                      symptom_query: "Sudden severe chest tightness and breathlessness",
+                      ai_response:
+                        "Emergency: Seek immediate medical attention or call emergency medical services immediately.",
+                      severity: "red",
+                    },
+                  ];
+                  sampleEntries.forEach((entry) => addHistoryEntry(entry));
+                  setAllHistory(getHistory());
+                }}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-700 bg-teal-50 border border-teal-200 hover:bg-teal-100 px-4 py-2.5 rounded-xl transition-all"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-teal-600" />
+                Load Sample Entries
+              </button>
+            )}
           </div>
         </div>
       ) : (
         <div className="space-y-3">
           <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider px-1">
-            Timeline ({history.length} {history.length === 1 ? "Entry" : "Entries"})
+            Timeline — {filterLabel} ({history.length}{" "}
+            {history.length === 1 ? "Entry" : "Entries"})
           </h2>
 
           {history.map((item, index) => {
             const entryId = item.id || `hist_${index}`;
             const isExpanded = !!expandedIds[entryId];
+            // Show the family member name if viewing "Everyone"
+            const memberName =
+              filterBy === "" && item.familyMemberId
+                ? familyMembers.find((m) => m.id === item.familyMemberId)?.name
+                : null;
 
             return (
               <div
@@ -263,9 +348,16 @@ export default function HistoryPage() {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1 flex-1 min-w-0">
-                    <span className="text-[11px] font-medium text-gray-400">
-                      {formatDate(item.date)}
-                    </span>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-[11px] font-medium text-gray-400">
+                        {formatDate(item.date)}
+                      </span>
+                      {memberName && (
+                        <span className="text-[10px] font-bold text-teal-700 bg-teal-50 border border-teal-100 px-1.5 py-0.5 rounded-full">
+                          {memberName}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm font-semibold text-gray-900 leading-snug truncate">
                       {item.symptom_query}
                     </p>
@@ -287,9 +379,8 @@ export default function HistoryPage() {
                   </div>
                 </div>
 
-                {/* Expanded AI Response details */}
                 {isExpanded && (
-                  <div className="mt-3 pt-3 border-t border-gray-100 animate-msg-in">
+                  <div className="mt-3 pt-3 border-t border-gray-100">
                     <p className="text-xs font-bold text-gray-700 mb-1 flex items-center gap-1.5">
                       <Sparkles className="w-3.5 h-3.5 text-teal-500" />
                       AI Health Assistant Guidance:
