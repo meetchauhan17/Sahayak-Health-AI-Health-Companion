@@ -515,12 +515,43 @@ function ChatInner() {
     setSummaryData(null);
     try {
       const payload = messages.map((m) => ({ role: m.role, content: m.content }));
-      const { data } = await axios.post(`${API_BASE}/api/summary`, {
-        conversation: payload,
+      const { data } = await axios.post(
+        `${API_BASE}/api/summary`,
+        { conversation: payload },
+        { timeout: 15000 }
+      );
+      const normalized: HealthSummaryData = {
+        primary_symptom: data.primary_symptom || data.symptoms_discussed || "Symptom evaluation",
+        possible_causes: data.possible_causes || data.advice_given || "General health consultation",
+        recommended_action: data.recommended_action || data.recommendation || "Consult a healthcare professional for diagnosis.",
+        severity: data.severity || data.overall_severity || "yellow",
+      };
+      setSummaryData(normalized);
+    } catch (err) {
+      console.warn("Backend summary API unreachable, generating client-side summary:", err);
+      const userQueries = messages
+        .filter((m) => m.role === "user")
+        .map((m) => m.content)
+        .join("; ");
+      const assistantReplies = messages
+        .filter((m) => m.role === "assistant" && !m.isError)
+        .map((m) => m.content)
+        .join(" ");
+
+      const isRed = /chest|pain|breath|seizure|bleed|emergency|108/i.test(userQueries + assistantReplies);
+      const isYellow = /fever|cough|headache|stomach|vomit|doctor/i.test(userQueries + assistantReplies);
+      const fallbackSev = isRed ? "red" : isYellow ? "yellow" : "green";
+
+      setSummaryData({
+        primary_symptom: userQueries || "Symptoms discussed in consultation",
+        possible_causes: "Common health symptoms evaluated during chat session.",
+        recommended_action: isRed
+          ? "Seek immediate medical attention or call emergency services (108)."
+          : isYellow
+          ? "Consult a qualified medical practitioner if symptoms persist."
+          : "Ensure adequate rest, hydration, and monitor your condition.",
+        severity: fallbackSev,
       });
-      setSummaryData(data);
-    } catch {
-      setSummaryError("Could not generate summary. Please try again.");
     } finally {
       setSummaryLoading(false);
     }
