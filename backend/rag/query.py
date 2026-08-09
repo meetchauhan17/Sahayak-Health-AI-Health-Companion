@@ -10,10 +10,17 @@ import os
 import re
 from functools import lru_cache
 
-import chromadb
 import groq as groq_sdk
 from groq import Groq
-from sentence_transformers import SentenceTransformer
+
+try:
+    import chromadb
+    from sentence_transformers import SentenceTransformer
+    HAS_VECTOR_DB = True
+except ImportError:
+    HAS_VECTOR_DB = False
+    chromadb = None
+    SentenceTransformer = None
 
 # ---------------------------------------------------------------------------
 # Paths & constants
@@ -26,21 +33,21 @@ GROQ_MODEL = "llama-3.3-70b-versatile"
 # ---------------------------------------------------------------------------
 # Lazy-loaded singletons (expensive objects created once, reused across calls)
 # ---------------------------------------------------------------------------
-_embedding_model: SentenceTransformer | None = None
+_embedding_model = None
 _chroma_collection = None
 _groq_client: Groq | None = None
 
 
-def _get_embedding_model() -> SentenceTransformer:
+def _get_embedding_model():
     global _embedding_model
-    if _embedding_model is None:
+    if _embedding_model is None and SentenceTransformer is not None:
         _embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
     return _embedding_model
 
 
 def _get_collection():
     global _chroma_collection
-    if _chroma_collection is None:
+    if _chroma_collection is None and chromadb is not None:
         os.makedirs(CHROMA_DIR, exist_ok=True)
         client = chromadb.PersistentClient(path=CHROMA_DIR)
         _chroma_collection = client.get_or_create_collection(name=COLLECTION_NAME)
@@ -66,28 +73,52 @@ def _get_groq_client() -> Groq:
 @lru_cache(maxsize=256)
 def _encode_query_cached(query: str):
     model = _get_embedding_model()
+    if model is None:
+        return None
     return model.encode([query]).tolist()
 
 
 def retrieve_context(user_query: str, top_k: int = 3) -> str:
     """
-    Embed the user query and retrieve the top-k most similar chunks
-    from the medical_kb ChromaDB collection.
-
-    Returns: A single string combining the retrieved text chunks.
+    Retrieve top-k relevant medical knowledge context chunks.
+    Uses ChromaDB vector search if installed, or lightweight JSON KB search fallback.
     """
-    query_embedding = _encode_query_cached(user_query)
+    if HAS_VECTOR_DB:
+        try:
+            query_embedding = _encode_query_cached(user_query)
+            collection = _get_collection()
+            if query_embedding and collection:
+                results = collection.query(
+                    query_embeddings=query_embedding,
+                    n_results=top_k,
+                )
+                chunks = results["documents"][0] if (results and results.get("documents")) else []
+                if chunks:
+                    return "\n\n---\n\n".join(chunks)
+        except Exception as e:
+            print(f"ChromaDB retrieval error, falling back to JSON KB: {e}")
 
-    collection = _get_collection()
-    results = collection.query(
-        query_embeddings=query_embedding,
-        n_results=top_k,
-    )
+    # Lightweight JSON KB Fallback (Zero dependencies)
+    try:
+        kb_path = os.path.join(BACKEND_DIR, "data", "medical_kb.json")
+        if os.path.exists(kb_path):
+            with open(kb_path, "r", encoding="utf-8") as f:
+                kb_data = json.load(f)
+            q_tokens = set(user_query.lower().split())
+            scored = []
+            for item in kb_data:
+                s_text = json.dumps(item).lower()
+                matches = sum(1 for t in q_tokens if t in s_text)
+                if matches > 0:
+                    scored.append((matches, json.dumps(item, indent=2)))
+            scored.sort(key=lambda x: x[0], reverse=True)
+            top_chunks = [s[1] for s in scored[:top_k]]
+            if top_chunks:
+                return "\n\n---\n\n".join(top_chunks)
+    except Exception as e:
+        print(f"JSON KB fallback error: {e}")
 
-    # results["documents"] is a list of lists; flatten it
-    chunks = results["documents"][0] if (results and results.get("documents")) else []
-
-    return "\n\n---\n\n".join(chunks)
+    return "General medical guidance: Monitor symptoms closely, rest, stay hydrated, and consult a doctor if severe."
 
 
 # ---------------------------------------------------------------------------
