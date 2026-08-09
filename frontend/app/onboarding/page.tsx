@@ -275,8 +275,8 @@ export default function OnboardingPage() {
             />
 
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-slate-800 border-2 border-gray-100 dark:border-gray-700 rounded-md z-50 overflow-hidden max-h-56 overflow-y-auto">
-                <p className="px-3 py-1.5 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase border-b border-gray-100 dark:border-gray-700">
+              <div className="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-slate-800 border-2 border-gray-100 dark:border-gray-700 rounded-md z-50 overflow-hidden max-h-56 overflow-y-auto shadow-xl">
+                <p className="px-3 py-1.5 text-[10px] font-bold text-gray-400 dark:text-slate-400 uppercase border-b border-gray-100 dark:border-gray-700 tracking-wider">
                   Suggestions
                 </p>
                 {suggestions.map((sugg, idx) => {
@@ -294,16 +294,18 @@ export default function OnboardingPage() {
                         setShowSuggestions(false);
                         setLocStatus(`Selected: ${mainName}`);
                       }}
-                      className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors flex items-start gap-2 border-b border-gray-100 dark:border-gray-700 last:border-none"
+                      className="w-full text-left px-3 py-2.5 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors flex items-start gap-2 border-b border-gray-100 dark:border-gray-700/60 last:border-none cursor-pointer"
                     >
                       <MapPin className="w-3.5 h-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
-                      <div className="truncate">
-                        <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
+                      <div className="truncate flex-1 min-w-0">
+                        <p className="text-xs font-bold text-gray-900 dark:text-slate-100 truncate">
                           {mainName}
                         </p>
-                        <p className="text-[10px] text-gray-400 dark:text-gray-400 truncate">
-                          {subName}
-                        </p>
+                        {subName && (
+                          <p className="text-[11px] text-gray-500 dark:text-slate-300 truncate font-medium mt-0.5">
+                            {subName}
+                          </p>
+                        )}
                       </div>
                     </button>
                   );
