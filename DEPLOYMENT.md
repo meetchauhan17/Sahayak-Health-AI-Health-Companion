@@ -1,77 +1,76 @@
-# 🚀 Sahayak Health — Deployment Guide
+# 🚀 Sahayak Health — Production Deployment Guide
 
-This guide walks you through deploying **Sahayak Health** for production.
+If you don't want to use Render, here are the top **alternative deployment options** for Sahayak Health:
 
 ---
 
-## 🌟 Option A: Free Vercel (Frontend) + Render (Backend) — *Recommended*
+## ⚡ Option 1: Deploy BOTH Frontend + Backend Together on Vercel (100% Free)
 
-### 1. Deploy Frontend (Vercel)
+You can deploy the entire application (Next.js Frontend + Python FastAPI Backend) together on **Vercel** with zero extra hosting services required!
+
+### Steps:
 1. Go to [Vercel](https://vercel.com) and click **Add New Project**.
 2. Import your GitHub repository: [`meetchauhan17/Sahayak-Health-AI-Health-Companion`](https://github.com/meetchauhan17/Sahayak-Health-AI-Health-Companion).
-3. Set **Root Directory** to `frontend`.
-4. Add **Environment Variable**:
-   - `NEXT_PUBLIC_API_URL` = `https://your-backend-url.onrender.com` (your deployed backend URL)
-5. Click **Deploy**! Your site will be live at `https://sahayak-health.vercel.app`.
-
----
-
-### 2. Deploy Backend (Render / Railway / Cloud Run)
-1. Go to [Render](https://render.com) and click **New Web Service**.
-2. Select your repository: `meetchauhan17/Sahayak-Health-AI-Health-Companion`.
-3. Set **Root Directory** to `backend`.
-4. Configuration:
-   - **Environment**: `Python 3`
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-5. Add **Environment Variables**:
+3. Set **Root Directory** to `./` (repository root).
+4. Add **Environment Variables**:
    - `GROQ_API_KEY` = `your_groq_api_key_here`
-6. Click **Create Web Service**.
+5. Click **Deploy**!
+
+Vercel will host both your Next.js UI and your Python FastAPI endpoints under the same domain (`https://sahayak-health.vercel.app`).
 
 ---
 
-## 🐳 Option B: Docker Container Deployment
+## 🚀 Option 2: Koyeb (100% Free — No Credit Card Needed)
 
-### Backend Dockerfile (`backend/Dockerfile`)
-```dockerfile
-FROM python:3.12-slim
+Koyeb offers a free global container platform with zero cold starts.
 
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 8000
-
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
-### Frontend Dockerfile (`frontend/Dockerfile`)
-```dockerfile
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
-
-FROM node:20-alpine AS runner
-WORKDIR /app
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-
-EXPOSE 3000
-CMD ["node", "server.js"]
-```
+### Steps:
+1. Go to [Koyeb.com](https://www.koyeb.com) and sign up for a free account.
+2. Click **Create App** and select **GitHub**.
+3. Choose repository `meetchauhan17/Sahayak-Health-AI-Health-Companion`.
+4. Set **Work Directory** to `backend`.
+5. Build & Run settings:
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Run Command**: `python -m uvicorn main:app --host 0.0.0.0 --port 8000`
+6. Add **Environment Variables**:
+   - `GROQ_API_KEY` = `your_groq_api_key_here`
+7. Click **Deploy**. Copy your Koyeb backend URL (e.g. `https://sahayak-backend.koyeb.app`).
 
 ---
 
-## 📱 Option C: Local Network Access (Phone / LAN)
+## 🚂 Option 3: Railway.app
 
-To access Sahayak Health on your phone or local network:
+Railway provides instant GitHub deployments for Python and Node.js.
+
+### Steps:
+1. Go to [Railway.app](https://railway.app) and click **New Project** -> **Deploy from GitHub**.
+2. Select repository `meetchauhan17/Sahayak-Health-AI-Health-Companion`.
+3. Set root directory to `backend`.
+4. Add variable `GROQ_API_KEY`.
+5. Click **Deploy**.
+
+---
+
+## ☁️ Option 4: Google Cloud Run (2 Million Free Requests / Month)
+
+Google Cloud Run runs your backend container with automatic scaling to zero when idle.
+
+### Steps:
+1. Install [Google Cloud CLI](https://cloud.google.com/sdk).
+2. Deploy backend from the `backend` directory:
+   ```bash
+   gcloud run deploy sahayak-backend \
+     --source . \
+     --region us-central1 \
+     --allow-unauthenticated \
+     --set-env-vars GROQ_API_KEY=your_groq_api_key_here
+   ```
+
+---
+
+## 📱 Option 5: Local Network Access (Phone / LAN)
+
+To access Sahayak Health on your phone or local network without cloud hosting:
 
 1. **Backend**:
    ```powershell
@@ -85,11 +84,4 @@ To access Sahayak Health on your phone or local network:
    npm run dev -- -H 0.0.0.0
    ```
 
-3. Open **`http://<YOUR_LOCAL_IP>:3000`** (e.g. `http://10.211.47.239:3000`) on your phone connected to the same Wi-Fi!
-
----
-
-## 🔒 Post-Deployment Checklist
-- [x] Verify `GROQ_API_KEY` is set in production environment variables.
-- [x] CORS middleware in `backend/main.py` allows your production frontend domain.
-- [x] All build checks pass (`npm run build`).
+3. Open **`http://<YOUR_LOCAL_IP>:3000`** (e.g. `http://10.211.47.239:3000`) on any phone or laptop on the same Wi-Fi network.
