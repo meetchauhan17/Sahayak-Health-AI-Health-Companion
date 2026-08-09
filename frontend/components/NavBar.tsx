@@ -108,6 +108,7 @@ export default function NavBar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  prefetch={true}
                   className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                     isActive
                       ? "bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-100 dark:border-teal-800/50 shadow-2xs"
@@ -271,6 +272,7 @@ export default function NavBar() {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={true}
                 className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all ${
                   isActive
                     ? "text-teal-600 dark:text-teal-400 font-bold"

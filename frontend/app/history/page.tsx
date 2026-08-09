@@ -17,15 +17,7 @@ import {
   Search,
   X,
 } from "lucide-react";
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-} from "recharts";
+import dynamic from "next/dynamic";
 
 import {
   getHistory,
@@ -38,6 +30,15 @@ import { getFamilyMembers, FamilyMember } from "@/lib/family";
 import { getUserProfile } from "@/lib/userProfile";
 import { generateHealthPDF } from "@/lib/generatePDF";
 import SeverityBadge from "@/components/SeverityBadge";
+
+const SeverityChart = dynamic(() => import("@/components/SeverityChart"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-48 w-full flex items-center justify-center text-xs text-gray-400">
+      Loading chart…
+    </div>
+  ),
+});
 
 // Map severity string to numeric values for Recharts (green=1, yellow=2, red=3)
 function mapSeverityToValue(sev: string): number {
@@ -289,55 +290,7 @@ function HistoryInner() {
         </div>
 
         {history.length >= 3 ? (
-          <div className="h-48 w-full pt-2">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={chartData}
-                margin={{ top: 10, right: 15, left: 0, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fontSize: 10, fill: "#94a3b8" }}
-                  stroke="#475569"
-                />
-                <YAxis
-                  domain={[1, 3]}
-                  ticks={[1, 2, 3]}
-                  tickFormatter={mapValueToSeverityLabel}
-                  tick={{ fontSize: 10, fill: "#94a3b8" }}
-                  stroke="#475569"
-                />
-                <Tooltip
-                  content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      const d = payload[0].payload;
-                      return (
-                        <div className="bg-gray-900 dark:bg-slate-800 border border-gray-700 text-white p-2.5 rounded-xl text-xs shadow-lg space-y-1">
-                          <p className="font-bold text-teal-300">{d.date}</p>
-                          <p className="text-gray-200 truncate max-w-xs">
-                            {d.symptom}
-                          </p>
-                          <p className="font-semibold text-amber-300">
-                            Severity: {mapValueToSeverityLabel(d.severityVal)}
-                          </p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="severityVal"
-                  stroke="#0d9488"
-                  strokeWidth={2.5}
-                  dot={{ r: 4, fill: "#0d9488", strokeWidth: 2, stroke: "#ffffff" }}
-                  activeDot={{ r: 6, fill: "#06b6d4" }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+          <SeverityChart data={chartData} valueToLabel={mapValueToSeverityLabel} />
         ) : (
           <div className="py-6 px-4 text-center bg-gray-50/80 dark:bg-slate-800/40 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 text-gray-500 dark:text-slate-400">
             <Sparkles className="w-5 h-5 text-teal-500 dark:text-teal-400 mx-auto mb-1.5" />
