@@ -401,14 +401,14 @@ export default function NearbyCare() {
         </div>
       </div>
 
-      {/* ── Search Bar ── */}
-      <div className="relative mb-4">
+      {/* ── Search Bar & Quick Suggestion Chips ── */}
+      <div className="relative mb-3">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by name or area…"
+          placeholder="Search by hospital name, clinic, or area..."
           className="w-full pl-9 pr-9 py-2.5 text-sm bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-2xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent transition shadow-xs"
         />
         {searchQuery && (
@@ -420,6 +420,27 @@ export default function NearbyCare() {
             <X className="w-4 h-4" />
           </button>
         )}
+      </div>
+
+      {/* Quick Suggestion Chips */}
+      <div className="flex items-center gap-1.5 flex-wrap mb-4 px-1">
+        <span className="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">
+          Suggestions:
+        </span>
+        {["Hospital", "Clinic", "Pharmacy", "Emergency", "Civil", "Kiran"].map((sugg) => (
+          <button
+            key={sugg}
+            type="button"
+            onClick={() => setSearchQuery(searchQuery === sugg ? "" : sugg)}
+            className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-full border transition-all ${
+              searchQuery === sugg
+                ? "bg-teal-500 border-teal-500 text-white"
+                : "bg-white dark:bg-slate-900 border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-teal-400 hover:text-teal-600 dark:hover:text-teal-400"
+            }`}
+          >
+            🔍 {sugg}
+          </button>
+        ))}
       </div>
 
       {/* ── Category Filter Tabs ── */}

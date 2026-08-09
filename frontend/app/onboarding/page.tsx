@@ -25,6 +25,10 @@ export default function OnboardingPage() {
   const [locating, setLocating] = useState(false);
   const [locStatus, setLocStatus] = useState("");
 
+  const [suggestions, setSuggestions] = useState<{ displayName: string; lat: number; lng: number }[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isSearchingSuggestions, setIsSearchingSuggestions] = useState(false);
+
   useEffect(() => {
     const p = getUserProfile();
     if (p) {
@@ -38,6 +42,49 @@ export default function OnboardingPage() {
       if (p.lng) setLng(p.lng);
     }
   }, []);
+
+  // Fetch OpenStreetMap Nominatim city autocomplete suggestions as user types
+  const handleCityChange = (value: string) => {
+    setCity(value);
+    if (value.trim().length < 3) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (!city || city.trim().length < 3) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        setIsSearchingSuggestions(true);
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&addressdetails=1&limit=5`
+        );
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          const parsed = data.map((item: any) => ({
+            displayName: item.display_name,
+            lat: parseFloat(item.lat),
+            lng: parseFloat(item.lon),
+          }));
+          setSuggestions(parsed);
+          setShowSuggestions(parsed.length > 0);
+        }
+      } catch {
+        setSuggestions([]);
+      } finally {
+        setIsSearchingSuggestions(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [city]);
 
   const detectLocation = () => {
     if (!navigator.geolocation) {
@@ -208,7 +255,7 @@ export default function OnboardingPage() {
           </div>
 
           {/* Location Setting */}
-          <div>
+          <div className="relative">
             <div className="flex items-center justify-between mb-1.5">
               <label className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
@@ -227,10 +274,50 @@ export default function OnboardingPage() {
             <input
               type="text"
               value={city}
-              onChange={(e) => setCity(e.target.value)}
-              placeholder="e.g. Surat, Gujarat"
+              onChange={(e) => handleCityChange(e.target.value)}
+              onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+              placeholder="Type city or area (e.g. Delhi, Surat, Mumbai)..."
               className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white dark:focus:bg-slate-900 transition-all text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
             />
+
+            {/* Suggestions Popover */}
+            {showSuggestions && suggestions.length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl z-50 overflow-hidden max-h-56 overflow-y-auto animate-fade-up">
+                <p className="px-3 py-1.5 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase border-b border-gray-100 dark:border-gray-700">
+                  OpenStreetMap Suggestions
+                </p>
+                {suggestions.map((sugg, idx) => {
+                  const parts = sugg.displayName.split(",");
+                  const mainName = parts[0];
+                  const subName = parts.slice(1, 4).join(",").trim();
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setCity(mainName + (subName ? `, ${subName}` : ""));
+                        setLat(sugg.lat);
+                        setLng(sugg.lng);
+                        setShowSuggestions(false);
+                        setLocStatus(`Selected: ${mainName}`);
+                      }}
+                      className="w-full text-left px-3 py-2 hover:bg-teal-50 dark:hover:bg-slate-700/60 transition-colors flex items-start gap-2 border-b border-gray-50 dark:border-gray-700/40 last:border-none"
+                    >
+                      <MapPin className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                      <div className="truncate">
+                        <p className="text-xs font-bold text-gray-800 dark:text-white truncate">
+                          {mainName}
+                        </p>
+                        <p className="text-[10px] text-gray-400 dark:text-gray-400 truncate">
+                          {subName}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
             {locStatus && (
               <p className="text-[10px] text-teal-600 dark:text-teal-400 mt-1 flex items-center gap-1">
                 <span>📍</span> {locStatus}
