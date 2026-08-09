@@ -156,7 +156,7 @@ export default function NearbyCare() {
   }, [entries]);
 
   return (
-    <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full pb-24 md:pb-8 transition-colors">
+    <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 transition-colors overflow-x-hidden">
       {/* ── Header ── */}
       <div className="flex items-center gap-3 mb-4">
         <Link

@@ -82,7 +82,7 @@ export default function DashboardPage() {
   const streakPercent = Math.min(100, Math.max(10, ((streakCount % 7) || (streakCount > 0 ? 7 : 0)) * (100 / 7)));
 
   return (
-    <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 animate-fade-up max-w-6xl mx-auto w-full transition-colors">
+    <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 animate-fade-up max-w-6xl mx-auto w-full transition-colors overflow-x-hidden">
       {/* ── Top Greeting Bar ── */}
       <header className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-xs">
         <div>

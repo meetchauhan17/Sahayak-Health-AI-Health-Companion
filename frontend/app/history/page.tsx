@@ -180,12 +180,12 @@ function HistoryInner() {
 
   if (!mounted) {
     return (
-      <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full transition-colors pb-24 md:pb-8" />
+      <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto transition-colors pb-24 md:pb-8 overflow-x-hidden" />
     );
   }
 
   return (
-    <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full transition-colors pb-24 md:pb-8">
+    <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto transition-colors pb-24 md:pb-8 overflow-x-hidden">
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div className="flex items-center gap-3">
@@ -462,7 +462,7 @@ export default function HistoryPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full transition-colors pb-24 md:pb-8" />
+        <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto transition-colors pb-24 md:pb-8 overflow-x-hidden" />
       }
     >
       <HistoryInner />
