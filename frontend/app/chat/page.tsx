@@ -62,7 +62,7 @@ function SymptomChips({ onChipClick, disabled }: { onChipClick: (msg: string) =>
           key={chip.label}
           onClick={() => onChipClick(chip.message)}
           disabled={disabled}
-          className="flex-shrink-0 text-xs font-semibold text-gray-600 bg-gray-100 rounded-md px-3 py-1.5 hover:bg-blue-500 hover:text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+          className="flex-shrink-0 text-xs font-semibold text-gray-700 dark:text-slate-200 bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-md px-3 py-1.5 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-500 dark:hover:text-white hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {chip.label}
         </button>
@@ -79,7 +79,7 @@ function TypingIndicator() {
       <div className="flex-shrink-0 w-8 h-8 rounded-md bg-blue-500 flex items-center justify-center">
         <Activity className="w-4 h-4 text-white" strokeWidth={2.5} />
       </div>
-      <div className="bg-gray-100 rounded-md px-4 py-3">
+      <div className="bg-gray-100 dark:bg-slate-800 rounded-md px-4 py-3 border border-transparent dark:border-gray-700">
         <div className="flex gap-1.5 items-center h-4">
           <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "0ms" }} />
           <span className="w-2 h-2 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -262,10 +262,10 @@ function EmptyState() {
       <div className="w-16 h-16 rounded-md bg-blue-500 flex items-center justify-center mb-6">
         <Activity className="w-8 h-8 text-white" strokeWidth={2.5} />
       </div>
-      <h2 className="text-xl font-bold text-gray-900 mb-2">
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
         Hello{userName}! How can I help you today?
       </h2>
-      <p className="text-sm text-gray-500 max-w-xs leading-relaxed">
+      <p className="text-sm text-gray-500 dark:text-slate-300 max-w-xs leading-relaxed font-medium">
         Describe your symptoms or ask a health question. I&apos;ll assist you in your preferred language.
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -276,7 +276,7 @@ function EmptyState() {
         ].map((hint) => (
           <span
             key={hint}
-            className="text-xs bg-gray-100 text-gray-600 rounded-md px-3 py-1.5 font-medium"
+            className="text-xs bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-slate-200 rounded-md px-3 py-1.5 font-medium"
           >
             {hint}
           </span>
@@ -732,9 +732,9 @@ function ChatInner() {
             <p className="text-center text-xs text-red-500 mt-2 font-semibold">{voiceError}</p>
           )}
 
-          <p className="text-center text-xs text-gray-400 mt-2">
+          <p className="text-center text-xs text-gray-400 dark:text-slate-400 mt-2">
             Press{" "}
-            <kbd className="font-mono bg-gray-100 rounded px-1 text-[10px] text-gray-600">
+            <kbd className="font-mono bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded px-1.5 py-0.5 text-[10px] text-gray-600 dark:text-slate-300">
               Enter
             </kbd>{" "}
             to send · Shift+Enter for new line
@@ -742,10 +742,10 @@ function ChatInner() {
         </div>
 
         {/* Emergency disclaimer */}
-        <div className="border-t-2 border-gray-100 bg-gray-50 px-4 py-2">
-          <p className="text-center text-[10px] text-gray-400 leading-relaxed max-w-2xl mx-auto">
+        <div className="border-t-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-slate-900 px-4 py-2">
+          <p className="text-center text-[10px] text-gray-400 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto font-medium">
             This is an AI assistant for general guidance only and is{" "}
-            <strong className="text-gray-500">not</strong> a substitute for professional medical advice.
+            <strong className="text-gray-500 dark:text-slate-300">not</strong> a substitute for professional medical advice.
             In an emergency, call your local emergency number immediately.
           </p>
         </div>
