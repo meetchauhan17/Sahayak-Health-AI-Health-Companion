@@ -338,9 +338,8 @@ function ChatInner() {
     }
   }, [forMemberId]);
 
-  // Base URL for backend API — set NEXT_PUBLIC_API_URL in .env.local for production
-  const API_BASE =
-    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  // Base URL for backend API — relative routes work out-of-the-box on Vercel and local dev
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
 
   // ── Health Summary state ──────────────────────────────────────────────────
   const [summaryData, setSummaryData]       = useState<HealthSummaryData | null>(null);
