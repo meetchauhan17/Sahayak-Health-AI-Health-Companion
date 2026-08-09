@@ -338,8 +338,8 @@ function ChatInner() {
     }
   }, [forMemberId]);
 
-  // Base URL for backend API — relative routes work out-of-the-box on Vercel and local dev
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "";
+  // Base URL for backend API — defaults to live Railway production backend if env var is missing
+  const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "https://sahayak-health-ai-health-companion-production.up.railway.app").replace(/\/+$/, "");
 
   // ── Health Summary state ──────────────────────────────────────────────────
   const [summaryData, setSummaryData]       = useState<HealthSummaryData | null>(null);
