@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback, KeyboardEvent, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
-import { Send, Heart, ChevronDown, Mic, FileText, X, RefreshCw, Users } from "lucide-react";
+import { Send, Heart, ChevronDown, Mic, FileText, X, RefreshCw, Users, Copy, Check, PlusCircle } from "lucide-react";
 import SeverityBadge from "@/components/SeverityBadge";
 import HospitalFinder from "@/components/HospitalFinder";
 import HealthSummary, { type HealthSummaryData } from "@/components/HealthSummary";
@@ -139,6 +139,13 @@ function ErrorBubble({
 
 function ChatBubble({ message }: { message: Message }) {
   const isUser = message.role === "user";
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(message.content);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div
@@ -163,13 +170,28 @@ function ChatBubble({ message }: { message: Message }) {
 
       {/* Bubble */}
       <div
-        className={`max-w-[75%] sm:max-w-[65%] px-4 py-3 shadow-sm text-sm leading-relaxed whitespace-pre-wrap ${
+        className={`relative group max-w-[75%] sm:max-w-[65%] px-4 py-3 shadow-sm text-sm leading-relaxed whitespace-pre-wrap ${
           isUser
             ? "bg-blue-500 text-white rounded-2xl rounded-br-sm"
             : "bg-white dark:bg-slate-800 text-gray-800 dark:text-slate-100 border border-gray-200 dark:border-gray-700 rounded-2xl rounded-bl-sm"
         }`}
       >
         {message.content}
+
+        {!isUser && (
+          <button
+            onClick={handleCopy}
+            className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity p-1 rounded-md bg-gray-100 dark:bg-slate-700 hover:bg-gray-200 dark:hover:bg-slate-600 text-gray-500 dark:text-gray-300 text-[10px] flex items-center gap-1"
+            title="Copy response"
+          >
+            {copied ? (
+              <Check className="w-3 h-3 text-teal-600 dark:text-teal-400" />
+            ) : (
+              <Copy className="w-3 h-3" />
+            )}
+          </button>
+        )}
+
         {!isUser && message.severity && (
           <div className="mt-2.5">
             <SeverityBadge severity={message.severity} />
@@ -537,8 +559,23 @@ function ChatInner() {
             </span>
           </div>
 
-          {/* Language selector */}
-          <LanguageSelector language={language} onChange={setLanguage} />
+          <div className="flex items-center gap-2">
+            {messages.length > 0 && (
+              <button
+                onClick={() => {
+                  setMessages([]);
+                  setSummaryData(null);
+                }}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 bg-gray-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-xl transition-colors"
+                title="Start a new chat session"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>New Chat</span>
+              </button>
+            )}
+            {/* Language selector */}
+            <LanguageSelector language={language} onChange={setLanguage} />
+          </div>
         </div>
 
         {/* Family member banner */}

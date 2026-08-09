@@ -158,7 +158,7 @@ export default function NearbyCare() {
   return (
     <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full pb-24 md:pb-8 transition-colors">
       {/* ── Header ── */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-4">
         <Link
           href="/dashboard"
           className="w-8 h-8 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors shadow-2xs"
@@ -173,6 +173,39 @@ export default function NearbyCare() {
           <p className="text-xs text-gray-500 dark:text-slate-400">
             Hospitals, clinics, pharmacies &amp; blood banks in Surat
           </p>
+        </div>
+      </div>
+
+      {/* ── Emergency Hotlines Bar ── */}
+      <div className="bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-950/60 dark:to-rose-950/60 border border-red-200 dark:border-red-800/80 rounded-2xl p-3.5 mb-5 flex items-center justify-between flex-wrap gap-3 shadow-2xs">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-red-500 text-white flex items-center justify-center font-bold text-xs shadow-sm flex-shrink-0 animate-pulse">
+            🚨
+          </div>
+          <div>
+            <p className="text-xs font-bold text-red-900 dark:text-red-200 leading-tight">
+              Medical Emergency?
+            </p>
+            <p className="text-[11px] text-red-700 dark:text-red-300">
+              Call emergency ambulance or health helpline immediately
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <a
+            href="tel:108"
+            className="inline-flex items-center gap-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs transition-all active:scale-95"
+          >
+            <Phone className="w-3.5 h-3.5" />
+            Ambulance (108)
+          </a>
+          <a
+            href="tel:104"
+            className="inline-flex items-center gap-1.5 bg-white dark:bg-slate-800 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-700 text-xs font-bold px-3 py-1.5 rounded-xl hover:bg-red-50 dark:hover:bg-slate-700 transition-all active:scale-95"
+          >
+            <Phone className="w-3.5 h-3.5" />
+            Health Helpline (104)
+          </a>
         </div>
       </div>
 

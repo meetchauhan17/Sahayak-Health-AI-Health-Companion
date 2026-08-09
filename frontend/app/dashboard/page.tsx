@@ -306,18 +306,19 @@ export default function DashboardPage() {
           ) : (
             <div className="space-y-2.5">
               {recentChecks.map((item) => (
-                <div
+                <Link
                   key={item.id}
-                  className="flex items-center justify-between gap-3 p-3 bg-gray-50 dark:bg-slate-800/70 border border-gray-200/60 dark:border-gray-700/60 rounded-xl hover:bg-gray-100/60 dark:hover:bg-slate-800 transition-colors"
+                  href={item.familyMemberId ? `/history?for=${item.familyMemberId}` : "/history"}
+                  className="flex items-center justify-between gap-3 p-3 bg-gray-50 dark:bg-slate-800/70 border border-gray-200/60 dark:border-gray-700/60 rounded-xl hover:bg-gray-100/60 dark:hover:bg-slate-800 transition-colors group cursor-pointer"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200 truncate">
+                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-teal-600 dark:group-hover:text-teal-400 truncate transition-colors">
                       {item.symptom_query}
                     </p>
                     <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{item.date}</p>
                   </div>
                   <SeverityBadge severity={item.severity} />
-                </div>
+                </Link>
               ))}
             </div>
           )}

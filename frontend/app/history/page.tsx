@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Clock,
   MessageSquare,
@@ -13,6 +14,8 @@ import {
   Sparkles,
   Users,
   Download,
+  Search,
+  X,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -27,6 +30,7 @@ import {
 import {
   getHistory,
   addHistoryEntry,
+  deleteHistoryEntry,
   clearHistory as clearStorageHistory,
   HistoryEntry,
 } from "@/lib/history";
@@ -53,6 +57,7 @@ function mapValueToSeverityLabel(val: number): string {
 function formatDate(isoStr: string): string {
   try {
     const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return isoStr;
     return d.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
@@ -64,11 +69,15 @@ function formatDate(isoStr: string): string {
   }
 }
 
-export default function HistoryPage() {
+function HistoryInner() {
+  const searchParams = useSearchParams();
+  const forMemberId = searchParams.get("for");
+
   const [allHistory, setAllHistory] = useState<HistoryEntry[]>([]);
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [downloading, setDownloading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // "self" = main user; a member id = filter that member; "" = all
   const [filterBy, setFilterBy] = useState<string>("self");
@@ -76,15 +85,32 @@ export default function HistoryPage() {
   useEffect(() => {
     setAllHistory(getHistory()); // unfiltered
     setFamilyMembers(getFamilyMembers());
-  }, []);
 
-  // Compute the displayed history based on the filter
-  const history =
-    filterBy === ""
-      ? allHistory
-      : filterBy === "self"
-      ? allHistory.filter((e) => !e.familyMemberId)
-      : allHistory.filter((e) => e.familyMemberId === filterBy);
+    if (forMemberId) {
+      setFilterBy(forMemberId);
+    }
+  }, [forMemberId]);
+
+  // Compute the displayed history based on filter and search
+  const history = useMemo(() => {
+    let list =
+      filterBy === ""
+        ? allHistory
+        : filterBy === "self"
+        ? allHistory.filter((e) => !e.familyMemberId)
+        : allHistory.filter((e) => e.familyMemberId === filterBy);
+
+    const q = searchQuery.trim().toLowerCase();
+    if (q) {
+      list = list.filter(
+        (e) =>
+          e.symptom_query.toLowerCase().includes(q) ||
+          e.ai_response.toLowerCase().includes(q)
+      );
+    }
+
+    return list;
+  }, [allHistory, filterBy, searchQuery]);
 
   const handleClearHistory = () => {
     if (
@@ -99,6 +125,15 @@ export default function HistoryPage() {
       clearStorageHistory(filterBy === "" ? null : filterBy);
       setAllHistory(getHistory());
       setExpandedIds({});
+    }
+  };
+
+  const handleDeleteSingle = (e: React.MouseEvent, id?: string) => {
+    e.stopPropagation();
+    if (!id) return;
+    if (window.confirm("Remove this entry from your health history?")) {
+      deleteHistoryEntry(id);
+      setAllHistory(getHistory());
     }
   };
 
@@ -141,7 +176,7 @@ export default function HistoryPage() {
       : familyMembers.find((m) => m.id === filterBy)?.name ?? "Family Member";
 
   return (
-    <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full transition-colors">
+    <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto w-full transition-colors pb-24 md:pb-8">
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div className="flex items-center gap-3">
@@ -162,7 +197,7 @@ export default function HistoryPage() {
           </div>
         </div>
 
-        {history.length > 0 && (
+        {allHistory.length > 0 && (
           <div className="flex items-center gap-2">
             <button
               onClick={handleDownloadPDF}
@@ -170,45 +205,65 @@ export default function HistoryPage() {
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-700 dark:text-teal-300 hover:text-teal-800 bg-teal-50 dark:bg-teal-950/60 hover:bg-teal-100 dark:hover:bg-teal-900/80 border border-teal-200 dark:border-teal-800 px-3.5 py-2 rounded-xl transition-all active:scale-95 disabled:opacity-50"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>{downloading ? "Generating…" : "PDF"}</span>
+              <span>{downloading ? "Generating…" : "PDF Report"}</span>
             </button>
             <button
               onClick={handleClearHistory}
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 bg-red-50 dark:bg-red-950/60 hover:bg-red-100 dark:hover:bg-red-900/80 border border-red-200 dark:border-red-800 px-3.5 py-2 rounded-xl transition-all active:scale-95"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              <span>Clear</span>
+              <span>Clear All</span>
             </button>
           </div>
         )}
       </div>
 
-      {/* ── Family Filter Dropdown ── */}
-      <div className="bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl px-4 py-3 mb-4 shadow-xs flex items-center gap-3 flex-wrap">
-        <Users className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0" />
-        <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
-          Show history for:
-        </span>
-        <div className="relative">
-          <select
-            value={filterBy}
-            onChange={(e) => { setFilterBy(e.target.value); setExpandedIds({}); }}
-            className="appearance-none text-xs font-bold text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-slate-800 border border-teal-200 dark:border-teal-800 rounded-xl pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-teal-400 cursor-pointer"
-          >
-            <option value="self">Myself</option>
-            {familyMembers.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name} ({m.relation})
-              </option>
-            ))}
-            <option value="">Everyone</option>
-          </select>
-          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-teal-600 dark:text-teal-400 pointer-events-none" />
+      {/* ── Family Filter & Search Bar ── */}
+      <div className="space-y-3 mb-5">
+        <div className="bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl px-4 py-3 shadow-xs flex items-center gap-3 flex-wrap justify-between">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <Users className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0" />
+            <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+              Show history for:
+            </span>
+            <div className="relative">
+              <select
+                value={filterBy}
+                onChange={(e) => { setFilterBy(e.target.value); setExpandedIds({}); }}
+                className="appearance-none text-xs font-bold text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-slate-800 border border-teal-200 dark:border-teal-800 rounded-xl pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-teal-400 cursor-pointer"
+              >
+                <option value="self">Myself</option>
+                {familyMembers.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.name} ({m.relation})
+                  </option>
+                ))}
+                <option value="">Everyone</option>
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-teal-600 dark:text-teal-400 pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Search Bar Input */}
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 dark:text-gray-500 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search symptoms or advice…"
+              className="w-full pl-8 pr-8 py-1.5 text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 transition"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
         </div>
-        <span className="text-[11px] text-gray-400 dark:text-slate-500">
-          {history.length} {history.length === 1 ? "entry" : "entries"} for{" "}
-          <strong className="text-gray-700 dark:text-gray-300">{filterLabel}</strong>
-        </span>
       </div>
 
       {/* ── Severity Trend Chart ── */}
@@ -293,10 +348,12 @@ export default function HistoryPage() {
         <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-10 text-center shadow-xs">
           <Clock className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
           <h3 className="text-base font-bold text-gray-800 dark:text-gray-200">
-            No History for {filterLabel}
+            No History found
           </h3>
           <p className="text-xs text-gray-500 dark:text-slate-400 max-w-xs mx-auto mt-1 mb-4">
-            {filterBy !== "self" && filterBy !== ""
+            {searchQuery
+              ? `No symptom entries match "${searchQuery}".`
+              : filterBy !== "self" && filterBy !== ""
               ? `Perform a symptom check for ${filterLabel} to record their history.`
               : "Perform symptom checks in the Chat assistant to track health trends here."}
           </p>
@@ -316,7 +373,7 @@ export default function HistoryPage() {
             </Link>
 
             {/* Demo seed button — only show for "self" with 0 entries */}
-            {(filterBy === "self" || filterBy === "") && (
+            {(filterBy === "self" || filterBy === "") && !searchQuery && (
               <button
                 type="button"
                 onClick={() => {
@@ -376,7 +433,7 @@ export default function HistoryPage() {
             return (
               <div
                 key={entryId}
-                className="bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-4 shadow-xs hover:shadow-md transition-shadow cursor-pointer"
+                className="bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-4 shadow-xs hover:shadow-md transition-shadow cursor-pointer relative group"
                 onClick={() => toggleExpand(entryId)}
               >
                 <div className="flex items-start justify-between gap-3">
@@ -391,13 +448,21 @@ export default function HistoryPage() {
                         </span>
                       )}
                     </div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white leading-snug truncate">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white leading-snug truncate pr-6 sm:pr-0">
                       {item.symptom_query}
                     </p>
                   </div>
 
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <SeverityBadge severity={item.severity} />
+                    <button
+                      type="button"
+                      onClick={(e) => handleDeleteSingle(e, item.id)}
+                      title="Delete entry"
+                      className="text-gray-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400 p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
                     <button
                       type="button"
                       aria-label="Toggle details"
@@ -429,5 +494,13 @@ export default function HistoryPage() {
         </div>
       )}
     </main>
+  );
+}
+
+export default function HistoryPage() {
+  return (
+    <Suspense fallback={null}>
+      <HistoryInner />
+    </Suspense>
   );
 }

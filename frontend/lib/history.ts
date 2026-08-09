@@ -91,6 +91,21 @@ export function addHistoryEntry(
   return newEntry;
 }
 
+export function deleteHistoryEntry(id: string): void {
+  if (typeof window === "undefined" || !id) return;
+  try {
+    const all = getHistory();
+    const remaining = all.filter((e) => e.id !== id);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(remaining));
+    const legacyEntries = remaining
+      .filter((e) => !e.familyMemberId)
+      .slice(0, 50);
+    localStorage.setItem(LEGACY_KEY, JSON.stringify(legacyEntries));
+  } catch (err) {
+    console.error("Failed to delete history entry:", err);
+  }
+}
+
 export function clearHistory(familyMemberId?: string | null): void {
   if (typeof window === "undefined") return;
   try {
