@@ -141,9 +141,19 @@ function calculateDistance(
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
+import dynamic from "next/dynamic";
 import { getUserProfile, UserProfile } from "@/lib/userProfile";
 import { useEffect } from "react";
 import { Map, Grid, Compass, Loader2 } from "lucide-react";
+
+const CareMap = dynamic(() => import("@/components/CareMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[480px] bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-xl flex items-center justify-center">
+      <Loader2 className="w-6 h-6 text-teal-500 animate-spin" />
+    </div>
+  ),
+});
 
 export default function NearbyCare() {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -331,7 +341,7 @@ export default function NearbyCare() {
             }`}
           >
             <Map className="w-3.5 h-3.5" />
-            <span>Free Map View</span>
+            <span>Live Interactive Map</span>
           </button>
         </div>
       </div>
@@ -435,7 +445,7 @@ export default function NearbyCare() {
           <div className="flex items-center justify-between mb-3 px-2">
             <span className="text-xs font-bold text-gray-700 dark:text-gray-200 flex items-center gap-1.5">
               <MapPin className="w-4 h-4 text-teal-500" />
-              OpenStreetMap Free Interactive Map — {userCity}
+              Live Interactive OpenStreetMap — {userCity} ({filtered.length} locations)
             </span>
             <a
               href={`https://www.openstreetmap.org/?mlat=${userLat}&mlon=${userLng}#map=14/${userLat}/${userLng}`}
@@ -446,21 +456,16 @@ export default function NearbyCare() {
               Open Fullscreen OSM ↗
             </a>
           </div>
-          <div className="relative w-full h-[450px] rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800">
-            <iframe
-              title="OpenStreetMap Free Care Locations"
-              width="100%"
-              height="100%"
-              frameBorder="0"
-              scrolling="no"
-              marginHeight={0}
-              marginWidth={0}
-              src={osmEmbedUrl}
-              className="w-full h-full"
+          <div className="relative w-full h-[480px]">
+            <CareMap
+              entries={filtered}
+              userLat={userLat}
+              userLng={userLng}
+              userCity={userCity}
             />
           </div>
           <p className="text-[11px] text-gray-400 dark:text-slate-500 text-center mt-2.5">
-            Powered by OpenStreetMap (Free Open-Source Map API) • Centered on {userCity} ({userLat.toFixed(2)}°, {userLng.toFixed(2)}°)
+            Click pins to view facility details, call numbers, or get Google Maps directions.
           </p>
         </div>
       ) : filtered.length === 0 ? (
