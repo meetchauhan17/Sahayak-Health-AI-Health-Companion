@@ -36,12 +36,13 @@ export default function NavBar() {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Theme setup
     const savedTheme = localStorage.getItem("sahayak_theme");
-    if (
+    const isDark =
       savedTheme === "dark" ||
-      (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
+      (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches) ||
+      document.documentElement.classList.contains("dark");
+
+    if (isDark) {
       setTheme("dark");
       document.documentElement.classList.add("dark");
     } else {
@@ -50,6 +51,9 @@ export default function NavBar() {
     }
 
     setProfile(getUserProfile());
+  }, []);
+
+  useEffect(() => {
     setUserMenuOpen(false);
   }, [pathname]);
 
@@ -67,7 +71,8 @@ export default function NavBar() {
   }, []);
 
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
+    const isCurrentlyDark = document.documentElement.classList.contains("dark");
+    const newTheme = isCurrentlyDark ? "light" : "dark";
     setTheme(newTheme);
     localStorage.setItem("sahayak_theme", newTheme);
     if (newTheme === "dark") {
