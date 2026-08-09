@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Heart, User, Calendar, Globe, Sparkles, ArrowRight } from "lucide-react";
-import { saveUserProfile, UserProfile } from "@/lib/userProfile";
+import Link from "next/link";
+import { Heart, User, Calendar, Globe, Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
+import { saveUserProfile, getUserProfile, UserProfile } from "@/lib/userProfile";
 
 const LANGUAGES: Array<UserProfile["language"]> = ["English", "हिंदी", "ગુજરાતી"];
 const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];
@@ -11,11 +12,23 @@ const GENDERS = ["Male", "Female", "Other", "Prefer not to say"];
 export default function OnboardingPage() {
   const router = useRouter();
 
+  const [hasExistingProfile, setHasExistingProfile] = useState(false);
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [language, setLanguage] = useState<UserProfile["language"]>("English");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const p = getUserProfile();
+    if (p) {
+      setHasExistingProfile(true);
+      setName(p.name || "");
+      setAge(p.age ? String(p.age) : "");
+      setGender(p.gender || "");
+      if (p.language) setLanguage(p.language);
+    }
+  }, []);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -46,12 +59,25 @@ export default function OnboardingPage() {
       {/* ── Top brand bar ── */}
       <div className="w-full max-w-md bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl overflow-hidden">
         <div className="bg-gradient-to-r from-teal-500 to-cyan-500 px-6 py-6 text-white text-center relative">
+          {hasExistingProfile && (
+            <Link
+              href="/dashboard"
+              className="absolute left-4 top-4 p-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white transition-colors"
+              title="Back to Dashboard"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+          )}
           <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center mx-auto mb-3 shadow-inner">
             <Heart className="w-6 h-6 text-white" strokeWidth={2.5} />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight">Welcome to Sahayak Health</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {hasExistingProfile ? "Edit Profile" : "Welcome to Sahayak Health"}
+          </h1>
           <p className="text-teal-100 text-xs mt-1">
-            Let&apos;s personalize your health companion experience
+            {hasExistingProfile
+              ? "Update your personal health details"
+              : "Let's personalize your health companion experience"}
           </p>
         </div>
 
@@ -146,13 +172,24 @@ export default function OnboardingPage() {
           </div>
 
           {/* Submit */}
-          <button
-            type="submit"
-            className="w-full mt-2 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-semibold text-sm py-3 px-4 rounded-xl shadow-md shadow-teal-200 dark:shadow-none hover:shadow-lg active:scale-98 transition-all"
-          >
-            <span>Continue to Health Assistant</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="space-y-2 pt-1">
+            <button
+              type="submit"
+              className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-semibold text-sm py-3 px-4 rounded-xl shadow-md shadow-teal-200 dark:shadow-none hover:shadow-lg active:scale-98 transition-all"
+            >
+              <span>{hasExistingProfile ? "Save Profile" : "Continue to Health Assistant"}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            {hasExistingProfile && (
+              <Link
+                href="/dashboard"
+                className="w-full inline-flex items-center justify-center text-xs font-medium text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200 py-2 transition-colors"
+              >
+                Cancel &amp; Return to Dashboard
+              </Link>
+            )}
+          </div>
         </form>
 
         <div className="bg-gray-50 dark:bg-slate-900/60 px-6 py-3 border-t border-gray-100 dark:border-gray-700/60 text-center">
