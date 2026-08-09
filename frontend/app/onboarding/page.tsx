@@ -38,7 +38,7 @@ export default function OnboardingPage() {
     };
 
     saveUserProfile(profile);
-    router.push("/chat");
+    router.push("/dashboard");
   };
 
   return (

@@ -7,6 +7,8 @@ import SeverityBadge from "@/components/SeverityBadge";
 import HospitalFinder from "@/components/HospitalFinder";
 import HealthSummary, { type HealthSummaryData } from "@/components/HealthSummary";
 import { getUserProfile } from "@/lib/userProfile";
+import { recordCheckIn } from "@/lib/streak";
+import { saveCheckIn } from "@/lib/history";
 
 // Allow TypeScript to see webkitSpeechRecognition on window
 declare global {
@@ -423,6 +425,18 @@ export default function Home() {
 
       setMessages((prev) => [...prev, aiMsg]);
       lastFailedQueryRef.current = "";  // clear on success
+
+      // Record daily streak and save to history
+      try {
+        recordCheckIn();
+        saveCheckIn({
+          symptom: trimmed,
+          severity: data.severity || "yellow",
+          advice: data.advice,
+        });
+      } catch (err) {
+        console.error("Failed to record check-in history:", err);
+      }
     } catch (err) {
       // Record which query failed so the Retry button can resend it
       lastFailedQueryRef.current = trimmed;

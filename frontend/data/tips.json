@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "category": "Hydration",
+    "tip": "Drink at least 8 glasses of water daily to stay hydrated, maintain energy levels, and support healthy digestion."
+  },
+  {
+    "id": 2,
+    "category": "Sleep",
+    "tip": "Aim for 7 to 9 hours of quality sleep each night to help your immune system repair and recharge."
+  },
+  {
+    "id": 3,
+    "category": "Physical Activity",
+    "tip": "Take a 30-minute brisk walk every day to boost heart health, improve mood, and strengthen muscles."
+  },
+  {
+    "id": 4,
+    "category": "Nutrition",
+    "tip": "Include a variety of colorful fruits and vegetables in your meals for essential vitamins and antioxidants."
+  },
+  {
+    "id": 5,
+    "category": "Eye Care",
+    "tip": "Follow the 20-20-20 rule: every 20 minutes screen time, look at something 20 feet away for 20 seconds to prevent eye strain."
+  },
+  {
+    "id": 6,
+    "category": "Posture",
+    "tip": "Keep your back straight and shoulders relaxed while working at your desk to reduce neck and back pain."
+  },
+  {
+    "id": 7,
+    "category": "Mental Wellness",
+    "tip": "Practice 5 minutes of deep breathing exercises when feeling stressed to calm your nervous system."
+  },
+  {
+    "id": 8,
+    "category": "Hygiene",
+    "tip": "Wash your hands thoroughly with soap for at least 20 seconds before eating and after returning home."
+  },
+  {
+    "id": 9,
+    "category": "Sun Safety",
+    "tip": "Apply sunscreen with SPF 30 or higher when going outdoors during peak daylight hours."
+  },
+  {
+    "id": 10,
+    "category": "Heart Health",
+    "tip": "Reduce sodium and processed foods in your diet to support healthy blood pressure levels."
+  }
+]
