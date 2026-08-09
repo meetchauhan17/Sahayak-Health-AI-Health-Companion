@@ -558,12 +558,12 @@ function ChatInner() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] md:h-screen bg-white">
+    <div className="flex flex-col h-[calc(100vh-4rem)] md:h-screen bg-white dark:bg-[#090d16] transition-colors duration-150">
       {/* ── Sub Header ── */}
-      <header className="flex-shrink-0 bg-white border-b-2 border-gray-100 z-10">
+      <header className="flex-shrink-0 bg-white dark:bg-slate-900 border-b-2 border-gray-100 dark:border-gray-800 z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
               Health Assistant
             </span>
           </div>
@@ -575,7 +575,7 @@ function ChatInner() {
                   setMessages([]);
                   setSummaryData(null);
                 }}
-                className="inline-flex items-center gap-1 text-xs font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-md transition-all duration-200 hover:scale-105"
+                className="inline-flex items-center gap-1 text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 px-3 py-1.5 rounded-md transition-all duration-200 hover:scale-105"
                 title="Start a new chat session"
               >
                 <PlusCircle className="w-3.5 h-3.5" />
@@ -603,7 +603,7 @@ function ChatInner() {
       </header>
 
       {/* ── Messages ── */}
-      <main className="flex-1 overflow-y-auto bg-white">
+      <main className="flex-1 overflow-y-auto bg-white dark:bg-[#090d16]">
         <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col min-h-full">
           {messages.length === 0 ? (
             <EmptyState />
@@ -646,7 +646,7 @@ function ChatInner() {
       </main>
 
       {/* ── Input Area ── */}
-      <footer className="flex-shrink-0 bg-white border-t-2 border-gray-100">
+      <footer className="flex-shrink-0 bg-white dark:bg-slate-900 border-t-2 border-gray-100 dark:border-gray-800">
         <div className="max-w-3xl mx-auto px-4 pt-3 pb-1">
           {/* Summary button */}
           {messages.length >= 3 && (
@@ -671,7 +671,7 @@ function ChatInner() {
         </div>
 
         <div className="max-w-3xl mx-auto px-4 py-3">
-          <div className="flex items-end gap-2 bg-gray-100 rounded-md px-4 py-2 focus-within:bg-white focus-within:border-2 focus-within:border-blue-500 transition-all duration-200">
+          <div className="flex items-end gap-2 bg-gray-100 dark:bg-slate-800 rounded-md px-4 py-2 focus-within:bg-white dark:focus-within:bg-slate-900 focus-within:border-2 focus-within:border-blue-500 transition-all duration-200">
             <textarea
               ref={inputRef}
               rows={1}
@@ -690,7 +690,7 @@ function ChatInner() {
                     ? "તમારો પ્રશ્ન અહીં લખો..."
                     : "Describe your symptoms..."
               }
-              className="flex-1 resize-none bg-transparent text-sm text-gray-900 placeholder-gray-400 outline-none leading-relaxed max-h-[120px] overflow-y-auto font-medium"
+              className="flex-1 resize-none bg-transparent text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none leading-relaxed max-h-[120px] overflow-y-auto font-medium"
               disabled={loading}
               autoFocus
             />
@@ -704,10 +704,10 @@ function ChatInner() {
                 aria-label={isListening ? "Stop recording" : "Start voice input"}
                 className={`flex-shrink-0 w-9 h-9 rounded-md flex items-center justify-center transition-all duration-200 hover:scale-105 ${
                   loading
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed hover:scale-100"
+                    ? "bg-gray-200 dark:bg-slate-700 text-gray-400 cursor-not-allowed hover:scale-100"
                     : isListening
                       ? "bg-red-500 text-white"
-                      : "bg-gray-200 text-gray-600 hover:bg-gray-300"
+                      : "bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-slate-600"
                 }`}
               >
                 <Mic className="w-4 h-4" />
@@ -721,7 +721,7 @@ function ChatInner() {
               className={`flex-shrink-0 w-9 h-9 rounded-md flex items-center justify-center transition-all duration-200 ${
                 canSend
                   ? "bg-blue-500 hover:bg-blue-600 text-white hover:scale-105"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "bg-gray-200 dark:bg-slate-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
               }`}
             >
               <Send className="w-4 h-4" />

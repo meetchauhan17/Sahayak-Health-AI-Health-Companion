@@ -17,10 +17,10 @@ export default function HospitalFinder() {
   );
 
   return (
-    <div className="mt-3 bg-gray-100 border-2 border-gray-200 rounded-md p-3.5 max-w-full">
+    <div className="mt-3 bg-gray-100 dark:bg-slate-800 border-2 border-gray-200 dark:border-gray-700 rounded-md p-3.5 max-w-full">
       <div className="flex items-center gap-1.5 mb-3">
         <MapPin className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
-        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+        <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">
           Nearby Healthcare Facilities
         </span>
       </div>
@@ -29,18 +29,18 @@ export default function HospitalFinder() {
         {hospitals.map((hospital) => (
           <div
             key={hospital.id}
-            className="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between gap-2 hover:border-blue-500 transition-all duration-200"
+            className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-md p-3 flex items-center justify-between gap-2 hover:border-blue-500 transition-all duration-200"
           >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap mb-0.5">
-                <h4 className="text-xs font-bold text-gray-900 truncate leading-tight">
+                <h4 className="text-xs font-bold text-gray-900 dark:text-white truncate leading-tight">
                   {hospital.name}
                 </h4>
-                <span className="inline-block bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-100 flex-shrink-0">
+                <span className="inline-block bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded border border-blue-100 dark:border-blue-800 flex-shrink-0">
                   {hospital.distance}
                 </span>
               </div>
-              <p className="text-[10px] text-gray-500 leading-tight truncate font-medium">
+              <p className="text-[10px] text-gray-500 dark:text-slate-400 leading-tight truncate font-medium">
                 {hospital.address}
               </p>
             </div>

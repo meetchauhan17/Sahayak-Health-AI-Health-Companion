@@ -1,15 +1,24 @@
 @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
-/* ─── Design Tokens ──────────────────────────────────────────────────────────
-   Primary:    #3B82F6  (blue-500)
-   Secondary:  #10B981  (emerald-500)
-   Accent:     #F59E0B  (amber-500)
-   Background: #FFFFFF
-   Foreground: #111827  (gray-900)
-   Muted:      #F3F4F6  (gray-100)
-   Border:     #E5E7EB  (gray-200)
-   Font:       Outfit
+/* ─── Design Tokens — Flat Theme ─────────────────────────────────────────────
+   Light Mode:
+     Background: #ffffff
+     Foreground: #111827
+     Primary:    #3b82f6 (blue-500)
+     Secondary:  #10b981 (emerald-500)
+     Accent:     #f59e0b (amber-500)
+     Muted:      #f3f4f6 (gray-100)
+     Border:     #e5e7eb (gray-200)
+
+   Dark Mode (.dark):
+     Background: #0f172a (slate-900) / #020617 (slate-950)
+     Foreground: #f8fafc (slate-50)
+     Primary:    #3b82f6 (blue-500)
+     Secondary:  #10b981 (emerald-500)
+     Accent:     #f59e0b (amber-500)
+     Muted:      #1e293b (slate-800)
+     Border:     #334155 (slate-700)
    ────────────────────────────────────────────────────────────────────────── */
 
 :root {
@@ -20,6 +29,16 @@
   --accent: #f59e0b;
   --muted: #f3f4f6;
   --border: #e5e7eb;
+}
+
+.dark {
+  --background: #090d16;
+  --foreground: #f8fafc;
+  --primary: #3b82f6;
+  --secondary: #10b981;
+  --accent: #f59e0b;
+  --muted: #1e293b;
+  --border: #1e293b;
 }
 
 @theme inline {
@@ -40,7 +59,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Scrollbar hide utility ─────────────────────────────────────────────── */
 @utility scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -49,7 +67,6 @@ body {
   }
 }
 
-/* ─── Message entrance animation ─────────────────────────────────────────── */
 @keyframes msg-in {
   from {
     opacity: 0;
@@ -65,7 +82,6 @@ body {
   animation: msg-in 0.18s ease-out both;
 }
 
-/* ─── Page fade-up ───────────────────────────────────────────────────────── */
 @keyframes fade-up {
   from {
     opacity: 0;

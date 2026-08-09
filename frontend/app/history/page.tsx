@@ -174,26 +174,26 @@ function HistoryInner() {
       : familyMembers.find((m) => m.id === filterBy)?.name ?? "Family Member";
 
   if (!mounted) {
-    return <main className="min-h-screen bg-gray-100" />;
+    return <main className="min-h-screen bg-gray-100 dark:bg-[#090d16]" />;
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 animate-fade-up">
+    <main className="min-h-screen bg-gray-100 dark:bg-[#090d16] p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 animate-fade-up transition-colors duration-150">
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="w-8 h-8 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-all duration-200"
+            className="w-8 h-8 rounded-md bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight flex items-center gap-2">
+            <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
               <Clock className="w-6 h-6 text-blue-500" />
               Health History
             </h1>
-            <p className="text-xs text-gray-500 font-medium">
+            <p className="text-xs text-gray-500 dark:text-slate-400 font-medium">
               Track past symptom consultations and health trends
             </p>
           </div>
@@ -222,17 +222,17 @@ function HistoryInner() {
 
       {/* ── Family Filter & Search Bar ── */}
       <div className="space-y-3 mb-6">
-        <div className="bg-white border-2 border-gray-100 rounded-lg px-4 py-3.5 flex items-center gap-4 flex-wrap justify-between">
+        <div className="bg-white dark:bg-slate-900 border-2 border-gray-100 dark:border-gray-800 rounded-lg px-4 py-3.5 flex items-center gap-4 flex-wrap justify-between">
           <div className="flex items-center gap-3 flex-wrap">
             <Users className="w-4 h-4 text-blue-500 flex-shrink-0" />
-            <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+            <span className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
               Show history for:
             </span>
             <div className="relative">
               <select
                 value={filterBy}
                 onChange={(e) => { setFilterBy(e.target.value); setExpandedIds({}); }}
-                className="appearance-none text-xs font-bold text-blue-600 bg-gray-100 border border-gray-200 rounded-md pl-3 pr-8 py-2 focus:outline-none focus:border-blue-500 cursor-pointer font-medium"
+                className="appearance-none text-xs font-bold text-blue-600 dark:text-blue-400 bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-md pl-3 pr-8 py-2 focus:outline-none focus:border-blue-500 cursor-pointer font-medium"
               >
                 <option value="self">Myself</option>
                 {familyMembers.map((m) => (
@@ -253,12 +253,12 @@ function HistoryInner() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search symptoms or advice..."
-              className="w-full pl-8 pr-8 py-2 text-xs bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400 rounded-md focus:outline-none focus:border-blue-500 transition-all font-medium"
+              className="w-full pl-8 pr-8 py-2 text-xs bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 rounded-md focus:outline-none focus:border-blue-500 transition-all font-medium"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -268,14 +268,14 @@ function HistoryInner() {
       </div>
 
       {/* ── Severity Trend Chart ── */}
-      <div className="bg-white border-2 border-gray-100 rounded-lg p-6 mb-6">
+      <div className="bg-white dark:bg-slate-900 border-2 border-gray-100 dark:border-gray-800 rounded-lg p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+          <h2 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
             <TrendingUp className="w-4 h-4 text-blue-500" />
             Severity Trend — {filterLabel}
           </h2>
           {history.length >= 3 && (
-            <span className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-100 px-3 py-1 rounded-md">
+            <span className="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-800 px-3 py-1 rounded-md">
               {history.length} Check-ins
             </span>
           )}
@@ -284,12 +284,12 @@ function HistoryInner() {
         {history.length >= 3 ? (
           <SeverityChart data={chartData} valueToLabel={mapValueToSeverityLabel} />
         ) : (
-          <div className="py-8 px-4 text-center bg-gray-100 rounded-md">
+          <div className="py-8 px-4 text-center bg-gray-100 dark:bg-slate-800 rounded-md">
             <Sparkles className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-            <p className="text-xs font-bold text-gray-700">
+            <p className="text-xs font-bold text-gray-700 dark:text-gray-200">
               Check in a few more times to see your health trend
             </p>
-            <p className="text-[11px] text-gray-400 mt-1 font-medium">
+            <p className="text-[11px] text-gray-400 dark:text-slate-400 mt-1 font-medium">
               Requires 3+ entries to render the severity chart.
             </p>
           </div>
@@ -298,10 +298,10 @@ function HistoryInner() {
 
       {/* ── Timeline ── */}
       {history.length === 0 ? (
-        <div className="bg-white rounded-lg p-12 text-center border-2 border-gray-100">
-          <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-gray-900">No History found</h3>
-          <p className="text-xs text-gray-400 max-w-xs mx-auto mt-1 mb-6 font-medium">
+        <div className="bg-white dark:bg-slate-900 rounded-lg p-12 text-center border-2 border-gray-100 dark:border-gray-800">
+          <Clock className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-gray-900 dark:text-white">No History found</h3>
+          <p className="text-xs text-gray-400 dark:text-slate-400 max-w-xs mx-auto mt-1 mb-6 font-medium">
             {searchQuery
               ? `No symptom entries match "${searchQuery}".`
               : "Perform symptom checks in the Chat assistant to track health trends here."}
@@ -344,7 +344,7 @@ function HistoryInner() {
                   sampleEntries.forEach((entry) => addHistoryEntry(entry));
                   setAllHistory(getHistory());
                 }}
-                className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 px-5 py-3 rounded-md transition-all duration-200"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 px-5 py-3 rounded-md transition-all duration-200"
               >
                 Load Sample Entries
               </button>
@@ -353,7 +353,7 @@ function HistoryInner() {
         </div>
       ) : (
         <div className="space-y-3">
-          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">
+          <h2 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest px-1">
             Timeline — {filterLabel} ({history.length} {history.length === 1 ? "Entry" : "Entries"})
           </h2>
 
@@ -368,22 +368,22 @@ function HistoryInner() {
             return (
               <div
                 key={entryId}
-                className="bg-white border-2 border-gray-100 rounded-lg p-5 hover:scale-[1.01] transition-all duration-200 cursor-pointer"
+                className="bg-white dark:bg-slate-900 border-2 border-gray-100 dark:border-gray-800 rounded-lg p-5 hover:scale-[1.01] transition-all duration-200 cursor-pointer"
                 onClick={() => toggleExpand(entryId)}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1.5 flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-medium text-gray-400">
+                      <span className="text-xs font-medium text-gray-400 dark:text-slate-500">
                         {formatDate(item.date)}
                       </span>
                       {memberName && (
-                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wider">
+                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-800 px-2 py-0.5 rounded uppercase tracking-wider">
                           {memberName}
                         </span>
                       )}
                     </div>
-                    <p className="text-sm font-bold text-gray-900 leading-snug truncate pr-6 sm:pr-0">
+                    <p className="text-sm font-bold text-gray-900 dark:text-white leading-snug truncate pr-6 sm:pr-0">
                       {item.symptom_query}
                     </p>
                   </div>
@@ -394,14 +394,14 @@ function HistoryInner() {
                       type="button"
                       onClick={(e) => handleDeleteSingle(e, item.id)}
                       title="Delete entry"
-                      className="text-gray-400 hover:text-red-500 p-1.5 rounded hover:bg-red-50 transition-colors"
+                      className="text-gray-400 hover:text-red-500 p-1.5 rounded hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                     <button
                       type="button"
                       aria-label="Toggle details"
-                      className="text-gray-400 hover:text-gray-600 p-1.5"
+                      className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1.5"
                     >
                       {isExpanded ? (
                         <ChevronUp className="w-4 h-4 text-blue-500" />
@@ -413,12 +413,12 @@ function HistoryInner() {
                 </div>
 
                 {isExpanded && (
-                  <div className="mt-4 pt-4 border-t-2 border-gray-100">
-                    <p className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                  <div className="mt-4 pt-4 border-t-2 border-gray-100 dark:border-gray-800">
+                    <p className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                       <Activity className="w-3.5 h-3.5 text-blue-500" />
                       AI Guidance:
                     </p>
-                    <p className="text-xs text-gray-800 leading-relaxed bg-gray-100 p-4 rounded-md whitespace-pre-wrap font-medium">
+                    <p className="text-xs text-gray-800 dark:text-slate-200 leading-relaxed bg-gray-100 dark:bg-slate-800 p-4 rounded-md whitespace-pre-wrap font-medium">
                       {item.ai_response || "No detailed advice text saved."}
                     </p>
                   </div>
@@ -434,7 +434,7 @@ function HistoryInner() {
 
 export default function HistoryPage() {
   return (
-    <Suspense fallback={<main className="min-h-screen bg-gray-100" />}>
+    <Suspense fallback={<main className="min-h-screen bg-gray-100 dark:bg-[#090d16]" />}>
       <HistoryInner />
     </Suspense>
   );

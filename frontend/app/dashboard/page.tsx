@@ -81,7 +81,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 pb-16 md:pb-0 animate-fade-up">
+    <main className="min-h-screen bg-gray-100 dark:bg-[#090d16] pb-16 md:pb-0 animate-fade-up transition-colors duration-150">
 
       {/* ── Greeting Header — blue-500 color block ── */}
       <header className="relative bg-blue-500 z-20">
@@ -114,7 +114,7 @@ export default function DashboardPage() {
             </button>
 
             {langOpen && (
-              <div className="absolute right-0 mt-2 w-44 bg-white border-2 border-gray-100 rounded-md z-50 overflow-hidden shadow-md animate-fade-up">
+              <div className="absolute right-0 mt-2 w-44 bg-white dark:bg-slate-800 border-2 border-gray-100 dark:border-gray-700 rounded-md z-50 overflow-hidden shadow-md animate-fade-up">
                 {LANGUAGES.map((lang) => (
                   <button
                     key={lang}
@@ -122,7 +122,7 @@ export default function DashboardPage() {
                     className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
                       profile?.language === lang
                         ? "bg-blue-500 text-white"
-                        : "text-gray-700 hover:bg-gray-100"
+                        : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700"
                     }`}
                   >
                     {lang}
@@ -138,13 +138,13 @@ export default function DashboardPage() {
       <div className="max-w-6xl mx-auto px-6 py-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
         {/* ── Card 1: Health Streak ── */}
-        <div className="bg-white rounded-lg p-6 hover:scale-[1.02] transition-all duration-200 cursor-default">
+        <div className="bg-white dark:bg-slate-900 border border-transparent dark:border-gray-800 rounded-lg p-6 hover:scale-[1.02] transition-all duration-200 cursor-default">
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
               <TrendingUp className="w-4 h-4 text-amber-500" />
               Health Streak
             </span>
-            <span className="text-xs font-bold text-amber-500 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-md uppercase tracking-wider">
+            <span className="text-xs font-bold text-amber-500 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 px-2.5 py-0.5 rounded-md uppercase tracking-wider">
               Daily
             </span>
           </div>
@@ -153,7 +153,7 @@ export default function DashboardPage() {
             <div className="relative w-20 h-20 flex-shrink-0 flex items-center justify-center">
               <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
                 <path
-                  className="text-gray-100"
+                  className="text-gray-100 dark:text-slate-800"
                   strokeWidth="3.5"
                   stroke="currentColor"
                   fill="none"
@@ -170,18 +170,18 @@ export default function DashboardPage() {
                 />
               </svg>
               <div className="absolute flex flex-col items-center justify-center text-center">
-                <span className="text-lg font-extrabold text-gray-900 leading-none">
+                <span className="text-lg font-extrabold text-gray-900 dark:text-white leading-none">
                   {streakCount}
                 </span>
-                <span className="text-[10px] font-bold text-gray-400 uppercase">days</span>
+                <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase">days</span>
               </div>
             </div>
 
             <div>
-              <h3 className="text-xl font-extrabold text-gray-900 leading-tight">
+              <h3 className="text-xl font-extrabold text-gray-900 dark:text-white leading-tight">
                 {streakCount} {streakCount === 1 ? "Day" : "Days"}
               </h3>
-              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+              <p className="text-xs text-gray-500 dark:text-slate-400 mt-1 leading-relaxed">
                 {streakCount > 0
                   ? "Great job checking in daily!"
                   : "Start today to begin your streak."}
@@ -189,8 +189,8 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-            <span className="text-[11px] text-gray-400">
+          <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between">
+            <span className="text-[11px] text-gray-400 dark:text-slate-500">
               Last: {streak.lastDate || "None"}
             </span>
             <span className="text-[11px] font-bold text-amber-500 uppercase tracking-wider">
@@ -200,10 +200,10 @@ export default function DashboardPage() {
         </div>
 
         {/* ── Card 2: Quick Actions ── */}
-        <div className="bg-white rounded-lg p-6 hover:scale-[1.02] transition-all duration-200 cursor-default">
+        <div className="bg-white dark:bg-slate-900 border border-transparent dark:border-gray-800 rounded-lg p-6 hover:scale-[1.02] transition-all duration-200 cursor-default">
           <div className="flex items-center gap-1.5 mb-4">
             <Activity className="w-4 h-4 text-blue-500" />
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
               Quick Actions
             </span>
           </div>
@@ -227,7 +227,7 @@ export default function DashboardPage() {
 
             <Link
               href="/family"
-              className="group w-full flex items-center justify-between bg-gray-100 hover:bg-gray-200 text-gray-700 p-3 rounded-md transition-all duration-200"
+              className="group w-full flex items-center justify-between bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 p-3 rounded-md transition-all duration-200"
             >
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-md bg-emerald-500 flex items-center justify-center">
@@ -235,12 +235,12 @@ export default function DashboardPage() {
                 </div>
                 <span className="text-xs font-semibold">Family Profiles</span>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-0.5 transition-transform duration-200" />
+              <ArrowRight className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:translate-x-0.5 transition-transform duration-200" />
             </Link>
 
             <Link
               href="/nearby-care"
-              className="group w-full flex items-center justify-between bg-gray-100 hover:bg-gray-200 text-gray-700 p-3 rounded-md transition-all duration-200"
+              className="group w-full flex items-center justify-between bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 p-3 rounded-md transition-all duration-200"
             >
               <div className="flex items-center gap-2.5">
                 <div className="w-7 h-7 rounded-md bg-amber-500 flex items-center justify-center">
@@ -248,14 +248,13 @@ export default function DashboardPage() {
                 </div>
                 <span className="text-xs font-semibold">Find Nearby Care</span>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-0.5 transition-transform duration-200" />
+              <ArrowRight className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:translate-x-0.5 transition-transform duration-200" />
             </Link>
           </div>
         </div>
 
         {/* ── Card 3: Health Tip — emerald-500 color block ── */}
         <div className="relative bg-emerald-500 rounded-lg p-6 flex flex-col justify-between overflow-hidden hover:scale-[1.02] transition-all duration-200 cursor-default">
-          {/* Subtle bottom-right circle decoration only */}
           <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-white/10 pointer-events-none" />
 
           <div className="relative">
@@ -283,15 +282,15 @@ export default function DashboardPage() {
         </div>
 
         {/* ── Card 4: Recent Activity (spans 2 cols on md+) ── */}
-        <div className="md:col-span-2 bg-white rounded-lg p-6 hover:scale-[1.01] transition-all duration-200">
+        <div className="md:col-span-2 bg-white dark:bg-slate-900 border border-transparent dark:border-gray-800 rounded-lg p-6 hover:scale-[1.01] transition-all duration-200">
           <div className="flex items-center justify-between mb-5">
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+            <span className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest flex items-center gap-1.5">
               <Clock className="w-4 h-4 text-blue-500" />
               Recent Symptom Checks
             </span>
             <Link
               href="/history"
-              className="text-xs font-bold text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-colors duration-200"
+              className="text-xs font-bold text-blue-500 hover:text-blue-600 dark:text-blue-400 flex items-center gap-1 transition-colors duration-200"
             >
               View All
               <ArrowRight className="w-3.5 h-3.5" />
@@ -299,12 +298,12 @@ export default function DashboardPage() {
           </div>
 
           {recentChecks.length === 0 ? (
-            <div className="py-10 text-center bg-gray-100 rounded-md">
-              <div className="w-10 h-10 rounded-md bg-gray-200 flex items-center justify-center mx-auto mb-3">
-                <PlusCircle className="w-5 h-5 text-gray-400" />
+            <div className="py-10 text-center bg-gray-100 dark:bg-slate-800 rounded-md">
+              <div className="w-10 h-10 rounded-md bg-gray-200 dark:bg-slate-700 flex items-center justify-center mx-auto mb-3">
+                <PlusCircle className="w-5 h-5 text-gray-400 dark:text-gray-500" />
               </div>
-              <p className="text-sm font-bold text-gray-700">No symptom checks yet</p>
-              <p className="text-xs text-gray-400 mt-1 mb-4">
+              <p className="text-sm font-bold text-gray-700 dark:text-gray-200">No symptom checks yet</p>
+              <p className="text-xs text-gray-400 dark:text-slate-400 mt-1 mb-4">
                 Describe your symptoms to receive instant guidance.
               </p>
               <Link
@@ -320,13 +319,13 @@ export default function DashboardPage() {
                 <Link
                   key={item.id}
                   href={item.familyMemberId ? `/history?for=${item.familyMemberId}` : "/history"}
-                  className="group flex items-center justify-between gap-3 p-3.5 bg-gray-100 hover:bg-gray-200 rounded-md transition-all duration-200 cursor-pointer"
+                  className="group flex items-center justify-between gap-3 p-3.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-750 rounded-md transition-all duration-200 cursor-pointer"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold text-gray-900 truncate">
+                    <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
                       {item.symptom_query}
                     </p>
-                    <p className="text-[10px] text-gray-400 mt-0.5 font-medium">{item.date}</p>
+                    <p className="text-[10px] text-gray-400 dark:text-gray-400 mt-0.5 font-medium">{item.date}</p>
                   </div>
                   <SeverityBadge severity={item.severity} />
                 </Link>

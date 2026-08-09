@@ -278,26 +278,26 @@ export default function FamilyPage() {
   };
 
   if (!mounted) {
-    return <main className="min-h-screen bg-gray-100" />;
+    return <main className="min-h-screen bg-gray-100 dark:bg-[#090d16]" />;
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 animate-fade-up">
+    <main className="min-h-screen bg-gray-100 dark:bg-[#090d16] p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 animate-fade-up">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="w-8 h-8 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-all duration-200"
+            className="w-8 h-8 rounded-md bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight flex items-center gap-2">
+            <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
               <Activity className="w-6 h-6 text-blue-500" />
               Family Health
             </h1>
-            <p className="text-xs text-gray-500 font-medium">
+            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
               Track symptoms and health for your whole family
             </p>
           </div>
@@ -314,12 +314,12 @@ export default function FamilyPage() {
 
       {/* Member grid */}
       {members.length === 0 ? (
-        <div className="bg-white rounded-lg p-12 text-center border-2 border-gray-100">
-          <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-gray-900">
+        <div className="bg-white dark:bg-slate-900 rounded-lg p-12 text-center border-2 border-gray-100 dark:border-gray-800">
+          <Users className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-gray-900 dark:text-white">
             No family members added yet
           </h3>
-          <p className="text-xs text-gray-400 max-w-xs mx-auto mt-1 mb-6 font-medium">
+          <p className="text-xs text-gray-400 dark:text-gray-500 max-w-xs mx-auto mt-1 mb-6 font-medium">
             Add family members to track their symptoms and health history separately from yours.
           </p>
           <button

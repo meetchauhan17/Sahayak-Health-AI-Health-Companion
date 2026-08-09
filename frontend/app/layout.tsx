@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import OnboardingGuard from "@/components/OnboardingGuard";
 import Navigation from "@/components/Navigation";
@@ -36,10 +37,26 @@ export default function RootLayout({ children }: LayoutProps) {
       className={`${outfit.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen flex flex-col md:flex-row bg-white text-gray-900">
+      <body className="min-h-screen flex flex-col md:flex-row bg-white dark:bg-[#090d16] text-gray-900 dark:text-slate-100 transition-colors duration-150">
+        <Script
+          id="sahayak-theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var theme = localStorage.getItem('sahayak_theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
         <OnboardingGuard>
           <Navigation />
-          <div className="flex-1 flex flex-col min-w-0 bg-white">
+          <div className="flex-1 flex flex-col min-w-0 bg-white dark:bg-[#090d16] transition-colors duration-150">
             {children}
           </div>
         </OnboardingGuard>

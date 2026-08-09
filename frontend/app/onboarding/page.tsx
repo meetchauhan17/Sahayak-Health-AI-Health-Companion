@@ -161,8 +161,8 @@ export default function OnboardingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4 sm:p-6 animate-fade-up">
-      <div className="w-full max-w-md bg-white border-2 border-gray-100 rounded-lg overflow-hidden">
+    <main className="min-h-screen bg-gray-100 dark:bg-[#090d16] flex flex-col items-center justify-center p-4 sm:p-6 animate-fade-up transition-colors duration-150">
+      <div className="w-full max-w-md bg-white dark:bg-slate-900 border-2 border-gray-100 dark:border-gray-800 rounded-lg overflow-hidden">
         {/* Header */}
         <div className="bg-blue-500 p-6 text-white text-center relative">
           {hasExistingProfile && (
@@ -190,13 +190,13 @@ export default function OnboardingPage() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
           {error && (
-            <div className="bg-red-50 border-2 border-red-500 text-red-700 text-xs p-3 rounded-md font-bold">
+            <div className="bg-red-50 dark:bg-red-950/60 border-2 border-red-500 text-red-700 dark:text-red-300 text-xs p-3 rounded-md font-bold">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
               <User className="w-3.5 h-3.5 text-blue-500" />
               Your Name <span className="text-red-500">*</span>
             </label>
@@ -206,12 +206,12 @@ export default function OnboardingPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Rahul Sharma"
-              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 border-2 border-gray-100 rounded-md focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-gray-900 font-medium"
+              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-slate-800 border-2 border-gray-100 dark:border-gray-700 rounded-md focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all text-gray-900 dark:text-white font-medium"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-blue-500" />
               Age <span className="text-red-500">*</span>
             </label>
@@ -223,13 +223,13 @@ export default function OnboardingPage() {
               value={age}
               onChange={(e) => setAge(e.target.value)}
               placeholder="e.g. 28"
-              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 border-2 border-gray-100 rounded-md focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-gray-900 font-medium"
+              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-slate-800 border-2 border-gray-100 dark:border-gray-700 rounded-md focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all text-gray-900 dark:text-white font-medium"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5">
-              Gender <span className="text-gray-400 font-normal text-[10px]">(Optional)</span>
+            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1.5">
+              Gender <span className="text-gray-400 dark:text-gray-500 font-normal text-[10px]">(Optional)</span>
             </label>
             <div className="grid grid-cols-2 gap-2">
               {GENDERS.map((g) => (
@@ -240,7 +240,7 @@ export default function OnboardingPage() {
                   className={`text-xs font-bold py-2.5 px-3 rounded-md transition-all ${
                     gender === g
                       ? "bg-blue-500 text-white"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                      : "bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700"
                   }`}
                 >
                   {g}
@@ -251,7 +251,7 @@ export default function OnboardingPage() {
 
           <div className="relative">
             <div className="flex items-center justify-between mb-1.5">
-              <label className="text-xs font-bold text-gray-700 uppercase tracking-wider flex items-center gap-1.5">
+              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-blue-500" />
                 City / Location
               </label>
@@ -271,12 +271,12 @@ export default function OnboardingPage() {
               onChange={(e) => handleCityChange(e.target.value)}
               onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
               placeholder="Type city or area..."
-              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 border-2 border-gray-100 rounded-md focus:outline-none focus:border-blue-500 focus:bg-white transition-all text-gray-900 font-medium"
+              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-slate-800 border-2 border-gray-100 dark:border-gray-700 rounded-md focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 transition-all text-gray-900 dark:text-white font-medium"
             />
 
             {showSuggestions && suggestions.length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 bg-white border-2 border-gray-100 rounded-md z-50 overflow-hidden max-h-56 overflow-y-auto">
-                <p className="px-3 py-1.5 text-[10px] font-bold text-gray-400 uppercase border-b border-gray-100">
+              <div className="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-slate-800 border-2 border-gray-100 dark:border-gray-700 rounded-md z-50 overflow-hidden max-h-56 overflow-y-auto">
+                <p className="px-3 py-1.5 text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase border-b border-gray-100 dark:border-gray-700">
                   Suggestions
                 </p>
                 {suggestions.map((sugg, idx) => {
@@ -294,14 +294,14 @@ export default function OnboardingPage() {
                         setShowSuggestions(false);
                         setLocStatus(`Selected: ${mainName}`);
                       }}
-                      className="w-full text-left px-3 py-2 hover:bg-gray-100 transition-colors flex items-start gap-2 border-b border-gray-100 last:border-none"
+                      className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-slate-700 transition-colors flex items-start gap-2 border-b border-gray-100 dark:border-gray-700 last:border-none"
                     >
                       <MapPin className="w-3.5 h-3.5 text-blue-500 flex-shrink-0 mt-0.5" />
                       <div className="truncate">
-                        <p className="text-xs font-bold text-gray-900 truncate">
+                        <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
                           {mainName}
                         </p>
-                        <p className="text-[10px] text-gray-400 truncate">
+                        <p className="text-[10px] text-gray-400 dark:text-gray-400 truncate">
                           {subName}
                         </p>
                       </div>
@@ -312,14 +312,14 @@ export default function OnboardingPage() {
             )}
 
             {locStatus && (
-              <p className="text-[10px] text-blue-600 mt-1 font-bold">
+              <p className="text-[10px] text-blue-600 dark:text-blue-400 mt-1 font-bold">
                 {locStatus}
               </p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+            <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
               <Globe className="w-3.5 h-3.5 text-blue-500" />
               Preferred Language
             </label>
@@ -332,7 +332,7 @@ export default function OnboardingPage() {
                   className={`text-xs font-bold py-2.5 px-2 rounded-md text-center transition-all ${
                     language === lang
                       ? "bg-blue-500 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      : "bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-700"
                   }`}
                 >
                   {lang}
@@ -353,7 +353,7 @@ export default function OnboardingPage() {
             {hasExistingProfile && (
               <Link
                 href="/dashboard"
-                className="w-full inline-flex items-center justify-center text-xs font-bold text-gray-500 hover:text-gray-700 py-2 transition-colors"
+                className="w-full inline-flex items-center justify-center text-xs font-bold text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 py-2 transition-colors"
               >
                 Cancel &amp; Return to Dashboard
               </Link>
@@ -361,8 +361,8 @@ export default function OnboardingPage() {
           </div>
         </form>
 
-        <div className="bg-gray-50 px-6 py-3 border-t-2 border-gray-100 text-center">
-          <p className="text-[11px] text-gray-400 font-medium">
+        <div className="bg-gray-50 dark:bg-slate-800 px-6 py-3 border-t-2 border-gray-100 dark:border-gray-800 text-center">
+          <p className="text-[11px] text-gray-400 dark:text-slate-400 font-medium">
             Your information is stored locally on your device.
           </p>
         </div>

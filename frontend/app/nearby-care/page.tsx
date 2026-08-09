@@ -79,22 +79,22 @@ function CareCard({ entry, userLat, userLng }: { entry: CareEntry; userLat?: num
   const callHref = entry.phone.startsWith("tel:") ? entry.phone : `tel:${entry.phone}`;
 
   return (
-    <div className="bg-white border-2 border-gray-100 rounded-lg p-5 hover:scale-[1.01] transition-all duration-200">
+    <div className="bg-white dark:bg-slate-900 border-2 border-gray-100 dark:border-gray-800 rounded-lg p-5 hover:scale-[1.01] transition-all duration-200">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
-          <h3 className="text-base font-bold text-gray-900 leading-snug mb-1.5">
+          <h3 className="text-base font-bold text-gray-900 dark:text-white leading-snug mb-1.5">
             {entry.name}
           </h3>
           <div className="flex items-center gap-2 flex-wrap">
             <TypeBadge type={entry.type} />
-            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-md border border-blue-100">
+            <span className="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-2.5 py-0.5 rounded-md border border-blue-100 dark:border-blue-800">
               {entry.distance}
             </span>
           </div>
         </div>
       </div>
 
-      <p className="text-xs text-gray-500 leading-relaxed mb-4 flex items-start gap-1.5 font-medium">
+      <p className="text-xs text-gray-500 dark:text-slate-400 leading-relaxed mb-4 flex items-start gap-1.5 font-medium">
         <MapPin className="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mt-0.5" />
         {entry.address}
       </p>
@@ -112,7 +112,7 @@ function CareCard({ entry, userLat, userLng }: { entry: CareEntry; userLat?: num
           href={directionsUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 inline-flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold px-3 py-2.5 rounded-md transition-all duration-200 hover:scale-105"
+          className="flex-1 inline-flex items-center justify-center gap-1.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 text-xs font-bold px-3 py-2.5 rounded-md transition-all duration-200 hover:scale-105"
         >
           <Navigation2 className="w-3.5 h-3.5" />
           <span>Route</span>
@@ -145,7 +145,7 @@ function calculateDistance(
 const CareMap = dynamic(() => import("@/components/CareMap"), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[480px] bg-gray-100 rounded-lg flex items-center justify-center">
+    <div className="w-full h-[480px] bg-gray-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
       <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
     </div>
   ),
@@ -291,24 +291,24 @@ export default function NearbyCare() {
   }, [entries]);
 
   return (
-    <main className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 animate-fade-up">
+    <main className="min-h-screen bg-gray-100 dark:bg-[#090d16] p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 animate-fade-up transition-colors duration-150">
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="w-8 h-8 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-all duration-200"
+            className="w-8 h-8 rounded-md bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-all duration-200"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight flex items-center gap-2">
+            <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
               <MapPin className="w-6 h-6 text-blue-500" />
               Nearby Care
             </h1>
-            <p className="text-xs text-gray-500 flex items-center gap-1.5 mt-0.5 font-medium">
+            <p className="text-xs text-gray-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5 font-medium">
               <span>Healthcare facilities in</span>
-              <span className="font-bold text-blue-600 bg-white px-2 py-0.5 rounded-md border border-gray-200 flex items-center gap-1">
+              <span className="font-bold text-blue-600 dark:text-blue-400 bg-white dark:bg-slate-800 px-2 py-0.5 rounded-md border border-gray-200 dark:border-gray-700 flex items-center gap-1">
                 <Compass className="w-3 h-3 text-blue-500" />
                 {userCity}
               </span>
@@ -320,13 +320,13 @@ export default function NearbyCare() {
         </div>
 
         {/* View Mode Toggle */}
-        <div className="flex items-center bg-gray-200 p-1 rounded-md">
+        <div className="flex items-center bg-gray-200 dark:bg-slate-800 p-1 rounded-md">
           <button
             onClick={() => setViewMode("grid")}
             className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-md transition-all duration-200 ${
               viewMode === "grid"
                 ? "bg-blue-500 text-white"
-                : "text-gray-600 hover:text-gray-900"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
             <Grid className="w-3.5 h-3.5" />
@@ -337,7 +337,7 @@ export default function NearbyCare() {
             className={`flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-md transition-all duration-200 ${
               viewMode === "map"
                 ? "bg-blue-500 text-white"
-                : "text-gray-600 hover:text-gray-900"
+                : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
             }`}
           >
             <Map className="w-3.5 h-3.5" />
@@ -387,12 +387,12 @@ export default function NearbyCare() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by hospital name, clinic, or area..."
-          className="w-full pl-10 pr-10 py-3 text-sm bg-white border-2 border-gray-100 text-gray-900 placeholder-gray-400 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-200 font-medium"
+          className="w-full pl-10 pr-10 py-3 text-sm bg-white dark:bg-slate-900 border-2 border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white placeholder-gray-400 rounded-lg focus:outline-none focus:border-blue-500 transition-all duration-200 font-medium"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery("")}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -400,7 +400,7 @@ export default function NearbyCare() {
       </div>
 
       <div className="flex items-center gap-1.5 flex-wrap mb-5 px-1">
-        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+        <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
           Suggestions:
         </span>
         {["Hospital", "Clinic", "Pharmacy", "Emergency", "Civil", "Kiran"].map((sugg) => (
@@ -411,7 +411,7 @@ export default function NearbyCare() {
             className={`text-xs font-semibold px-3 py-1 rounded-md transition-all duration-200 ${
               searchQuery === sugg
                 ? "bg-blue-500 text-white"
-                : "bg-white text-gray-600 hover:bg-gray-200"
+                : "bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700"
             }`}
           >
             {sugg}
@@ -431,14 +431,14 @@ export default function NearbyCare() {
               className={`flex-shrink-0 inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-md transition-all duration-200 ${
                 isActive
                   ? "bg-blue-500 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-200"
+                  : "bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700"
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
               {label}
               <span
                 className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded ${
-                  isActive ? "bg-white/20 text-white" : "bg-gray-100 text-gray-500"
+                  isActive ? "bg-white/20 text-white" : "bg-gray-100 dark:bg-slate-700 text-gray-500 dark:text-gray-300"
                 }`}
               >
                 {count}
@@ -450,15 +450,15 @@ export default function NearbyCare() {
 
       {/* ── View Content ── */}
       {isFetchingCity ? (
-        <div className="bg-white rounded-lg p-12 text-center border-2 border-gray-100">
+        <div className="bg-white dark:bg-slate-900 rounded-lg p-12 text-center border-2 border-gray-100 dark:border-gray-800">
           <Loader2 className="w-8 h-8 text-blue-500 animate-spin mx-auto mb-3" />
-          <h3 className="text-base font-bold text-gray-900">Fetching facilities in {userCity}...</h3>
-          <p className="text-xs text-gray-400 mt-1">Connecting to OpenStreetMap</p>
+          <h3 className="text-base font-bold text-gray-900 dark:text-white">Fetching facilities in {userCity}...</h3>
+          <p className="text-xs text-gray-400 dark:text-slate-400 mt-1">Connecting to OpenStreetMap</p>
         </div>
       ) : viewMode === "map" ? (
-        <div className="bg-white rounded-lg p-4 border-2 border-gray-100">
+        <div className="bg-white dark:bg-slate-900 rounded-lg p-4 border-2 border-gray-100 dark:border-gray-800">
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-gray-700 flex items-center gap-1.5">
+            <span className="text-xs font-bold text-gray-700 dark:text-gray-300 flex items-center gap-1.5">
               <MapPin className="w-4 h-4 text-blue-500" />
               Interactive Map — {userCity} ({filtered.length} locations)
             </span>
@@ -473,10 +473,10 @@ export default function NearbyCare() {
           </div>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white rounded-lg p-12 text-center border-2 border-gray-100">
-          <Search className="w-10 h-10 text-gray-300 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-gray-900">No results found</h3>
-          <p className="text-xs text-gray-400 mt-1 mb-4">Try another search term or category.</p>
+        <div className="bg-white dark:bg-slate-900 rounded-lg p-12 text-center border-2 border-gray-100 dark:border-gray-800">
+          <Search className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-gray-900 dark:text-white">No results found</h3>
+          <p className="text-xs text-gray-400 dark:text-slate-400 mt-1 mb-4">Try another search term or category.</p>
           <button
             onClick={() => { setSearchQuery(""); setActiveCategory("all"); }}
             className="text-xs font-bold text-blue-500 hover:underline"
@@ -486,8 +486,8 @@ export default function NearbyCare() {
         </div>
       ) : (
         <>
-          <p className="text-xs text-gray-400 mb-4 px-1 font-semibold">
-            Showing <strong className="text-gray-900">{filtered.length}</strong>{" "}
+          <p className="text-xs text-gray-400 dark:text-slate-400 mb-4 px-1 font-semibold">
+            Showing <strong className="text-gray-900 dark:text-white">{filtered.length}</strong>{" "}
             {filtered.length === 1 ? "result" : "results"}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
