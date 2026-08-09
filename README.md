@@ -1,230 +1,212 @@
-# 🏥 Sahayak Health — AI Health Companion
+# Sahayak Health — AI Health Companion
 
-<div align="center">
+**Sahayak** (सहायक / સહાયક) means *helper* or *assistant* in Hindi and Gujarati.
 
-> **Sahayak** (सहायक / સહાયક) means *helper* or *assistant* in Hindi and Gujarati.
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-black?style=flat-square)](https://sahayak-health-ai-health-companion-nu.vercel.app)
+[![API Docs](https://img.shields.io/badge/API_Docs-Railway-blueviolet?style=flat-square)](https://sahayak-health-ai-health-companion-production.up.railway.app/docs)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)](https://nextjs.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Python-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
+[![Groq](https://img.shields.io/badge/LLM-Groq_Llama_3.3_70B-F55036?style=flat-square)](https://groq.com)
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Vercel-black?style=for-the-badge)](https://sahayak-health-ai-health-companion-nu.vercel.app)
-[![Backend](https://img.shields.io/badge/🚀_API-Railway-blueviolet?style=for-the-badge)](https://sahayak-health-ai-health-companion-production.up.railway.app/docs)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
-[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
-[![FastAPI](https://img.shields.io/badge/FastAPI-Python-009688?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com)
-[![Groq](https://img.shields.io/badge/LLM-Groq_Llama_3.3_70B-F55036?style=for-the-badge)](https://groq.com)
+A free, multilingual AI health companion that analyzes symptoms and provides structured medical guidance in English, Hindi, and Gujarati. Powered by Groq's Llama 3.3 70B model with a RAG pipeline grounded in a curated medical knowledge base.
 
-**A free, multilingual AI health companion that triages symptoms and provides structured medical guidance in English, हिंदी, and ગુજરાતી.**
-
-</div>
+> **Medical Disclaimer**: This is an informational tool only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for any medical concerns.
 
 ---
 
-> ⚠️ **Medical Disclaimer**: Sahayak Health is an informational tool only. It is **not** a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for any medical concerns.
+## Table of Contents
+
+- [Features](#features)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Local Development](#local-development)
+- [Deployment](#deployment)
+- [Environment Variables](#environment-variables)
+- [API Reference](#api-reference)
+- [Multilingual Support](#multilingual-support)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-## 📋 Table of Contents
+## Features
 
-- [✨ Features](#-features)
-- [📸 Screenshots](#-screenshots)
-- [🏗️ Architecture](#️-architecture)
-- [🛠️ Tech Stack](#️-tech-stack)
-- [📁 Project Structure](#-project-structure)
-- [🚀 Local Development](#-local-development)
-- [☁️ Deployment](#️-deployment)
-- [🔑 Environment Variables](#-environment-variables)
-- [📡 API Reference](#-api-reference)
-- [🌍 Multilingual Support](#-multilingual-support)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
+### AI-Powered Symptom Analysis
+- Describe symptoms in plain language and receive structured health guidance
+- Every response is grounded in a curated medical knowledge base via RAG
+- Three-level triage on every response:
+  - **Green** — Mild, self-care at home
+  - **Yellow** — Moderate, see a doctor soon
+  - **Red** — Emergency, seek immediate care
 
----
+### Multilingual Support
+- English, Hindi, and Gujarati — switch language at any time during chat
+- AI generates responses natively in the selected language
+- Voice input automatically uses the correct speech recognition locale
 
-## ✨ Features
+### Nearby Healthcare Finder
+- Real-time hospital and clinic search powered by OpenStreetMap Nominatim
+- Interactive Leaflet map with custom pins, popups, and directions
+- Free OSRM routing for turn-by-turn directions
+- Phone numbers extracted from OpenStreetMap data
+- Quick search chips: Hospital, Clinic, Pharmacy, Emergency, Civil, Kiran
 
-### 🤖 AI-Powered Chat
-- **Symptom Analysis** — Describe any symptom in natural language and get structured medical guidance powered by Groq's Llama 3.3 70B model
-- **RAG Pipeline** — Responses are grounded in a curated medical knowledge base for accuracy
-- **3-Level Triage** — Every response includes a severity badge:
-  - 🟢 **Green** — Mild / Self-care at home
-  - 🟡 **Yellow** — Moderate / See a doctor soon
-  - 🔴 **Red** — Emergency / Seek immediate care
+### Family Health Management
+- Create and manage profiles for multiple family members
+- Run symptom checks on behalf of any family member
+- Each member has a separate consultation history
 
-### 🌐 Multilingual Support
-- **English**, **हिंदी** (Hindi), **ગુજરાતી** (Gujarati) — switch language at any time during chat
-- Voice input automatically uses the correct locale for speech recognition
-- AI responses are generated natively in the selected language
+### Health Dashboard and History
+- Persistent local consultation history across sessions
+- One-click AI-generated health summary with PDF export
+- Daily check-in streak tracking
+- Visual overview of recent symptoms and severity trends
 
-### 🗺️ Nearby Healthcare
-- **Live OpenStreetMap Integration** — Searches real hospitals, clinics, pharmacies near your city
-- **Interactive Leaflet Map** — Toggle between list and map view with custom pins and popups
-- **Free OSRM Routing** — Clickable "Get Directions" links using open-source routing
-- **Phone Numbers** — Real phone numbers extracted from OpenStreetMap extra tags
-- **Quick Search Chips** — One-click search for Hospital, Clinic, Pharmacy, Emergency, Civil, Kiran
-
-### 👨‍👩‍👧 Family Health Management
-- **Family Profiles** — Add and manage multiple family members (name, age, relation)
-- **Symptom Check for Others** — Check symptoms on behalf of any family member
-- **Separate History** — Each member has their own consultation history
-
-### 📊 Health Dashboard & History
-- **Consultation History** — Persistent local storage of all previous symptom checks
-- **Health Summary** — One-click AI-generated structured summary (PDF export)
-- **Daily Streak** — Gamified streak tracking to encourage regular health check-ins
-- **Health Dashboard** — Visual overview of recent symptoms and severity trends
-
-### 🎤 Accessibility
-- **Voice Input** — Browser Web Speech API with locale-matched recognition
-- **Quick Symptom Chips** — 8 pre-built symptom shortcuts for rapid input
-- **Dark Mode** — Full dark/light theme support
-- **Responsive Design** — Works on mobile, tablet, and desktop
+### Accessibility
+- Voice input via the browser Web Speech API
+- Eight pre-built quick symptom chips for rapid input
+- Full dark and light theme support
+- Responsive layout for mobile, tablet, and desktop
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    USER BROWSER                             │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │           Next.js 16 Frontend (Vercel)              │   │
-│  │                                                     │   │
-│  │  ┌──────────┐  ┌────────────┐  ┌───────────────┐   │   │
-│  │  │ /chat    │  │ /nearby-   │  │  /family      │   │   │
-│  │  │ AI Chat  │  │ care  Map  │  │  Profiles     │   │   │
-│  │  └────┬─────┘  └─────┬──────┘  └───────────────┘   │   │
-│  │       │              │                              │   │
-│  │       │ axios POST   │ Nominatim/OSRM APIs          │   │
-│  └───────┼──────────────┼──────────────────────────────┘   │
-│          │              │                                   │
-└──────────┼──────────────┼───────────────────────────────────┘
-           │              │
-           ▼              ▼
-┌─────────────────┐   ┌──────────────────────────┐
-│  FastAPI Backend │   │  Free External APIs      │
-│  (Railway)      │   │                          │
-│                 │   │  • OSM Nominatim (search) │
-│  /api/chat ─────┤   │  • OSRM (routing)        │
-│  /api/summary   │   │  • Leaflet/CartoDB (map) │
-│        │        │   └──────────────────────────┘
-│        ▼        │
-│  RAG Pipeline   │
-│  ┌───────────┐  │
-│  │ ChromaDB  │  │
-│  │ (vectors) │  │
-│  └─────┬─────┘  │
-│        ▼        │
-│  ┌───────────┐  │
-│  │ Groq API  │  │
-│  │ Llama 3.3 │  │
-│  │  70B      │  │
-│  └───────────┘  │
-└─────────────────┘
+User Browser
+    |
+    |-- Next.js 16 Frontend (Vercel)
+    |       |
+    |       |-- /chat          (AI symptom chat)
+    |       |-- /nearby-care   (Hospital map)
+    |       |-- /family        (Family profiles)
+    |       |-- /dashboard     (Health dashboard)
+    |       |-- /history       (Consultation history)
+    |
+    |-- axios POST /api/chat
+    |
+    v
+FastAPI Backend (Railway)
+    |
+    |-- RAG Pipeline
+    |       |-- ChromaDB (vector store)
+    |       |-- Sentence Transformers (all-MiniLM-L6-v2)
+    |       |-- JSON fallback (medical_kb.json)
+    |
+    |-- Groq API (llama-3.3-70b-versatile)
+    |
+    v
+Structured JSON Response { response, severity, advice }
+
+External Free APIs (client-side only):
+    -- OSM Nominatim  (geocoding and place search)
+    -- OSRM           (open-source routing)
+    -- Leaflet/CartoDB (map tiles)
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **Next.js** | 16 | App Router, SSR, TypeScript |
-| **Tailwind CSS** | v4 | Utility-first styling |
-| **Leaflet.js** | Latest | Interactive OpenStreetMap map |
-| **Axios** | Latest | HTTP client for API calls |
-| **Lucide React** | Latest | Icon library |
-| **Web Speech API** | Browser | Voice input with locale support |
+
+| Technology | Purpose |
+|------------|---------|
+| Next.js 16 (App Router, TypeScript) | UI framework and routing |
+| Tailwind CSS v4 | Utility-first styling |
+| Leaflet.js | Interactive OpenStreetMap map |
+| Axios | HTTP client for API calls |
+| Lucide React | Icon library |
+| Web Speech API | Browser-native voice input |
 
 ### Backend
-| Technology | Version | Purpose |
-|------------|---------|---------|
-| **FastAPI** | 0.115+ | REST API framework |
-| **Groq SDK** | 0.9+ | LLM calls (Llama 3.3 70B) |
-| **ChromaDB** | Latest | Vector store for RAG |
-| **Sentence Transformers** | Latest | `all-MiniLM-L6-v2` embeddings |
-| **Uvicorn** | 0.30+ | ASGI server |
-| **Python-dotenv** | 1.0+ | Environment variable management |
+
+| Technology | Purpose |
+|------------|---------|
+| FastAPI | REST API framework |
+| Groq SDK | LLM inference (Llama 3.3 70B) |
+| ChromaDB | Vector store for RAG |
+| Sentence Transformers | Embeddings (all-MiniLM-L6-v2) |
+| Uvicorn | ASGI server |
+| Python-dotenv | Environment variable management |
 
 ### Infrastructure
+
 | Service | Purpose |
 |---------|---------|
-| **Vercel** | Frontend hosting (CI/CD from GitHub) |
-| **Railway** | Backend Docker container hosting |
-| **OpenStreetMap / Nominatim** | Free geocoding & place search |
-| **OSRM** | Free open-source routing |
-| **Groq** | Free-tier LLM API (llama-3.3-70b-versatile) |
+| Vercel | Frontend hosting with CI/CD |
+| Railway | Backend Docker container hosting |
+| OpenStreetMap / Nominatim | Free geocoding and place search |
+| OSRM | Free open-source routing |
+| Groq | Free-tier LLM API |
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Sahayak Health/
-├── 📄 README.md
-├── 📄 DEPLOYMENT.md         # Detailed deployment guide
-├── 📄 DEMO.md               # Feature demo notes
-├── 🐳 Dockerfile            # Root Dockerfile for Railway deployment
+├── README.md
+├── Dockerfile                   # Root Dockerfile for Railway deployment
 │
 ├── backend/
-│   ├── 🐍 main.py           # FastAPI app: /api/chat, /api/summary endpoints
-│   ├── 🐳 Dockerfile        # Backend-specific Dockerfile
-│   ├── 📋 Procfile          # Uvicorn start command for PaaS platforms
-│   ├── 📦 requirements.txt  # Python dependencies (lightweight: ~25MB)
-│   ├── 🔒 .env.example      # Environment variable template
+│   ├── main.py                  # FastAPI app — /api/chat, /api/summary
+│   ├── Dockerfile               # Backend-specific Dockerfile
+│   ├── Procfile                 # Uvicorn start command for PaaS platforms
+│   ├── requirements.txt         # Python dependencies (~25 MB, no PyTorch)
+│   ├── .env.example             # Environment variable template
 │   ├── data/
-│   │   └── 📚 medical_kb.json   # Curated medical knowledge base (JSON)
+│   │   └── medical_kb.json      # Curated medical knowledge base
 │   └── rag/
-│       ├── 🔄 ingest.py     # Embeds medical_kb.json into ChromaDB
-│       └── 🔍 query.py      # RAG retrieval + Groq LLM generation
+│       ├── ingest.py            # Embeds knowledge base into ChromaDB
+│       └── query.py             # RAG retrieval and Groq LLM generation
 │
 └── frontend/
     ├── app/
-    │   ├── 🏠 page.tsx              # Landing page (/)
-    │   ├── chat/page.tsx            # AI chat interface (/chat)
-    │   ├── nearby-care/page.tsx     # Nearby hospitals map (/nearby-care)
-    │   ├── family/page.tsx          # Family profiles (/family)
-    │   ├── dashboard/page.tsx       # Health dashboard (/dashboard)
-    │   ├── history/page.tsx         # Consultation history (/history)
-    │   └── onboarding/page.tsx      # User onboarding (/onboarding)
+    │   ├── page.tsx             # Landing page (/)
+    │   ├── chat/page.tsx        # AI chat interface (/chat)
+    │   ├── nearby-care/page.tsx # Hospital map (/nearby-care)
+    │   ├── family/page.tsx      # Family profiles (/family)
+    │   ├── dashboard/page.tsx   # Health dashboard (/dashboard)
+    │   ├── history/page.tsx     # Consultation history (/history)
+    │   └── onboarding/page.tsx  # User onboarding (/onboarding)
     ├── components/
-    │   ├── SeverityBadge.tsx        # Green/Yellow/Red severity chip
-    │   ├── HospitalFinder.tsx       # Hospital card component
-    │   ├── HealthSummary.tsx        # AI summary modal + PDF export
-    │   ├── CareMap.tsx              # Leaflet interactive map
-    │   └── NavBar.tsx               # Bottom navigation bar
+    │   ├── SeverityBadge.tsx    # Green/Yellow/Red severity chip
+    │   ├── HospitalFinder.tsx   # Hospital card component
+    │   ├── HealthSummary.tsx    # AI summary modal and PDF export
+    │   ├── CareMap.tsx          # Leaflet interactive map
+    │   └── NavBar.tsx           # Bottom navigation bar
     ├── lib/
-    │   ├── userProfile.ts           # User profile localStorage management
-    │   ├── family.ts                # Family member CRUD
-    │   ├── history.ts               # Consultation history storage
-    │   ├── streak.ts                # Daily check-in streak tracker
-    │   └── generatePDF.ts           # Health summary PDF export
-    ├── 📋 next.config.ts
-    ├── 📋 package.json
-    └── 🔒 .env.local.example        # Frontend environment variable template
+    │   ├── userProfile.ts       # User profile localStorage management
+    │   ├── family.ts            # Family member CRUD operations
+    │   ├── history.ts           # Consultation history storage
+    │   ├── streak.ts            # Daily check-in streak tracker
+    │   └── generatePDF.ts       # Health summary PDF export
+    ├── next.config.ts
+    ├── package.json
+    └── .env.local.example       # Frontend environment variable template
 ```
 
 ---
 
-## 🚀 Local Development
+## Local Development
 
 ### Prerequisites
 
-- **Node.js** 18+ and npm
-- **Python** 3.10+
-- A free **Groq API key** → [console.groq.com](https://console.groq.com)
+- Node.js 18+ and npm
+- Python 3.10+
+- A free Groq API key from [console.groq.com](https://console.groq.com)
 
----
-
-### Step 1 — Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/meetchauhan17/Sahayak-Health-AI-Health-Companion.git
 cd Sahayak-Health-AI-Health-Companion
 ```
 
----
-
-### Step 2 — Backend Setup
+### 2. Backend Setup
 
 ```bash
 cd backend
@@ -236,33 +218,28 @@ python -m venv .venv
 .venv\Scripts\activate
 
 # macOS / Linux
-source .venv/bin/activate
+# source .venv/bin/activate
 
-# Install dependencies (~25MB, no PyTorch required for cloud deploy)
+# Install dependencies
 pip install -r requirements.txt
 
 # Configure environment variables
 cp .env.example .env
-# Open .env and set your GROQ_API_KEY:
-# GROQ_API_KEY=gsk_your_key_here
+# Add your GROQ_API_KEY to .env
 
-# (Optional) Ingest knowledge base into ChromaDB for vector search
-# Skip this if you want the lightweight JSON fallback mode
+# Optional: ingest the knowledge base into ChromaDB for vector search
+# Without this, the backend uses lightweight keyword-based JSON search
 pip install chromadb sentence-transformers
 python -m rag.ingest
 
-# Start the API server
+# Start the server
 uvicorn main:app --reload --port 8000
 ```
 
-✅ Backend running at: `http://localhost:8000`  
-📖 Swagger API docs: `http://localhost:8000/docs`
+Backend available at `http://localhost:8000`  
+Swagger docs at `http://localhost:8000/docs`
 
-> **Note**: Without ChromaDB ingest, the backend automatically falls back to lightweight keyword-based JSON search from `data/medical_kb.json`. Groq LLM responses still work perfectly.
-
----
-
-### Step 3 — Frontend Setup
+### 3. Frontend Setup
 
 ```bash
 cd frontend
@@ -270,7 +247,7 @@ cd frontend
 # Install dependencies
 npm install
 
-# (Optional) Set environment variables for local dev
+# Optional: configure environment variables
 cp .env.local.example .env.local
 # Default settings connect to http://localhost:8000 automatically
 
@@ -278,74 +255,71 @@ cp .env.local.example .env.local
 npm run dev
 ```
 
-✅ Frontend running at: `http://localhost:3000`
+Frontend available at `http://localhost:3000`
 
 ---
 
-## ☁️ Deployment
+## Deployment
 
-### Backend → Railway (Recommended, Free)
+### Backend on Railway (Recommended, Free)
 
 1. Go to [railway.app](https://railway.app) and sign in with GitHub
 2. Click **New Project** → **Deploy from GitHub repo**
 3. Select `Sahayak-Health-AI-Health-Companion`
 4. Railway auto-detects the root `Dockerfile` and builds the container
-5. Go to **Variables** tab and add:
-   - `GROQ_API_KEY` = `gsk_your_key_here`
-   - `FRONTEND_URL` = `https://your-vercel-url.vercel.app`
-6. Go to **Settings** → **Networking** → **Generate Domain**
-7. Copy your Railway domain (e.g. `https://sahayak-health-ai-health-companion-production.up.railway.app`)
+5. Under **Variables**, add:
+   - `GROQ_API_KEY` = your Groq API key
+   - `FRONTEND_URL` = your Vercel frontend URL
+6. Under **Settings → Networking**, click **Generate Domain**
+7. Copy the generated domain for use in the Vercel step below
 
----
+### Frontend on Vercel (Free)
 
-### Frontend → Vercel (Free)
-
-1. Go to [vercel.com](https://vercel.com) and import the GitHub repo
+1. Go to [vercel.com](https://vercel.com) and import the GitHub repository
 2. Set **Root Directory** to `frontend`
-3. Go to **Settings** → **Environment Variables** and add:
-   - `NEXT_PUBLIC_API_URL` = your Railway backend URL (with `https://`)
+3. Under **Settings → Environment Variables**, add:
+   - `NEXT_PUBLIC_API_URL` = your Railway backend URL (include `https://`)
 4. Click **Redeploy**
 
-> **Tip**: Even without `NEXT_PUBLIC_API_URL`, the frontend auto-connects to the production Railway backend — perfect for instant demos!
+> Without `NEXT_PUBLIC_API_URL`, the frontend falls back to the production Railway URL automatically — useful for quick demos.
 
----
-
-### Backend → Koyeb (Alternative Free Option, No Credit Card)
+### Backend on Koyeb (Alternative, No Credit Card)
 
 1. Go to [koyeb.com](https://www.koyeb.com) and create a free account
 2. Click **Create App** → **GitHub**
-3. Select the repo, set **Work Directory** to `backend`
-4. Add `GROQ_API_KEY` environment variable
+3. Select the repository, set **Work Directory** to `backend`
+4. Add `GROQ_API_KEY` as an environment variable
 5. Deploy — Koyeb auto-detects the `Dockerfile`
 
 ---
 
-## 🔑 Environment Variables
+## Environment Variables
 
 ### Backend (`backend/.env`)
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `GROQ_API_KEY` | ✅ Yes | Groq API key from [console.groq.com](https://console.groq.com) |
-| `FRONTEND_URL` | ⚪ Optional | Vercel frontend URL for CORS configuration |
+| `GROQ_API_KEY` | Yes | Groq API key from [console.groq.com](https://console.groq.com) |
+| `FRONTEND_URL` | No | Vercel frontend URL for CORS configuration |
 
 ### Frontend (`frontend/.env.local`)
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `NEXT_PUBLIC_API_URL` | ⚪ Optional | Backend API URL (defaults to Railway production URL) |
+| `NEXT_PUBLIC_API_URL` | No | Backend URL — defaults to the production Railway endpoint |
 
 ---
 
-## 📡 API Reference
+## API Reference
 
 Base URL: `https://sahayak-health-ai-health-companion-production.up.railway.app`
 
-### `POST /api/chat`
+### POST /api/chat
 
-Analyze user symptoms and return structured health guidance.
+Analyze symptoms and return structured health guidance.
 
-**Request Body:**
+**Request**
+
 ```json
 {
   "message": "I have a fever and headache since yesterday",
@@ -353,33 +327,35 @@ Analyze user symptoms and return structured health guidance.
 }
 ```
 
-| Field | Type | Values |
-|-------|------|--------|
-| `message` | `string` | User's symptom description (any language) |
-| `language` | `string` | `"en"`, `"hi"`, `"gu"`, `"English"`, `"हिंदी"`, `"ગુજરાતી"` |
+| Field | Type | Description |
+|-------|------|-------------|
+| `message` | string | Symptom description in any language |
+| `language` | string | `en`, `hi`, `gu`, `English`, `हिंदी`, or `ગુજરાતી` |
 
-**Response:**
+**Response**
+
 ```json
 {
-  "response": "You may be experiencing a viral infection. Rest, stay hydrated, and monitor your temperature...",
+  "response": "You may be experiencing a viral infection. Rest and stay hydrated...",
   "severity": "yellow",
-  "advice": "If fever exceeds 103°F or lasts more than 3 days, consult a doctor immediately."
+  "advice": "If fever exceeds 103°F or lasts more than 3 days, consult a doctor."
 }
 ```
 
-| Field | Type | Values |
-|-------|------|--------|
-| `response` | `string` | AI health guidance (in requested language) |
-| `severity` | `string` | `"green"` / `"yellow"` / `"red"` (always in English) |
-| `advice` | `string` | Specific actionable next step (in requested language) |
+| Field | Type | Description |
+|-------|------|-------------|
+| `response` | string | Health guidance in the requested language |
+| `severity` | string | `green`, `yellow`, or `red` — always in English |
+| `advice` | string | Specific next step in the requested language |
 
 ---
 
-### `POST /api/summary`
+### POST /api/summary
 
-Generate a structured health summary from a conversation.
+Generate a structured summary from a conversation.
 
-**Request Body:**
+**Request**
+
 ```json
 {
   "conversation": [
@@ -389,10 +365,11 @@ Generate a structured health summary from a conversation.
 }
 ```
 
-**Response:**
+**Response**
+
 ```json
 {
-  "symptoms": ["Fever", "Headache"],
+  "symptoms": ["Fever"],
   "severity": "yellow",
   "recommendations": ["Rest", "Stay hydrated", "Monitor temperature"],
   "when_to_seek_care": "Visit a doctor if fever exceeds 103°F",
@@ -402,59 +379,45 @@ Generate a structured health summary from a conversation.
 
 ---
 
-### `GET /health`
+### GET /health
 
-Health check endpoint.
-
-```json
-{ "status": "ok" }
-```
+Health check endpoint. Returns `{ "status": "ok" }`.
 
 ---
 
-## 🌍 Multilingual Support
+## Multilingual Support
 
-| Language | Code | Script | Voice Input |
-|----------|------|--------|-------------|
+| Language | Code | Script | Voice Locale |
+|----------|------|--------|--------------|
 | English | `en` | Latin | `en-IN` |
-| हिंदी (Hindi) | `hi` | Devanagari | `hi-IN` |
-| ગુજરાતી (Gujarati) | `gu` | Gujarati | `gu-IN` |
+| Hindi | `hi` | Devanagari | `hi-IN` |
+| Gujarati | `gu` | Gujarati script | `gu-IN` |
 
-Language can be switched at any time during a chat session. The AI responds in the selected language for both the `response` and `advice` fields, while always keeping `severity` in English for consistent UI rendering.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how to get started:
-
-1. **Fork** the repository
-2. **Create** a feature branch: `git checkout -b feature/your-feature-name`
-3. **Commit** your changes: `git commit -m "feat: add your feature"`
-4. **Push** to the branch: `git push origin feature/your-feature-name`
-5. **Open** a Pull Request
-
-### Ideas for Contributions
-- 🌐 Add more regional Indian languages (Tamil, Telugu, Bengali, Marathi)
-- 📊 Health trend analytics dashboard
-- 🔔 Medication reminders and symptom tracking
-- 🧪 Unit tests for the RAG pipeline
-- 📱 PWA / offline support
+Language can be switched at any time during a chat session. The `response` and `advice` fields are generated in the selected language. The `severity` field is always returned in English for consistent UI rendering.
 
 ---
 
-## 📄 License
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m "feat: describe your change"`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Open a pull request
+
+Ideas for contributions:
+- Additional Indian regional languages (Tamil, Telugu, Bengali, Marathi)
+- Health trend analytics and charts
+- Medication reminders and symptom tracking over time
+- Unit and integration tests for the RAG pipeline
+- Progressive Web App and offline support
+
+---
+
+## License
 
 [MIT](LICENSE) — free to use, fork, and build upon.
 
 ---
 
-<div align="center">
-
-**Built with ❤️ using Groq, FastAPI, Next.js, and OpenStreetMap**
-
-*Empowering communities with accessible AI health guidance in their own language.*
-
-[🌐 Live Demo](https://sahayak-health-ai-health-companion-nu.vercel.app) · [📖 API Docs](https://sahayak-health-ai-health-companion-production.up.railway.app/docs) · [🐛 Report Bug](https://github.com/meetchauhan17/Sahayak-Health-AI-Health-Companion/issues) · [✨ Request Feature](https://github.com/meetchauhan17/Sahayak-Health-AI-Health-Companion/issues)
-
-</div>
+*Built with Groq, FastAPI, Next.js, and OpenStreetMap. Empowering communities with accessible AI health guidance in their own language.*
