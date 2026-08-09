@@ -8,10 +8,14 @@ export interface Hospital {
   address: string;
   phone: string;
   distance: string;
+  type?: string;
 }
 
 export default function HospitalFinder() {
-  const hospitals: Hospital[] = hospitalsData;
+  // Inline chat card: show hospitals and clinics only
+  const hospitals: Hospital[] = (hospitalsData as Hospital[]).filter(
+    (h) => !h.type || h.type === "hospital" || h.type === "clinic"
+  );
 
   return (
     <div className="mt-3 bg-slate-50 border border-slate-200 rounded-xl p-3 shadow-sm max-w-full">
