@@ -34,7 +34,8 @@ export default function NavBar() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const desktopMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   // Initialize theme and profile
   useEffect(() => {
@@ -51,19 +52,23 @@ export default function NavBar() {
       document.documentElement.classList.remove("dark");
     }
 
-    // Profile setup
+    // Profile setup & close menu on navigation
     setProfile(getUserProfile());
+    setUserMenuOpen(false);
   }, [pathname]);
 
   // Handle outside click for avatar dropdown
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const insideDesktop = desktopMenuRef.current?.contains(target);
+      const insideMobile = mobileMenuRef.current?.contains(target);
+      if (!insideDesktop && !insideMobile) {
         setUserMenuOpen(false);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   const toggleTheme = () => {
@@ -150,8 +155,8 @@ export default function NavBar() {
             </span>
           </button>
 
-          {/* User Profile Avatar with Dropdown */}
-          <div ref={menuRef} className="relative">
+            {/* Profile Avatar / Dropdown Trigger */}
+            <div ref={desktopMenuRef} className="relative mt-2">
             <button
               onClick={() => setUserMenuOpen((prev) => !prev)}
               className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
@@ -227,7 +232,7 @@ export default function NavBar() {
           </button>
 
           {/* User Avatar with Dropdown Menu */}
-          <div ref={menuRef} className="relative">
+          <div ref={mobileMenuRef} className="relative">
             <button
               onClick={() => setUserMenuOpen((prev) => !prev)}
               className="w-7 h-7 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 text-white font-bold flex items-center justify-center text-xs shadow-xs focus:ring-2 focus:ring-teal-400"
