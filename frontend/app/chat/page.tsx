@@ -6,6 +6,7 @@ import { Send, Heart, ChevronDown, Mic, FileText, X, RefreshCw } from "lucide-re
 import SeverityBadge from "@/components/SeverityBadge";
 import HospitalFinder from "@/components/HospitalFinder";
 import HealthSummary, { type HealthSummaryData } from "@/components/HealthSummary";
+import { getUserProfile } from "@/lib/userProfile";
 
 // Allow TypeScript to see webkitSpeechRecognition on window
 declare global {
@@ -242,13 +243,22 @@ function LanguageSelector({
 // ─── Empty State ────────────────────────────────────────────────────────────
 
 function EmptyState() {
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const profile = getUserProfile();
+    if (profile?.name) {
+      setUserName(`, ${profile.name}`);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col items-center justify-center flex-1 text-center px-6 py-12 select-none">
       <div className="w-16 h-16 rounded-full bg-teal-100 flex items-center justify-center mb-4">
         <Heart className="w-8 h-8 text-teal-500" />
       </div>
       <h2 className="text-lg font-semibold text-gray-800 mb-1">
-        How can I help you today?
+        Hello{userName}! How can I help you today?
       </h2>
       <p className="text-sm text-gray-500 max-w-xs">
         Describe your symptoms or ask a health question. I&apos;ll do my best to
@@ -279,6 +289,13 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [language, setLanguage] = useState<Language>("English");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const profile = getUserProfile();
+    if (profile?.language) {
+      setLanguage(profile.language);
+    }
+  }, []);
 
   // Base URL for backend API — set NEXT_PUBLIC_API_URL in .env.local for production
   const API_BASE =
