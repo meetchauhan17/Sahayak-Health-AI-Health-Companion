@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from rag.query import _get_groq_client, _parse_llm_json, generate_response, retrieve_context
+from rag.query import _get_groq_client, _parse_llm_json, generate_response, retrieve_context, normalize_language_code
 
 # Load environment variables from .env (GROQ_API_KEY, etc.)
 load_dotenv()
@@ -20,11 +20,8 @@ app = FastAPI(
 )
 
 # CORS configuration --------------------------------------------------------
-# FRONTEND_URL: set this in your deployment dashboard (Render, Railway, etc.)
-# to your actual Vercel frontend URL, e.g. https://sahayak-health.vercel.app
 _frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
-# Allow both localhost (local dev) and the configured production URL
 _allowed_origins = list(
     {
         "http://localhost:3000",
@@ -42,7 +39,6 @@ app.add_middleware(
 )
 
 
-
 # ---------------------------------------------------------------------------
 # Pydantic models
 # ---------------------------------------------------------------------------
@@ -50,7 +46,7 @@ class ChatRequest(BaseModel):
     message: str = Field(..., min_length=1, description="User's symptom description")
     language: str = Field(
         default="en",
-        description="Language code for the response (e.g. 'en', 'hi', 'es')",
+        description="Language code or name for the response (e.g. 'en', 'hi', 'gu', 'English', 'हिंदी', 'ગુજરાતી')",
     )
 
 
@@ -81,15 +77,15 @@ class SummaryResponse(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Endpoints
+# Endpoints (Using def endpoints so FastAPI offloads to threadpools)
 # ---------------------------------------------------------------------------
 @app.get("/")
-async def root():
+def root():
     return {"message": "Hello World", "service": "Sahayak Health API"}
 
 
 @app.post("/api/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+def chat(request: ChatRequest):
     """
     Accept a symptom description, retrieve relevant medical context via RAG,
     generate a structured response via Groq LLM, and return it.
@@ -147,7 +143,7 @@ RULES:
 
 
 @app.post("/api/summary", response_model=SummaryResponse)
-async def summarise(request: ChatSummaryRequest):
+def summarise(request: ChatSummaryRequest):
     """
     Accept a conversation history and return a structured health summary.
     """
@@ -175,6 +171,7 @@ async def summarise(request: ChatSummaryRequest):
             messages=messages,
             temperature=0.2,
             max_tokens=512,
+            timeout=15.0,
         )
         raw = completion.choices[0].message.content or "{}"
         parsed = _parse_llm_json(raw)

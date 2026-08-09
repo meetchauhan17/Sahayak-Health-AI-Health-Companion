@@ -7,7 +7,7 @@ import { Send, Heart, ChevronDown, Mic, FileText, X, RefreshCw, Users } from "lu
 import SeverityBadge from "@/components/SeverityBadge";
 import HospitalFinder from "@/components/HospitalFinder";
 import HealthSummary, { type HealthSummaryData } from "@/components/HealthSummary";
-import { getUserProfile } from "@/lib/userProfile";
+import { getUserProfile, saveUserProfile } from "@/lib/userProfile";
 import { recordCheckIn } from "@/lib/streak";
 import { addHistoryEntry } from "@/lib/history";
 import { getFamilyMembers, FamilyMember } from "@/lib/family";
@@ -227,6 +227,10 @@ function LanguageSelector({
               key={lang}
               onClick={() => {
                 onChange(lang);
+                const currentProfile = getUserProfile();
+                if (currentProfile) {
+                  saveUserProfile({ ...currentProfile, language: lang });
+                }
                 setOpen(false);
               }}
               className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
@@ -396,6 +400,17 @@ function ChatInner() {
     recognition.start();
   }, [isSpeechSupported, isListening, speechLocale]);
 
+  // Clean up speech recognition on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {}
+      }
+    };
+  }, []);
+
   // Auto-scroll to the latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -513,17 +528,12 @@ function ChatInner() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 dark:bg-slate-950 transition-colors">
-      {/* ── Header ── */}
-      <header className="flex-shrink-0 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-gray-800 shadow-sm z-10">
-        <div className="max-w-3xl mx-auto flex items-center justify-between px-4 py-3">
-          {/* Brand */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center shadow-sm flex-shrink-0">
-              <Heart className="w-4 h-4 text-white" strokeWidth={2.5} />
-            </div>
-            <span className="font-bold text-gray-900 dark:text-white text-base sm:text-lg tracking-tight">
-              Sahayak{" "}
-              <span className="text-teal-600 dark:text-teal-400">Health</span>
+      {/* ── Sub Header ── */}
+      <header className="flex-shrink-0 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-gray-800 shadow-2xs z-10">
+        <div className="max-w-3xl mx-auto flex items-center justify-between px-4 py-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+              Health Assistant
             </span>
           </div>
 

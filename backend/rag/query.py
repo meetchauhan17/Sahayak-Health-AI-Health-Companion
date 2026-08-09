@@ -8,6 +8,7 @@ query.py -- RAG query pipeline for Sahayak Health.
 import json
 import os
 import re
+from functools import lru_cache
 
 import chromadb
 import groq as groq_sdk
@@ -60,8 +61,14 @@ def _get_groq_client() -> Groq:
 
 
 # ---------------------------------------------------------------------------
-# 1. Context retrieval
+# 1. Context retrieval with LRU Cache for performance
 # ---------------------------------------------------------------------------
+@lru_cache(maxsize=256)
+def _encode_query_cached(query: str):
+    model = _get_embedding_model()
+    return model.encode([query]).tolist()
+
+
 def retrieve_context(user_query: str, top_k: int = 3) -> str:
     """
     Embed the user query and retrieve the top-k most similar chunks
@@ -69,8 +76,7 @@ def retrieve_context(user_query: str, top_k: int = 3) -> str:
 
     Returns: A single string combining the retrieved text chunks.
     """
-    model = _get_embedding_model()
-    query_embedding = model.encode([user_query]).tolist()
+    query_embedding = _encode_query_cached(user_query)
 
     collection = _get_collection()
     results = collection.query(
@@ -79,13 +85,13 @@ def retrieve_context(user_query: str, top_k: int = 3) -> str:
     )
 
     # results["documents"] is a list of lists; flatten it
-    chunks = results["documents"][0] if results["documents"] else []
+    chunks = results["documents"][0] if (results and results.get("documents")) else []
 
     return "\n\n---\n\n".join(chunks)
 
 
 # ---------------------------------------------------------------------------
-# 2. Response generation
+# 2. Response generation & Language Normalization
 # ---------------------------------------------------------------------------
 _LANGUAGE_INSTRUCTIONS = {
     "en": (
@@ -105,6 +111,26 @@ _LANGUAGE_INSTRUCTIONS = {
         "Do NOT transliterate Gujarati into Latin/Roman script."
     ),
 }
+
+# Alias map to ensure full language names and native strings resolve to the correct prompt
+_LANGUAGE_ALIAS_MAP = {
+    "english": "en",
+    "en": "en",
+    "hindi": "hi",
+    "हिंदी": "hi",
+    "hi": "hi",
+    "gujarati": "gu",
+    "ગુજરાતી": "gu",
+    "gu": "gu",
+}
+
+
+def normalize_language_code(lang: str) -> str:
+    if not lang:
+        return "en"
+    clean = lang.strip().lower()
+    return _LANGUAGE_ALIAS_MAP.get(clean, _LANGUAGE_ALIAS_MAP.get(lang.strip(), "en"))
+
 
 _SYSTEM_PROMPT_TEMPLATE = """\
 You are Sahayak Health Assistant -- a helpful, cautious health information \
@@ -180,19 +206,14 @@ def generate_response(user_query: str, context: str, language: str = "en") -> di
     """
     Build a system prompt with retrieved context, call Groq LLM, and return
     a parsed JSON dict with keys: response, severity, advice.
-
-    Error handling:
-    - 15 s timeout on every Groq call.
-    - Retries once with a stricter JSON-only prompt if the first reply is malformed.
-    - Returns _FALLBACK_RESPONSE for any network / timeout / API error.
     """
     try:
         client = _get_groq_client()
 
+        lang_code = normalize_language_code(language)
         language_instruction = _LANGUAGE_INSTRUCTIONS.get(
-            language,
-            f"Respond in the language with code '{language}'. "
-            "Use natural, everyday language. Keep severity in English.",
+            lang_code,
+            _LANGUAGE_INSTRUCTIONS["en"],
         )
 
         system_prompt = _SYSTEM_PROMPT_TEMPLATE.format(
