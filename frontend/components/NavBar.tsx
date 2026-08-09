@@ -9,13 +9,10 @@ import {
   Clock,
   Users,
   MapPin,
-  Heart,
-  Sun,
-  Moon,
+  Activity,
   User,
   Settings,
   ChevronRight,
-  LogOut,
 } from "lucide-react";
 import { getUserProfile, UserProfile } from "@/lib/userProfile";
 
@@ -31,33 +28,16 @@ export default function NavBar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [theme, setTheme] = useState<"light" | "dark">("light");
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const desktopMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
-  // Initialize theme and profile
   useEffect(() => {
-    // Theme setup
-    const savedTheme = localStorage.getItem("sahayak_theme");
-    if (
-      savedTheme === "dark" ||
-      (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      setTheme("dark");
-      document.documentElement.classList.add("dark");
-    } else {
-      setTheme("light");
-      document.documentElement.classList.remove("dark");
-    }
-
-    // Profile setup & close menu on navigation
     setProfile(getUserProfile());
     setUserMenuOpen(false);
   }, [pathname]);
 
-  // Handle outside click for avatar dropdown
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Node;
@@ -71,18 +51,7 @@ export default function NavBar() {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("sahayak_theme", newTheme);
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  };
-
-  // Hide navigation on landing ('/') and onboarding ('/onboarding', '/welcome')
+  // Hide navigation on landing and onboarding pages
   if (pathname === "/" || pathname === "/welcome" || pathname === "/onboarding") {
     return null;
   }
@@ -92,20 +61,20 @@ export default function NavBar() {
   return (
     <>
       {/* ── Desktop Left Sidebar ── */}
-      <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-gray-800 h-screen sticky top-0 z-40 p-4 justify-between flex-shrink-0 transition-colors">
+      <aside className="hidden md:flex flex-col w-60 bg-white border-r-2 border-gray-100 h-screen sticky top-0 z-40 p-4 justify-between flex-shrink-0">
         <div className="space-y-6">
           {/* Brand */}
-          <Link href="/dashboard" className="flex items-center gap-3 px-2">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center shadow-md flex-shrink-0">
-              <Heart className="w-5 h-5 text-white" strokeWidth={2.5} />
+          <Link href="/dashboard" className="flex items-center gap-3 px-2 py-1">
+            <div className="w-8 h-8 rounded-md bg-blue-500 flex items-center justify-center flex-shrink-0">
+              <Activity className="w-4 h-4 text-white" strokeWidth={2.5} />
             </div>
-            <span className="font-bold text-gray-900 dark:text-white text-xl tracking-tight">
-              Sahayak <span className="text-teal-600 dark:text-teal-400">Health</span>
+            <span className="font-bold text-gray-900 text-lg tracking-tight">
+              Sahayak <span className="text-blue-500">Health</span>
             </span>
           </Link>
 
           {/* Navigation Links */}
-          <nav className="space-y-1.5">
+          <nav className="space-y-1">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -114,18 +83,17 @@ export default function NavBar() {
                   key={item.href}
                   href={item.href}
                   prefetch={true}
-                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-semibold transition-all duration-200 ${
                     isActive
-                      ? "bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 border border-teal-100 dark:border-teal-800/50 shadow-2xs"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white"
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                   }`}
                 >
                   <Icon
-                    className={`w-5 h-5 ${
-                      isActive
-                        ? "text-teal-600 dark:text-teal-400"
-                        : "text-gray-400 dark:text-gray-500"
+                    className={`w-4 h-4 flex-shrink-0 ${
+                      isActive ? "text-white" : "text-gray-400"
                     }`}
+                    strokeWidth={isActive ? 2.5 : 2}
                   />
                   <span>{item.label}</span>
                 </Link>
@@ -134,48 +102,28 @@ export default function NavBar() {
           </nav>
         </div>
 
-        {/* Footer controls: Theme toggle + Profile Avatar */}
-        <div className="pt-4 border-t border-gray-200 dark:border-gray-800 space-y-3">
-          {/* Theme Toggle Button */}
-          <button
-            onClick={toggleTheme}
-            className="w-full flex items-center justify-between px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-slate-800/80 hover:bg-gray-100 dark:hover:bg-slate-800 border border-gray-200 dark:border-gray-700/60 transition-all"
-            aria-label="Toggle Dark Mode"
-          >
-            <span className="flex items-center gap-2">
-              {theme === "dark" ? (
-                <Moon className="w-4 h-4 text-teal-400" />
-              ) : (
-                <Sun className="w-4 h-4 text-amber-500" />
-              )}
-              <span>{theme === "dark" ? "Dark Mode" : "Light Mode"}</span>
-            </span>
-            <span className="text-[10px] text-gray-400 uppercase font-bold">
-              {theme === "dark" ? "On" : "Off"}
-            </span>
-          </button>
-
-            {/* Profile Avatar / Dropdown Trigger */}
-            <div ref={desktopMenuRef} className="relative mt-2">
+        {/* Profile section */}
+        <div className="pt-4 border-t-2 border-gray-100">
+          <div ref={desktopMenuRef} className="relative">
             <button
               onClick={() => setUserMenuOpen((prev) => !prev)}
-              className="w-full flex items-center justify-between p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
+              className="w-full flex items-center justify-between p-2.5 rounded-md hover:bg-gray-100 transition-all duration-200"
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 text-white font-bold flex items-center justify-center text-xs shadow-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-md bg-blue-500 text-white font-bold flex items-center justify-center text-xs flex-shrink-0">
                   {firstInitial}
                 </div>
                 <div className="text-left truncate">
-                  <p className="text-xs font-bold text-gray-800 dark:text-white truncate">
+                  <p className="text-xs font-bold text-gray-900 truncate">
                     {profile?.name || "User"}
                   </p>
-                  <p className="text-[10px] text-gray-400 dark:text-gray-500 truncate">
+                  <p className="text-[10px] text-gray-500 truncate">
                     {profile?.language || "English"}
                   </p>
                 </div>
               </div>
               <ChevronRight
-                className={`w-4 h-4 text-gray-400 transition-transform ${
+                className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${
                   userMenuOpen ? "-rotate-90" : ""
                 }`}
               />
@@ -183,17 +131,17 @@ export default function NavBar() {
 
             {/* Dropdown Menu */}
             {userMenuOpen && (
-              <div className="absolute bottom-12 left-0 right-0 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl p-1.5 z-50 animate-fade-up">
+              <div className="absolute bottom-12 left-0 right-0 bg-white border-2 border-gray-100 rounded-md p-1 z-50 animate-fade-up">
                 <button
                   type="button"
                   onClick={() => {
                     setUserMenuOpen(false);
                     router.push("/family");
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-slate-700/60 rounded-xl transition-colors text-left"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200 text-left"
                 >
-                  <Users className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                  <span>Switch to Family View</span>
+                  <Users className="w-4 h-4 text-blue-500" />
+                  <span>Family Profiles</span>
                 </button>
                 <button
                   type="button"
@@ -201,9 +149,9 @@ export default function NavBar() {
                     setUserMenuOpen(false);
                     router.push("/onboarding");
                   }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-slate-700/60 rounded-xl transition-colors text-left"
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200 text-left"
                 >
-                  <Settings className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                  <Settings className="w-4 h-4 text-gray-500" />
                   <span>Edit Profile</span>
                 </button>
               </div>
@@ -213,74 +161,58 @@ export default function NavBar() {
       </aside>
 
       {/* ── Mobile Top Bar ── */}
-      <header className="md:hidden sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-gray-800 px-4 py-2.5 flex items-center justify-between shadow-2xs transition-colors">
+      <header className="md:hidden sticky top-0 z-40 bg-white border-b-2 border-gray-100 px-4 py-3 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center shadow-xs">
-            <Heart className="w-4 h-4 text-white" strokeWidth={2.5} />
+          <div className="w-7 h-7 rounded-md bg-blue-500 flex items-center justify-center">
+            <Activity className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
           </div>
-          <span className="font-bold text-gray-900 dark:text-white text-base tracking-tight">
-            Sahayak <span className="text-teal-600 dark:text-teal-400">Health</span>
+          <span className="font-bold text-gray-900 text-base tracking-tight">
+            Sahayak <span className="text-blue-500">Health</span>
           </span>
         </Link>
 
-        <div className="flex items-center gap-2">
-          {/* Theme Toggle */}
+        <div ref={mobileMenuRef} className="relative">
           <button
-            onClick={toggleTheme}
-            className="p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
-            aria-label="Toggle Theme"
+            onClick={() => setUserMenuOpen((prev) => !prev)}
+            className="w-8 h-8 rounded-md bg-blue-500 text-white font-bold flex items-center justify-center text-xs focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 hover:bg-blue-600"
           >
-            {theme === "dark" ? (
-              <Moon className="w-4 h-4 text-teal-400" />
-            ) : (
-              <Sun className="w-4 h-4 text-amber-500" />
-            )}
+            {firstInitial}
           </button>
 
-          {/* User Avatar with Dropdown Menu */}
-          <div ref={mobileMenuRef} className="relative">
-            <button
-              onClick={() => setUserMenuOpen((prev) => !prev)}
-              className="w-7 h-7 rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 text-white font-bold flex items-center justify-center text-xs shadow-xs focus:ring-2 focus:ring-teal-400"
-            >
-              {firstInitial}
-            </button>
-
-            {userMenuOpen && (
-              <div className="absolute right-0 top-9 w-48 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl p-1.5 z-50 animate-fade-up">
-                <p className="px-3 py-1.5 text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase border-b border-gray-100 dark:border-gray-700 mb-1">
-                  Hi, {profile?.name || "User"}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setUserMenuOpen(false);
-                    router.push("/family");
-                  }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-slate-700/60 rounded-xl transition-colors text-left"
-                >
-                  <Users className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-                  <span>Switch to Family View</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setUserMenuOpen(false);
-                    router.push("/onboarding");
-                  }}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-teal-50 dark:hover:bg-slate-700/60 rounded-xl transition-colors text-left"
-                >
-                  <Settings className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                  <span>Edit Profile</span>
-                </button>
-              </div>
-            )}
-          </div>
+          {userMenuOpen && (
+            <div className="absolute right-0 top-10 w-48 bg-white border-2 border-gray-100 rounded-md p-1 z-50 animate-fade-up">
+              <p className="px-3 py-1.5 text-[11px] font-bold text-gray-400 uppercase border-b border-gray-100 mb-1">
+                Hi, {profile?.name || "User"}
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setUserMenuOpen(false);
+                  router.push("/family");
+                }}
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200 text-left"
+              >
+                <Users className="w-4 h-4 text-blue-500" />
+                <span>Family Profiles</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setUserMenuOpen(false);
+                  router.push("/onboarding");
+                }}
+                className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-100 rounded-md transition-all duration-200 text-left"
+              >
+                <Settings className="w-4 h-4 text-gray-500" />
+                <span>Edit Profile</span>
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
       {/* ── Mobile Bottom Navigation Bar ── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-gray-200 dark:border-gray-800 z-50 px-2 py-1.5 shadow-[0_-2px_10px_rgba(0,0,0,0.05)] transition-colors">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t-2 border-gray-100 z-50 px-2 py-2">
         <div className="flex items-center justify-around max-w-md mx-auto">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
@@ -290,20 +222,24 @@ export default function NavBar() {
                 key={item.href}
                 href={item.href}
                 prefetch={true}
-                className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl transition-all ${
-                  isActive
-                    ? "text-teal-600 dark:text-teal-400 font-bold"
-                    : "text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-                }`}
+                className="flex flex-col items-center gap-0.5 px-2 py-1 transition-all duration-200"
               >
                 <div
-                  className={`p-1 rounded-lg ${
-                    isActive ? "bg-teal-50 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400" : ""
+                  className={`p-1.5 rounded-md transition-all duration-200 ${
+                    isActive
+                      ? "bg-blue-500 text-white"
+                      : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
                   }`}
                 >
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-4 h-4" strokeWidth={isActive ? 2.5 : 2} />
                 </div>
-                <span className="text-[10px] font-medium leading-none">{item.label}</span>
+                <span
+                  className={`text-[10px] font-semibold leading-none ${
+                    isActive ? "text-blue-500" : "text-gray-400"
+                  }`}
+                >
+                  {item.label}
+                </span>
               </Link>
             );
           })}

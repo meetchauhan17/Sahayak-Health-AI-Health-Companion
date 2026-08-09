@@ -1,31 +1,31 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap");
 
-/* ─── Tailwind v4 dark mode: class strategy ─────────────────────────────── */
-@variant dark (&:where(.dark, .dark *));
-
-/* ─── Design Tokens ─────────────────────────────────────────────────────────
-   Primary:  teal-500 / teal-600  (#14b8a6 / #0d9488)
-   Accent:   cyan-500             (#06b6d4)
-   Text:     gray-900 / gray-700 / gray-500 / gray-400
-   Surfaces: white / gray-50 / gray-100 / blue-50
-   Borders:  gray-200 / teal-200
-   ──────────────────────────────────────────────────────────────────────── */
+/* ─── Design Tokens ──────────────────────────────────────────────────────────
+   Primary:    #3B82F6  (blue-500)
+   Secondary:  #10B981  (emerald-500)
+   Accent:     #F59E0B  (amber-500)
+   Background: #FFFFFF
+   Foreground: #111827  (gray-900)
+   Muted:      #F3F4F6  (gray-100)
+   Border:     #E5E7EB  (gray-200)
+   Font:       Outfit
+   ────────────────────────────────────────────────────────────────────────── */
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-.dark {
-  --background: #0f172a;
-  --foreground: #f1f5f9;
+  --foreground: #111827;
+  --primary: #3b82f6;
+  --secondary: #10b981;
+  --accent: #f59e0b;
+  --muted: #f3f4f6;
+  --border: #e5e7eb;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
 }
 
 html,
@@ -36,36 +36,8 @@ body {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-}
-
-/* ─── Custom Thin Dark Scrollbar ────────────────────────────────────────── */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.4);
-  border-radius: 9999px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: rgba(51, 65, 85, 0.7);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.8);
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(51, 65, 85, 0.7) transparent;
 }
 
 /* ─── Scrollbar hide utility ─────────────────────────────────────────────── */
@@ -81,7 +53,7 @@ body {
 @keyframes msg-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -90,10 +62,10 @@ body {
 }
 
 @utility animate-msg-in {
-  animation: msg-in 0.22s ease-out both;
+  animation: msg-in 0.18s ease-out both;
 }
 
-/* ─── Subtle page fade-in ────────────────────────────────────────────────── */
+/* ─── Page fade-up ───────────────────────────────────────────────────────── */
 @keyframes fade-up {
   from {
     opacity: 0;
@@ -106,5 +78,5 @@ body {
 }
 
 @utility animate-fade-up {
-  animation: fade-up 0.35s ease-out both;
+  animation: fade-up 0.3s ease-out both;
 }

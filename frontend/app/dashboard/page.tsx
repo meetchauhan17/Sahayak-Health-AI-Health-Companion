@@ -3,16 +3,16 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Flame,
+  Activity,
   MessageSquare,
   Users,
   MapPin,
   Clock,
-  Sparkles,
-  Lightbulb,
   ArrowRight,
   PlusCircle,
   ChevronDown,
+  TrendingUp,
+  BookOpen,
 } from "lucide-react";
 
 import { getUserProfile, saveUserProfile, UserProfile } from "@/lib/userProfile";
@@ -39,27 +39,22 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setMounted(true);
-    // Read user profile
     const p = getUserProfile();
     setProfile(p);
 
-    // Read streak
     const s = getStreak();
     setStreak(s);
 
-    // Read recent checks
     const checks = getRecentCheckIns(3);
     setRecentChecks(checks);
 
-    // Calculate day of year for rotating daily health tip
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 0);
     const diff = now.getTime() - start.getTime();
     const oneDay = 1000 * 60 * 60 * 24;
     const dayOfYear = Math.floor(diff / oneDay);
     const tips: Tip[] = tipsData;
-    const tip = tips[dayOfYear % tips.length];
-    setDailyTip(tip);
+    setDailyTip(tips[dayOfYear % tips.length]);
   }, []);
 
   const handleLanguageChange = (newLang: UserProfile["language"]) => {
@@ -78,83 +73,86 @@ export default function DashboardPage() {
   });
 
   const userName = profile?.name || "Friend";
-
-  // Compute ring percentage for streak (max 7-day milestone loop)
   const streakCount = streak.count;
   const streakPercent = Math.min(100, Math.max(10, ((streakCount % 7) || (streakCount > 0 ? 7 : 0)) * (100 / 7)));
 
   if (!mounted) {
-    return (
-      <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto w-full transition-colors overflow-x-hidden" />
-    );
+    return <main className="min-h-screen bg-white" />;
   }
 
   return (
-    <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 animate-fade-up max-w-6xl mx-auto w-full transition-colors overflow-x-hidden">
-      {/* ── Top Greeting Bar ── */}
-      <header className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200/80 dark:border-gray-800 shadow-xs">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-            Hi, {userName}! 👋
-          </h1>
-          <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-            <span>{currentDateStr}</span>
-          </p>
-        </div>
+    <main className="min-h-screen bg-gray-100 pb-16 md:pb-0 animate-fade-up">
 
-        {/* Language Selector */}
-        <div className="relative self-start sm:self-auto">
-          <button
-            onClick={() => setLangOpen((o) => !o)}
-            className="flex items-center gap-2 text-xs font-semibold text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-xl px-3.5 py-2 hover:bg-gray-100 dark:hover:bg-slate-700 transition-all focus:outline-none focus:ring-2 focus:ring-teal-400"
-          >
-            <span>Language:</span>
-            <span className="text-teal-600 dark:text-teal-400 font-bold">{profile?.language || "English"}</span>
-            <ChevronDown className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500" />
-          </button>
+      {/* ── Greeting Header — blue-500 color block ── */}
+      <header className="relative bg-blue-500 overflow-hidden">
+        {/* Geometric decorations */}
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 translate-x-20 -translate-y-20 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/5 rotate-12 pointer-events-none" />
 
-          {langOpen && (
-            <div className="absolute right-0 mt-1.5 w-40 bg-white dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg z-50 overflow-hidden">
-              {LANGUAGES.map((lang) => (
-                <button
-                  key={lang}
-                  onClick={() => handleLanguageChange(lang)}
-                  className={`w-full text-left px-4 py-2.5 text-xs font-medium transition-colors ${
-                    profile?.language === lang
-                      ? "bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300 font-bold"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700"
-                  }`}
-                >
-                  {lang}
-                </button>
-              ))}
-            </div>
-          )}
+        <div className="relative max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              Hi, {userName}
+            </h1>
+            <p className="text-blue-100 text-sm font-medium mt-1 flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" />
+              {currentDateStr}
+            </p>
+          </div>
+
+          {/* Language Selector */}
+          <div className="relative self-start sm:self-auto">
+            <button
+              onClick={() => setLangOpen((o) => !o)}
+              className="flex items-center gap-2 text-xs font-bold text-blue-500 bg-white rounded-md px-4 py-2.5 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+            >
+              <span className="text-blue-300 font-semibold">Language:</span>
+              <span>{profile?.language || "English"}</span>
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+
+            {langOpen && (
+              <div className="absolute right-0 mt-1.5 w-40 bg-white border-2 border-gray-100 rounded-md z-50 overflow-hidden animate-fade-up">
+                {LANGUAGES.map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => handleLanguageChange(lang)}
+                    className={`w-full text-left px-4 py-2.5 text-xs font-semibold transition-all duration-200 ${
+                      profile?.language === lang
+                        ? "bg-blue-500 text-white"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
-      {/* ── Main Dashboard Grid ── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {/* ── Dashboard Grid ── */}
+      <div className="max-w-6xl mx-auto px-6 py-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
 
-        {/* ── Card 1: Health Streak Card ── */}
-        <div className="bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Flame className="w-4 h-4 text-amber-500" />
+        {/* ── Card 1: Health Streak ── */}
+        <div className="bg-white rounded-lg p-6 hover:scale-[1.02] transition-all duration-200 cursor-default">
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+              <TrendingUp className="w-4 h-4 text-amber-500" />
               Health Streak
             </span>
-            <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 px-2.5 py-0.5 rounded-full">
-              Daily Active
+            <span className="text-xs font-bold text-amber-500 bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-md uppercase tracking-wider">
+              Daily
             </span>
           </div>
 
-          <div className="flex items-center gap-5 my-2">
-            {/* SVG Progress Ring */}
+          <div className="flex items-center gap-5">
+            {/* Progress ring */}
             <div className="relative w-20 h-20 flex-shrink-0 flex items-center justify-center">
               <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
                 <path
-                  className="text-gray-100 dark:text-slate-800"
+                  className="text-gray-100"
                   strokeWidth="3.5"
                   stroke="currentColor"
                   fill="none"
@@ -164,149 +162,156 @@ export default function DashboardPage() {
                   className="text-amber-500 transition-all duration-700 ease-out"
                   strokeDasharray={`${streakPercent}, 100`}
                   strokeWidth="3.5"
-                  strokeLinecap="round"
+                  strokeLinecap="square"
                   stroke="currentColor"
                   fill="none"
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                 />
               </svg>
               <div className="absolute flex flex-col items-center justify-center text-center">
-                <Flame className="w-5 h-5 text-amber-500 animate-pulse" />
-                <span className="text-xs font-extrabold text-gray-900 dark:text-white leading-none mt-0.5">
-                  {streakCount}d
+                <span className="text-lg font-extrabold text-gray-900 leading-none">
+                  {streakCount}
                 </span>
+                <span className="text-[10px] font-bold text-gray-400 uppercase">days</span>
               </div>
             </div>
 
             <div>
-              <h3 className="text-lg font-bold text-gray-900 dark:text-white leading-tight">
-                {streakCount} {streakCount === 1 ? "Day" : "Days"} Streak
+              <h3 className="text-xl font-extrabold text-gray-900 leading-tight">
+                {streakCount} {streakCount === 1 ? "Day" : "Days"}
               </h3>
-              <p className="text-xs text-gray-500 dark:text-slate-400 mt-1 leading-relaxed">
+              <p className="text-xs text-gray-500 mt-1 leading-relaxed">
                 {streakCount > 0
-                  ? "Great job checking in daily! Keep it up."
-                  : "Start a check-in today to kick off your health streak!"}
+                  ? "Great job checking in daily!"
+                  : "Start today to begin your streak."}
               </p>
             </div>
           </div>
 
-          <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-[11px] text-gray-400 dark:text-slate-500">
-            <span>Last check-in: {streak.lastDate || "None"}</span>
-            <span className="text-amber-600 dark:text-amber-400 font-semibold">Goal: 7 Days</span>
+          <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+            <span className="text-[11px] text-gray-400">
+              Last: {streak.lastDate || "None"}
+            </span>
+            <span className="text-[11px] font-bold text-amber-500 uppercase tracking-wider">
+              Goal: 7 Days
+            </span>
           </div>
         </div>
 
-        {/* ── Card 2: Quick Actions Card ── */}
-        <div className="bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-5 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+        {/* ── Card 2: Quick Actions ── */}
+        <div className="bg-white rounded-lg p-6 hover:scale-[1.02] transition-all duration-200 cursor-default">
+          <div className="flex items-center gap-1.5 mb-4">
+            <Activity className="w-4 h-4 text-blue-500" />
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
               Quick Actions
             </span>
           </div>
 
-          <div className="space-y-2.5 my-1">
-            {/* Action 1: Symptom Check */}
+          <div className="space-y-2.5">
+            {/* Primary action */}
             <Link
               href="/chat"
-              className="w-full flex items-center justify-between bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white p-3 rounded-xl shadow-xs transition-all active:scale-98 group"
+              className="group w-full flex items-center justify-between bg-blue-500 hover:bg-blue-600 text-white p-3.5 rounded-md transition-all duration-200 hover:scale-[1.02]"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-md bg-white/20 flex items-center justify-center">
                   <MessageSquare className="w-4 h-4 text-white" />
                 </div>
                 <div className="text-left">
                   <p className="text-xs font-bold leading-tight">Start Symptom Check</p>
-                  <p className="text-[10px] text-teal-100">AI triage & guidance</p>
+                  <p className="text-[10px] text-blue-200">AI triage and guidance</p>
                 </div>
               </div>
-              <ArrowRight className="w-4 h-4 text-white/80 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 text-white/70 group-hover:translate-x-1 transition-transform duration-200" />
             </Link>
 
-            {/* Action 2: View Family */}
+            {/* Secondary actions */}
             <Link
               href="/family"
-              className="w-full flex items-center justify-between bg-gray-50 dark:bg-slate-800/70 hover:bg-teal-50/60 dark:hover:bg-slate-800 border border-gray-200/80 dark:border-gray-700/60 text-gray-700 dark:text-gray-200 hover:text-teal-700 dark:hover:text-teal-300 p-2.5 rounded-xl transition-all group"
+              className="group w-full flex items-center justify-between bg-gray-100 hover:bg-gray-200 text-gray-700 p-3 rounded-md transition-all duration-200"
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-teal-100/60 dark:bg-teal-950/80 flex items-center justify-center text-teal-600 dark:text-teal-400">
-                  <Users className="w-3.5 h-3.5" />
+                <div className="w-7 h-7 rounded-md bg-emerald-500 flex items-center justify-center">
+                  <Users className="w-3.5 h-3.5 text-white" />
                 </div>
-                <span className="text-xs font-semibold">View Family Profiles</span>
+                <span className="text-xs font-semibold">Family Profiles</span>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:text-teal-600 dark:group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-0.5 transition-transform duration-200" />
             </Link>
 
-            {/* Action 3: Find Nearby Care */}
             <Link
               href="/nearby-care"
-              className="w-full flex items-center justify-between bg-gray-50 dark:bg-slate-800/70 hover:bg-teal-50/60 dark:hover:bg-slate-800 border border-gray-200/80 dark:border-gray-700/60 text-gray-700 dark:text-gray-200 hover:text-teal-700 dark:hover:text-teal-300 p-2.5 rounded-xl transition-all group"
+              className="group w-full flex items-center justify-between bg-gray-100 hover:bg-gray-200 text-gray-700 p-3 rounded-md transition-all duration-200"
             >
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-rose-100/60 dark:bg-rose-950/80 flex items-center justify-center text-rose-500 dark:text-rose-400">
-                  <MapPin className="w-3.5 h-3.5" />
+                <div className="w-7 h-7 rounded-md bg-amber-500 flex items-center justify-center">
+                  <MapPin className="w-3.5 h-3.5 text-white" />
                 </div>
                 <span className="text-xs font-semibold">Find Nearby Care</span>
               </div>
-              <ArrowRight className="w-3.5 h-3.5 text-gray-400 dark:text-gray-500 group-hover:text-teal-600 dark:group-hover:text-teal-400 group-hover:translate-x-0.5 transition-all" />
+              <ArrowRight className="w-3.5 h-3.5 text-gray-400 group-hover:translate-x-0.5 transition-transform duration-200" />
             </Link>
           </div>
         </div>
 
-        {/* ── Card 3: Health Tip of the Day Card ── */}
-        <div className="bg-gradient-to-br from-teal-500 to-cyan-600 dark:from-teal-600 dark:to-cyan-700 text-white rounded-2xl p-5 shadow-xs flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute -right-6 -bottom-6 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        {/* ── Card 3: Health Tip — emerald-500 color block ── */}
+        <div className="relative bg-emerald-500 rounded-lg p-6 flex flex-col justify-between overflow-hidden hover:scale-[1.02] transition-all duration-200 cursor-default">
+          {/* Geometric decoration */}
+          <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-white/10 pointer-events-none" />
+          <div className="absolute top-4 right-4 w-16 h-16 rotate-45 bg-white/5 pointer-events-none" />
 
-          <div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-teal-100 flex items-center gap-1.5">
-                <Lightbulb className="w-4 h-4 text-amber-300" />
-                Health Tip of the Day
+          <div className="relative">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs font-bold uppercase tracking-widest text-emerald-100 flex items-center gap-1.5">
+                <BookOpen className="w-4 h-4 text-white" />
+                Daily Health Tip
               </span>
               {dailyTip && (
-                <span className="text-[10px] font-bold bg-white/20 text-white px-2 py-0.5 rounded-full backdrop-blur-xs">
+                <span className="text-[10px] font-bold bg-white/20 text-white px-2.5 py-0.5 rounded-md uppercase tracking-wider">
                   {dailyTip.category}
                 </span>
               )}
             </div>
 
-            <p className="text-sm font-medium leading-relaxed my-2 text-white/95">
-              &quot;{dailyTip?.tip || "Stay active, drink water, and get 7-8 hours of sleep daily!"}&quot;
+            <p className="text-sm font-medium leading-relaxed text-white/95 my-2">
+              &ldquo;{dailyTip?.tip || "Stay active, drink water, and get 7-8 hours of sleep daily."}&rdquo;
             </p>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-[11px] text-teal-100">
-            <span>Changes daily</span>
-            <span className="font-semibold text-white">Daily Wellness</span>
+          <div className="relative mt-4 pt-3 border-t border-white/20 flex items-center justify-between">
+            <span className="text-[11px] text-emerald-100">Changes daily</span>
+            <span className="text-[11px] font-bold text-white uppercase tracking-wider">Wellness</span>
           </div>
         </div>
 
-        {/* ── Card 4: Recent Activity Card (Spans 2 cols on md+) ── */}
-        <div className="md:col-span-2 bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-5 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+        {/* ── Card 4: Recent Activity (spans 2 cols on md+) ── */}
+        <div className="md:col-span-2 bg-white rounded-lg p-6 hover:scale-[1.01] transition-all duration-200">
+          <div className="flex items-center justify-between mb-5">
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+              <Clock className="w-4 h-4 text-blue-500" />
               Recent Symptom Checks
             </span>
             <Link
               href="/history"
-              className="text-xs font-semibold text-teal-600 dark:text-teal-400 hover:text-teal-700 flex items-center gap-1"
+              className="text-xs font-bold text-blue-500 hover:text-blue-600 flex items-center gap-1 transition-colors duration-200"
             >
-              <span>View All History</span>
+              View All
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           {recentChecks.length === 0 ? (
-            <div className="py-8 text-center bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
-              <PlusCircle className="w-8 h-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
-              <p className="text-xs font-semibold text-gray-700 dark:text-gray-300">No symptom checks yet</p>
-              <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5 mb-3">
-                Describe your symptoms to receive instant guidance and save history.
+            <div className="py-10 text-center bg-gray-100 rounded-md">
+              <div className="w-10 h-10 rounded-md bg-gray-200 flex items-center justify-center mx-auto mb-3">
+                <PlusCircle className="w-5 h-5 text-gray-400" />
+              </div>
+              <p className="text-sm font-bold text-gray-700">No symptom checks yet</p>
+              <p className="text-xs text-gray-400 mt-1 mb-4">
+                Describe your symptoms to receive instant guidance.
               </p>
               <Link
                 href="/chat"
-                className="inline-flex items-center gap-1.5 text-xs font-bold bg-teal-500 hover:bg-teal-600 text-white px-3.5 py-1.5 rounded-lg transition-colors"
+                className="inline-flex items-center gap-1.5 text-xs font-bold bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-all duration-200 hover:scale-105"
               >
                 Start First Check
               </Link>
@@ -317,13 +322,13 @@ export default function DashboardPage() {
                 <Link
                   key={item.id}
                   href={item.familyMemberId ? `/history?for=${item.familyMemberId}` : "/history"}
-                  className="flex items-center justify-between gap-3 p-3 bg-gray-50 dark:bg-slate-800/70 border border-gray-200/60 dark:border-gray-700/60 rounded-xl hover:bg-gray-100/60 dark:hover:bg-slate-800 transition-colors group cursor-pointer"
+                  className="group flex items-center justify-between gap-3 p-3.5 bg-gray-100 hover:bg-gray-200 rounded-md transition-all duration-200 cursor-pointer"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-xs font-bold text-gray-800 dark:text-gray-200 group-hover:text-teal-600 dark:group-hover:text-teal-400 truncate transition-colors">
+                    <p className="text-xs font-bold text-gray-900 truncate">
                       {item.symptom_query}
                     </p>
-                    <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{item.date}</p>
+                    <p className="text-[10px] text-gray-400 mt-0.5 font-medium">{item.date}</p>
                   </div>
                   <SeverityBadge severity={item.severity} />
                 </Link>

@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Script from "next/script";
+import { Outfit } from "next/font/google";
 import "./globals.css";
+import OnboardingGuard from "@/components/OnboardingGuard";
+import Navigation from "@/components/Navigation";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
   subsets: ["latin"],
   display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
+  variable: "--font-outfit",
 });
 
 export const metadata: Metadata = {
@@ -34,36 +29,17 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-import OnboardingGuard from "@/components/OnboardingGuard";
-import Navigation from "@/components/Navigation";
-
 export default function RootLayout({ children }: LayoutProps) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${outfit.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen flex flex-col md:flex-row bg-gray-50 dark:bg-slate-950 text-gray-900 dark:text-slate-100 pb-16 md:pb-0 transition-colors">
-        <Script
-          id="sahayak-theme-init"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                var theme = localStorage.getItem('sahayak_theme');
-                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                } else {
-                  document.documentElement.classList.remove('dark');
-                }
-              } catch (e) {}
-            `,
-          }}
-        />
+      <body className="min-h-screen flex flex-col md:flex-row bg-white text-gray-900">
         <OnboardingGuard>
           <Navigation />
-          <div className="flex-1 flex flex-col min-w-0 bg-gray-50 dark:bg-slate-950">
+          <div className="flex-1 flex flex-col min-w-0 bg-white">
             {children}
           </div>
         </OnboardingGuard>

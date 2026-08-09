@@ -1,129 +1,219 @@
 import Link from "next/link";
-import { Heart, MessageCircle, Sparkles, MapPin, ArrowRight, ChevronRight } from "lucide-react";
+import { MessageCircle, FileText, MapPin, ArrowRight, Users, Activity } from "lucide-react";
 
 // ─── How-It-Works steps ─────────────────────────────────────────────────────
 
 const STEPS = [
   {
     icon: MessageCircle,
-    color: "text-blue-500 dark:text-blue-400",
-    bg: "bg-blue-50 dark:bg-blue-950/60",
     label: "Describe Symptoms",
+    description: "Type or speak your symptoms in any language",
   },
   {
-    icon: Sparkles,
-    color: "text-teal-500 dark:text-teal-400",
-    bg: "bg-teal-50 dark:bg-teal-950/60",
-    label: "Get Guidance",
+    icon: Activity,
+    label: "AI Triage",
+    description: "Get instant severity assessment and guidance",
   },
   {
     icon: MapPin,
-    color: "text-cyan-500 dark:text-cyan-400",
-    bg: "bg-cyan-50 dark:bg-cyan-950/60",
     label: "Find Help Nearby",
+    description: "Locate hospitals and clinics near you",
   },
 ];
 
-// ─── Feature pills ───────────────────────────────────────────────────────────
+// ─── Feature blocks ──────────────────────────────────────────────────────────
 
 const FEATURES = [
-  "English · हिंदी · ગુજરાતી",
-  "Symptom Triage",
-  "Hospital Finder",
-  "Voice Input",
+  {
+    icon: MessageCircle,
+    title: "Multilingual AI Chat",
+    description: "English, Hindi, and Gujarati — switch at any time",
+    color: "bg-blue-500",
+  },
+  {
+    icon: Activity,
+    title: "Symptom Triage",
+    description: "Green, yellow, and red severity levels on every response",
+    color: "bg-emerald-500",
+  },
+  {
+    icon: MapPin,
+    title: "Nearby Healthcare",
+    description: "Real hospitals and clinics on an interactive map",
+    color: "bg-amber-500",
+  },
+  {
+    icon: Users,
+    title: "Family Profiles",
+    description: "Manage health records for your entire family",
+    color: "bg-blue-500",
+  },
+  {
+    icon: FileText,
+    title: "Health Summaries",
+    description: "One-click AI-generated PDF health reports",
+    color: "bg-emerald-500",
+  },
 ];
 
 // ─── Page ───────────────────────────────────────────────────────────────────
 
 export default function WelcomePage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-white via-blue-50/40 to-white dark:from-slate-900 dark:via-slate-900 dark:to-slate-950 flex flex-col transition-colors">
-      {/* ── Thin top accent bar ── */}
-      <div className="h-1 w-full bg-gradient-to-r from-teal-400 via-cyan-400 to-blue-400" />
+    <main className="min-h-screen bg-white flex flex-col">
 
-      {/* ── Hero ── */}
-      <section className="flex-1 flex flex-col items-center px-6 pt-8 pb-4 text-center animate-fade-up">
-        <div className="relative mb-4">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center shadow-lg shadow-teal-200 dark:shadow-none">
-            <Heart className="w-8 h-8 text-white" strokeWidth={2.2} />
+      {/* ── Hero — full blue-500 color block ── */}
+      <section className="relative bg-blue-500 overflow-hidden">
+        {/* Geometric background decorations */}
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-white/5 translate-x-32 -translate-y-32 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 rounded-full bg-white/5 -translate-x-20 translate-y-20 pointer-events-none" />
+        <div className="absolute top-1/2 right-16 w-32 h-32 bg-white/5 rotate-45 pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto px-6 py-20 md:py-28 flex flex-col items-center text-center">
+          {/* Brand mark */}
+          <div className="w-16 h-16 rounded-lg bg-white flex items-center justify-center mb-6">
+            <Activity className="w-8 h-8 text-blue-500" strokeWidth={2.5} />
           </div>
-          {/* Decorative ping */}
-          <span className="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-60" />
-            <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-teal-500" />
-          </span>
-        </div>
 
-        {/* App name */}
-        <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white tracking-tight mb-2">
-          Sahayak{" "}
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-400 dark:to-cyan-400">
-            Health
-          </span>
-        </h1>
+          {/* Headline */}
+          <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight mb-4 max-w-3xl">
+            Sahayak Health
+          </h1>
 
-        {/* Tagline */}
-        <p className="text-sm sm:text-base text-gray-500 dark:text-slate-400 max-w-xs sm:max-w-sm leading-relaxed mb-5">
-          Your multilingual AI health companion — available in English, हिंदी &amp; ગુજરાતી
-        </p>
+          <p className="text-lg md:text-xl text-blue-100 font-medium max-w-xl mb-4 leading-relaxed">
+            Your free multilingual AI health companion — available in English, Hindi, and Gujarati
+          </p>
 
-        {/* ── How it works ── */}
-        <div className="flex items-center justify-center gap-2 sm:gap-4 mb-5 flex-wrap">
-          {STEPS.map((step, i) => {
-            const Icon = step.icon;
-            return (
-              <div
-                key={step.label}
-                className="flex items-center gap-2 sm:gap-4"
-                style={{ animationDelay: `${i * 80}ms` }}
+          {/* Language tags */}
+          <div className="flex items-center gap-2 mb-10 flex-wrap justify-center">
+            {["English", "हिंदी", "ગુજરાતી"].map((lang) => (
+              <span
+                key={lang}
+                className="text-xs font-semibold text-blue-500 bg-white px-3 py-1 rounded-md tracking-wide uppercase"
               >
-                <div className="flex flex-col items-center gap-1.5">
-                  <div
-                    className={`w-11 h-11 rounded-xl ${step.bg} flex items-center justify-center shadow-xs`}
-                  >
-                    <Icon className={`w-5 h-5 ${step.color}`} strokeWidth={2} />
-                  </div>
-                  <span className="text-[11px] font-medium text-gray-500 dark:text-slate-400 max-w-[68px] text-center leading-tight">
-                    {step.label}
-                  </span>
-                </div>
+                {lang}
+              </span>
+            ))}
+          </div>
 
-                {/* Chevron between steps */}
-                {i < STEPS.length - 1 && (
-                  <ChevronRight className="w-4 h-4 text-gray-300 dark:text-slate-600 flex-shrink-0 mb-4" />
-                )}
-              </div>
-            );
-          })}
+          {/* CTA */}
+          <Link
+            href="/chat"
+            className="inline-flex items-center gap-2 bg-white text-blue-500 font-bold text-base px-8 py-4 rounded-md hover:scale-105 transition-all duration-200 focus:ring-2 focus:ring-offset-2 focus:ring-white"
+          >
+            Start Health Check
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+
+          <p className="mt-4 text-xs text-blue-200 font-medium">
+            Free — no account required
+          </p>
         </div>
+      </section>
 
-        {/* ── CTA button ── */}
-        <Link
-          href="/chat"
-          className="inline-flex items-center gap-2.5 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 text-white font-semibold text-base px-8 py-3.5 rounded-full shadow-md shadow-teal-200 dark:shadow-none hover:shadow-lg active:scale-95 transition-all duration-200 mb-5"
-        >
-          Start Chat
-          <ArrowRight className="w-5 h-5" />
-        </Link>
+      {/* ── How it works — white background ── */}
+      <section className="bg-white py-16 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 tracking-tight mb-2 text-center">
+            How it works
+          </h2>
+          <p className="text-gray-500 text-center mb-12 font-medium">
+            Three steps from symptoms to guidance
+          </p>
 
-        {/* ── Feature pills ── */}
-        <div className="flex flex-wrap justify-center gap-2 max-w-xs">
-          {FEATURES.map((feat) => (
-            <span
-              key={feat}
-              className="text-[11px] font-medium text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 border border-teal-100 dark:border-teal-800/60 px-3 py-1 rounded-full"
-            >
-              {feat}
-            </span>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {STEPS.map((step, i) => {
+              const Icon = step.icon;
+              return (
+                <div
+                  key={step.label}
+                  className="group bg-gray-100 rounded-lg p-8 hover:scale-[1.02] transition-all duration-200 cursor-default"
+                >
+                  {/* Step number */}
+                  <div className="text-5xl font-extrabold text-gray-200 mb-4 leading-none">
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
+                  <div className="w-12 h-12 rounded-md bg-blue-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
+                    <Icon className="w-6 h-6 text-white" strokeWidth={2} />
+                  </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    {step.label}
+                  </h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Features — gray-100 color block ── */}
+      <section className="bg-gray-100 py-16 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 tracking-tight mb-2 text-center">
+            Everything you need
+          </h2>
+          <p className="text-gray-500 text-center mb-12 font-medium">
+            Comprehensive health guidance at your fingertips
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {FEATURES.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <div
+                  key={feature.title}
+                  className="group bg-white rounded-lg p-6 hover:scale-[1.02] transition-all duration-200 cursor-default"
+                >
+                  <div
+                    className={`w-12 h-12 rounded-md ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200`}
+                  >
+                    <Icon className="w-6 h-6 text-white" strokeWidth={2} />
+                  </div>
+                  <h3 className="text-base font-bold text-gray-900 mb-1">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm text-gray-500 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA — blue-500 color block ── */}
+      <section className="relative bg-blue-500 py-16 px-6 overflow-hidden">
+        <div className="absolute top-0 left-0 w-48 h-48 rounded-full bg-white/5 -translate-x-16 -translate-y-16 pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 rounded-full bg-white/5 translate-x-20 translate-y-20 pointer-events-none" />
+
+        <div className="relative max-w-7xl mx-auto text-center">
+          <h2 className="text-4xl font-extrabold text-white tracking-tight mb-4">
+            Ready to check your symptoms?
+          </h2>
+          <p className="text-blue-100 font-medium mb-8 max-w-lg mx-auto">
+            Describe your symptoms in your preferred language and get instant, structured health guidance.
+          </p>
+          <Link
+            href="/chat"
+            className="inline-flex items-center gap-2 bg-white text-blue-500 font-bold text-base px-8 py-4 rounded-md hover:scale-105 transition-all duration-200"
+          >
+            Start Free Health Check
+            <ArrowRight className="w-5 h-5" />
+          </Link>
         </div>
       </section>
 
       {/* ── Footer disclaimer ── */}
-      <footer className="pb-4 px-6 text-center">
-        <p className="text-xs text-gray-400 dark:text-slate-500 max-w-xs mx-auto leading-relaxed">
-          AI-powered, not a substitute for professional medical advice.
-          Always consult a qualified healthcare professional for medical decisions.
+      <footer className="bg-gray-900 py-6 px-6 text-center">
+        <p className="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
+          Sahayak Health is an informational tool only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider.
+        </p>
+        <p className="text-xs text-gray-600 mt-2 font-medium">
+          Built with Groq, FastAPI, and Next.js
         </p>
       </footer>
     </main>
