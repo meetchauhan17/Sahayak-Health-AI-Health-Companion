@@ -84,10 +84,12 @@ export default function DashboardPage() {
     <main className="min-h-screen bg-gray-100 pb-16 md:pb-0 animate-fade-up">
 
       {/* ── Greeting Header — blue-500 color block ── */}
-      <header className="relative bg-blue-500 overflow-hidden">
-        {/* Geometric decorations */}
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 translate-x-20 -translate-y-20 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/5 rotate-12 pointer-events-none" />
+      <header className="relative bg-blue-500 z-20">
+        {/* Geometric decorations contained inside overflow-hidden wrapper */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white/5 translate-x-20 -translate-y-20" />
+          <div className="absolute bottom-0 left-0 w-40 h-40 rounded-full bg-white/5 -translate-x-12 translate-y-12" />
+        </div>
 
         <div className="relative max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -101,23 +103,23 @@ export default function DashboardPage() {
           </div>
 
           {/* Language Selector */}
-          <div className="relative self-start sm:self-auto">
+          <div className="relative self-start sm:self-auto z-30">
             <button
               onClick={() => setLangOpen((o) => !o)}
               className="flex items-center gap-2 text-xs font-bold text-blue-500 bg-white rounded-md px-4 py-2.5 hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
             >
-              <span className="text-blue-300 font-semibold">Language:</span>
+              <span className="text-blue-400 font-semibold">Language:</span>
               <span>{profile?.language || "English"}</span>
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
 
             {langOpen && (
-              <div className="absolute right-0 mt-1.5 w-40 bg-white border-2 border-gray-100 rounded-md z-50 overflow-hidden animate-fade-up">
+              <div className="absolute right-0 mt-2 w-44 bg-white border-2 border-gray-100 rounded-md z-50 overflow-hidden shadow-md animate-fade-up">
                 {LANGUAGES.map((lang) => (
                   <button
                     key={lang}
                     onClick={() => handleLanguageChange(lang)}
-                    className={`w-full text-left px-4 py-2.5 text-xs font-semibold transition-all duration-200 ${
+                    className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all duration-200 ${
                       profile?.language === lang
                         ? "bg-blue-500 text-white"
                         : "text-gray-700 hover:bg-gray-100"
@@ -148,7 +150,6 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-5">
-            {/* Progress ring */}
             <div className="relative w-20 h-20 flex-shrink-0 flex items-center justify-center">
               <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
                 <path
@@ -208,7 +209,6 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-2.5">
-            {/* Primary action */}
             <Link
               href="/chat"
               className="group w-full flex items-center justify-between bg-blue-500 hover:bg-blue-600 text-white p-3.5 rounded-md transition-all duration-200 hover:scale-[1.02]"
@@ -225,7 +225,6 @@ export default function DashboardPage() {
               <ArrowRight className="w-4 h-4 text-white/70 group-hover:translate-x-1 transition-transform duration-200" />
             </Link>
 
-            {/* Secondary actions */}
             <Link
               href="/family"
               className="group w-full flex items-center justify-between bg-gray-100 hover:bg-gray-200 text-gray-700 p-3 rounded-md transition-all duration-200"
@@ -256,30 +255,29 @@ export default function DashboardPage() {
 
         {/* ── Card 3: Health Tip — emerald-500 color block ── */}
         <div className="relative bg-emerald-500 rounded-lg p-6 flex flex-col justify-between overflow-hidden hover:scale-[1.02] transition-all duration-200 cursor-default">
-          {/* Geometric decoration */}
+          {/* Subtle bottom-right circle decoration only */}
           <div className="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-white/10 pointer-events-none" />
-          <div className="absolute top-4 right-4 w-16 h-16 rotate-45 bg-white/5 pointer-events-none" />
 
           <div className="relative">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-4 gap-2">
               <span className="text-xs font-bold uppercase tracking-widest text-emerald-100 flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4 text-white" />
                 Daily Health Tip
               </span>
               {dailyTip && (
-                <span className="text-[10px] font-bold bg-white/20 text-white px-2.5 py-0.5 rounded-md uppercase tracking-wider">
+                <span className="text-[10px] font-bold bg-white text-emerald-700 px-2.5 py-0.5 rounded-md uppercase tracking-wider flex-shrink-0">
                   {dailyTip.category}
                 </span>
               )}
             </div>
 
-            <p className="text-sm font-medium leading-relaxed text-white/95 my-2">
+            <p className="text-sm font-medium leading-relaxed text-white my-2">
               &ldquo;{dailyTip?.tip || "Stay active, drink water, and get 7-8 hours of sleep daily."}&rdquo;
             </p>
           </div>
 
           <div className="relative mt-4 pt-3 border-t border-white/20 flex items-center justify-between">
-            <span className="text-[11px] text-emerald-100">Changes daily</span>
+            <span className="text-[11px] text-emerald-100 font-medium">Changes daily</span>
             <span className="text-[11px] font-bold text-white uppercase tracking-wider">Wellness</span>
           </div>
         </div>
