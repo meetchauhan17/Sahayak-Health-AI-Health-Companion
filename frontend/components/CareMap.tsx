@@ -9,8 +9,11 @@ interface CareEntry {
   name: string;
   address: string;
   phone: string;
+  phoneDisplay?: string;
   distance: string;
   type: "hospital" | "clinic" | "pharmacy" | "blood_bank";
+  lat?: number;
+  lng?: number;
 }
 
 interface CareMapProps {
@@ -107,7 +110,7 @@ export default function CareMap({
 
     const userMarker = L.marker([userLat, userLng], { icon: userIcon })
       .bindPopup(
-        `<div style="font-family: sans-serif; padding: 2px;">
+        `<div style="font-family: system-ui, sans-serif; padding: 2px;">
           <strong style="color: #0d9488; font-size: 13px;">📍 Your Location</strong>
           <p style="margin: 4px 0 0 0; font-size: 11px; color: #64748b;">${userCity}</p>
         </div>`
@@ -119,9 +122,9 @@ export default function CareMap({
 
     // 2. Add Facility Markers
     entries.forEach((entry, idx) => {
-      // Offset coordinates slightly if exact lat/lng is missing
-      const offsetLat = userLat + (idx * 0.007 - 0.025);
-      const offsetLng = userLng + (idx * 0.005 - 0.02);
+      // Use exact coordinates if provided, or simulated offset
+      const pinLat = entry.lat ?? (userLat + (idx * 0.007 - 0.025));
+      const pinLng = entry.lng ?? (userLng + (idx * 0.005 - 0.02));
 
       const color = TYPE_COLORS[entry.type] || "#0d9488";
 
@@ -149,12 +152,15 @@ export default function CareMap({
         iconAnchor: [40, 14],
       });
 
-      const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(
-        entry.name + ", " + entry.address
-      )}`;
+      const directionsUrl =
+        entry.lat && entry.lng
+          ? `https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route=${userLat}%2C${userLng}%3B${entry.lat}%2C${entry.lng}`
+          : `https://maps.google.com/?q=${encodeURIComponent(entry.name + ", " + entry.address)}`;
+
+      const callHref = entry.phone.startsWith("tel:") ? entry.phone : `tel:${entry.phone}`;
 
       const popupHtml = `
-        <div style="font-family: system-ui, sans-serif; padding: 4px; min-width: 180px;">
+        <div style="font-family: system-ui, sans-serif; padding: 4px; min-width: 190px;">
           <span style="
             background: ${color}20;
             color: ${color};
@@ -169,7 +175,7 @@ export default function CareMap({
           <h4 style="margin: 2px 0 4px 0; font-size: 13px; font-weight: 700; color: #0f172a;">${entry.name}</h4>
           <p style="margin: 0 0 6px 0; font-size: 11px; color: #64748b;">📍 ${entry.distance} • ${entry.address}</p>
           <div style="display: flex; gap: 6px; margin-top: 8px;">
-            <a href="${entry.phone}" style="
+            <a href="${callHref}" style="
               flex: 1;
               background: #0d9488;
               color: white;
@@ -179,28 +185,28 @@ export default function CareMap({
               text-decoration: none;
               font-size: 11px;
               font-weight: 600;
-            ">📞 Call</a>
-            <a href="${mapsUrl}" target="_blank" style="
+            ">📞 Call (${entry.phoneDisplay || "108"})</a>
+            <a href="${directionsUrl}" target="_blank" rel="noopener noreferrer" style="
               flex: 1;
-              background: #f1f5f9;
-              color: #334155;
+              background: #334155;
+              color: white;
               text-align: center;
               padding: 5px 8px;
               border-radius: 8px;
               text-decoration: none;
               font-size: 11px;
               font-weight: 600;
-            ">🧭 Directions</a>
+            ">🧭 Free Route</a>
           </div>
         </div>
       `;
 
-      const m = L.marker([offsetLat, offsetLng], { icon: pinIcon })
+      const m = L.marker([pinLat, pinLng], { icon: pinIcon })
         .bindPopup(popupHtml)
         .addTo(map);
 
       markersRef.current.push(m);
-      bounds.extend([offsetLat, offsetLng]);
+      bounds.extend([pinLat, pinLng]);
     });
 
     if (entries.length > 0) {
@@ -209,7 +215,7 @@ export default function CareMap({
 
     setTimeout(() => {
       map.invalidateSize();
-    }, 200);
+    }, 250);
   }, [entries, userLat, userLng, userCity, theme]);
 
   return (
