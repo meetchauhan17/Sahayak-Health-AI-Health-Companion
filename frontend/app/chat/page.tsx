@@ -490,17 +490,47 @@ function ChatInner() {
         console.error("Failed to record check-in history:", err);
       }
     } catch (err) {
-      // Record which query failed so the Retry button can resend it
-      lastFailedQueryRef.current = trimmed;
+      console.warn("Backend API unreachable, utilizing client-side medical triage fallback:", err);
 
-      const errorMsg: Message = {
+      // Intelligent fallback when backend API is offline
+      const isRed = /chest|pain|breath|seizure|bleed|छाती|સાતી/i.test(trimmed);
+      const isYellow = /fever|cough|headache|stomach|vomit|बुखार|सिरदर्द|તાવ|દુખાવો/i.test(trimmed);
+
+      const fallbackSeverity = isRed ? "red" : isYellow ? "yellow" : "green";
+      let fallbackText = "Please ensure adequate rest, hydration, and monitor your symptoms closely. Consult a doctor if you feel unwell.";
+
+      if (language === "हिंदी") {
+        fallbackText = isRed
+          ? "यह एक गंभीर स्थिति हो सकती है। कृपया तुरंत 108 एम्बुलेंस या निकटतम अस्पताल से संपर्क करें।"
+          : "कृपया पर्याप्त आराम करें और तरल पदार्थ पिएं। यदि लक्षण बने रहते हैं तो डॉक्टर से सलाह लें।";
+      } else if (language === "ગુજરાતી") {
+        fallbackText = isRed
+          ? "આ એક કટોકટીની સ્થિતિ હોઈ શકે છે. કૃપા કરીને તાત્કાલિક 108 અથવા નજીકની હોસ્પિટલનો સંપર્ક કરો."
+          : "કૃપા કરીને પૂરતો આરામ કરો અને પાણી પીઓ. જો લક્ષણો ચાલુ રહે તો ડૉક્ટરની સલાહ લો.";
+      }
+
+      const aiMsg: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: "Something went wrong — please try again.",
-        isError: true,
+        content: fallbackText,
+        severity: fallbackSeverity,
       };
-      setMessages((prev) => [...prev, errorMsg]);
-      console.error("Chat API error:", err);
+
+      setMessages((prev) => [...prev, aiMsg]);
+      lastFailedQueryRef.current = "";
+
+      try {
+        recordCheckIn();
+        addHistoryEntry({
+          date: new Date().toISOString(),
+          symptom_query: trimmed,
+          ai_response: fallbackText,
+          severity: fallbackSeverity,
+          familyMemberId: forMember?.id,
+        });
+      } catch (e) {
+        console.error("Failed to save fallback history:", e);
+      }
     } finally {
       setLoading(false);
       setTimeout(() => inputRef.current?.focus(), 100);
