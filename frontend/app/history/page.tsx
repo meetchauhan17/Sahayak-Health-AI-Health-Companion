@@ -12,6 +12,7 @@ import {
   ChevronUp,
   Sparkles,
   Users,
+  Download,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -30,6 +31,8 @@ import {
   HistoryEntry,
 } from "@/lib/history";
 import { getFamilyMembers, FamilyMember } from "@/lib/family";
+import { getUserProfile } from "@/lib/userProfile";
+import { generateHealthPDF } from "@/lib/generatePDF";
 import SeverityBadge from "@/components/SeverityBadge";
 
 // Map severity string to numeric values for Recharts (green=1, yellow=2, red=3)
@@ -65,6 +68,7 @@ export default function HistoryPage() {
   const [allHistory, setAllHistory] = useState<HistoryEntry[]>([]);
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
+  const [downloading, setDownloading] = useState(false);
 
   // "self" = main user; a member id = filter that member; "" = all
   const [filterBy, setFilterBy] = useState<string>("self");
@@ -95,6 +99,25 @@ export default function HistoryPage() {
       clearStorageHistory(filterBy === "" ? null : filterBy);
       setAllHistory(getHistory());
       setExpandedIds({});
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    setDownloading(true);
+    try {
+      const profile = getUserProfile();
+      const currentMember = familyMembers.find((m) => m.id === filterBy);
+      await generateHealthPDF({
+        patient: currentMember
+          ? { name: currentMember.name, age: currentMember.age, relation: currentMember.relation }
+          : { name: profile?.name, age: profile?.age },
+        history,
+        filename: `sahayak-history-${filterLabel.toLowerCase().replace(/\s+/g, "-")}.pdf`,
+      });
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -140,13 +163,23 @@ export default function HistoryPage() {
         </div>
 
         {history.length > 0 && (
-          <button
-            onClick={handleClearHistory}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 px-3.5 py-2 rounded-xl transition-all active:scale-95"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-            <span>Clear</span>
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDownloadPDF}
+              disabled={downloading || history.length === 0}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-700 hover:text-teal-800 bg-teal-50 hover:bg-teal-100 border border-teal-200 px-3.5 py-2 rounded-xl transition-all active:scale-95 disabled:opacity-50"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>{downloading ? "Generating…" : "PDF"}</span>
+            </button>
+            <button
+              onClick={handleClearHistory}
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 px-3.5 py-2 rounded-xl transition-all active:scale-95"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Clear</span>
+            </button>
+          </div>
         )}
       </div>
 
