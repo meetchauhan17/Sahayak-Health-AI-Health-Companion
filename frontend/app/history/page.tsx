@@ -16,14 +16,15 @@ import {
   Download,
   Search,
   X,
+  Activity,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 
 import {
   getHistory,
-  addHistoryEntry,
   deleteHistoryEntry,
   clearHistory as clearStorageHistory,
+  addHistoryEntry,
   HistoryEntry,
 } from "@/lib/history";
 import { getFamilyMembers, FamilyMember } from "@/lib/family";
@@ -34,13 +35,12 @@ import SeverityBadge from "@/components/SeverityBadge";
 const SeverityChart = dynamic(() => import("@/components/SeverityChart"), {
   ssr: false,
   loading: () => (
-    <div className="h-48 w-full flex items-center justify-center text-xs text-gray-400">
-      Loading chart…
+    <div className="h-48 w-full flex items-center justify-center text-xs text-gray-400 font-semibold">
+      Loading chart...
     </div>
   ),
 });
 
-// Map severity string to numeric values for Recharts (green=1, yellow=2, red=3)
 function mapSeverityToValue(sev: string): number {
   const norm = (sev || "").toLowerCase().trim();
   if (norm === "green" || norm === "low" || norm === "self-care") return 1;
@@ -80,13 +80,11 @@ function HistoryInner() {
   const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>([]);
   const [downloading, setDownloading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  // "self" = main user; a member id = filter that member; "" = all
   const [filterBy, setFilterBy] = useState<string>("self");
 
   useEffect(() => {
     setMounted(true);
-    setAllHistory(getHistory()); // unfiltered
+    setAllHistory(getHistory());
     setFamilyMembers(getFamilyMembers());
 
     if (forMemberId) {
@@ -94,7 +92,6 @@ function HistoryInner() {
     }
   }, [forMemberId]);
 
-  // Compute the displayed history based on filter and search
   const history = useMemo(() => {
     let list =
       filterBy === ""
@@ -163,14 +160,12 @@ function HistoryInner() {
     setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Recharts data — chronological order (oldest → newest)
   const chartData = [...history].reverse().map((item) => ({
     date: formatDate(item.date),
     severityVal: mapSeverityToValue(item.severity),
     symptom: item.symptom_query,
   }));
 
-  // Label for the currently selected filter
   const filterLabel =
     filterBy === ""
       ? "Everyone"
@@ -179,28 +174,26 @@ function HistoryInner() {
       : familyMembers.find((m) => m.id === filterBy)?.name ?? "Family Member";
 
   if (!mounted) {
-    return (
-      <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto transition-colors pb-24 md:pb-8 overflow-x-hidden" />
-    );
+    return <main className="min-h-screen bg-gray-100" />;
   }
 
   return (
-    <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto transition-colors pb-24 md:pb-8 overflow-x-hidden">
+    <main className="min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 animate-fade-up">
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard"
-            className="w-8 h-8 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors shadow-2xs"
+            className="w-8 h-8 rounded-md bg-white border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-all duration-200"
           >
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
-              <Clock className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight flex items-center gap-2">
+              <Clock className="w-6 h-6 text-blue-500" />
               Health History
             </h1>
-            <p className="text-xs text-gray-500 dark:text-slate-400">
+            <p className="text-xs text-gray-500 font-medium">
               Track past symptom consultations and health trends
             </p>
           </div>
@@ -211,14 +204,14 @@ function HistoryInner() {
             <button
               onClick={handleDownloadPDF}
               disabled={downloading || history.length === 0}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-700 dark:text-teal-300 hover:text-teal-800 bg-teal-50 dark:bg-teal-950/60 hover:bg-teal-100 dark:hover:bg-teal-900/80 border border-teal-200 dark:border-teal-800 px-3.5 py-2 rounded-xl transition-all active:scale-95 disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-emerald-500 hover:bg-emerald-600 px-4 py-2 rounded-md transition-all duration-200 hover:scale-105 disabled:opacity-50"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>{downloading ? "Generating…" : "PDF Report"}</span>
+              <span>{downloading ? "Generating..." : "PDF Report"}</span>
             </button>
             <button
               onClick={handleClearHistory}
-              className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:text-red-700 bg-red-50 dark:bg-red-950/60 hover:bg-red-100 dark:hover:bg-red-900/80 border border-red-200 dark:border-red-800 px-3.5 py-2 rounded-xl transition-all active:scale-95"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md transition-all duration-200 hover:scale-105"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Clear All</span>
@@ -228,18 +221,18 @@ function HistoryInner() {
       </div>
 
       {/* ── Family Filter & Search Bar ── */}
-      <div className="space-y-3 mb-5">
-        <div className="bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl px-4 py-3 shadow-xs flex items-center gap-3 flex-wrap justify-between">
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <Users className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0" />
-            <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
+      <div className="space-y-3 mb-6">
+        <div className="bg-white border-2 border-gray-100 rounded-lg px-4 py-3.5 flex items-center gap-4 flex-wrap justify-between">
+          <div className="flex items-center gap-3 flex-wrap">
+            <Users className="w-4 h-4 text-blue-500 flex-shrink-0" />
+            <span className="text-xs font-bold text-gray-700 uppercase tracking-wider">
               Show history for:
             </span>
             <div className="relative">
               <select
                 value={filterBy}
                 onChange={(e) => { setFilterBy(e.target.value); setExpandedIds({}); }}
-                className="appearance-none text-xs font-bold text-teal-800 dark:text-teal-300 bg-teal-50 dark:bg-slate-800 border border-teal-200 dark:border-teal-800 rounded-xl pl-3 pr-8 py-1.5 focus:outline-none focus:ring-2 focus:ring-teal-400 cursor-pointer"
+                className="appearance-none text-xs font-bold text-blue-600 bg-gray-100 border border-gray-200 rounded-md pl-3 pr-8 py-2 focus:outline-none focus:border-blue-500 cursor-pointer font-medium"
               >
                 <option value="self">Myself</option>
                 {familyMembers.map((m) => (
@@ -249,24 +242,23 @@ function HistoryInner() {
                 ))}
                 <option value="">Everyone</option>
               </select>
-              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-teal-600 dark:text-teal-400 pointer-events-none" />
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
             </div>
           </div>
 
-          {/* Search Bar Input */}
           <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 dark:text-gray-500 pointer-events-none" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search symptoms or advice…"
-              className="w-full pl-8 pr-8 py-1.5 text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 transition"
+              placeholder="Search symptoms or advice..."
+              className="w-full pl-8 pr-8 py-2 text-xs bg-gray-100 border border-gray-200 text-gray-900 placeholder-gray-400 rounded-md focus:outline-none focus:border-blue-500 transition-all font-medium"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -276,14 +268,14 @@ function HistoryInner() {
       </div>
 
       {/* ── Severity Trend Chart ── */}
-      <div className="bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-5 mb-6 shadow-xs">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-            <TrendingUp className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+      <div className="bg-white border-2 border-gray-100 rounded-lg p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1.5">
+            <TrendingUp className="w-4 h-4 text-blue-500" />
             Severity Trend — {filterLabel}
           </h2>
           {history.length >= 3 && (
-            <span className="text-[10px] font-semibold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 border border-teal-100 dark:border-teal-800/60 px-2 py-0.5 rounded-full">
+            <span className="text-xs font-bold text-blue-600 bg-blue-50 border border-blue-100 px-3 py-1 rounded-md">
               {history.length} Check-ins
             </span>
           )}
@@ -292,12 +284,12 @@ function HistoryInner() {
         {history.length >= 3 ? (
           <SeverityChart data={chartData} valueToLabel={mapValueToSeverityLabel} />
         ) : (
-          <div className="py-6 px-4 text-center bg-gray-50/80 dark:bg-slate-800/40 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 text-gray-500 dark:text-slate-400">
-            <Sparkles className="w-5 h-5 text-teal-500 dark:text-teal-400 mx-auto mb-1.5" />
-            <p className="text-xs font-medium text-gray-700 dark:text-gray-300">
+          <div className="py-8 px-4 text-center bg-gray-100 rounded-md">
+            <Sparkles className="w-6 h-6 text-blue-500 mx-auto mb-2" />
+            <p className="text-xs font-bold text-gray-700">
               Check in a few more times to see your health trend
             </p>
-            <p className="text-[11px] text-gray-400 dark:text-slate-500 mt-0.5">
+            <p className="text-[11px] text-gray-400 mt-1 font-medium">
               Requires 3+ entries to render the severity chart.
             </p>
           </div>
@@ -306,34 +298,22 @@ function HistoryInner() {
 
       {/* ── Timeline ── */}
       {history.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-10 text-center shadow-xs">
-          <Clock className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
-          <h3 className="text-base font-bold text-gray-800 dark:text-gray-200">
-            No History found
-          </h3>
-          <p className="text-xs text-gray-500 dark:text-slate-400 max-w-xs mx-auto mt-1 mb-4">
+        <div className="bg-white rounded-lg p-12 text-center border-2 border-gray-100">
+          <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-gray-900">No History found</h3>
+          <p className="text-xs text-gray-400 max-w-xs mx-auto mt-1 mb-6 font-medium">
             {searchQuery
               ? `No symptom entries match "${searchQuery}".`
-              : filterBy !== "self" && filterBy !== ""
-              ? `Perform a symptom check for ${filterLabel} to record their history.`
               : "Perform symptom checks in the Chat assistant to track health trends here."}
           </p>
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Link
-              href={
-                filterBy !== "self" && filterBy !== ""
-                  ? `/chat?for=${filterBy}`
-                  : "/chat"
-              }
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl shadow-xs hover:shadow-md active:scale-95 transition-all"
+              href={filterBy !== "self" && filterBy !== "" ? `/chat?for=${filterBy}` : "/chat"}
+              className="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold text-xs px-5 py-3 rounded-md transition-all duration-200 hover:scale-105"
             >
               <MessageSquare className="w-4 h-4" />
-              {filterBy !== "self" && filterBy !== ""
-                ? `Check Symptoms for ${filterLabel}`
-                : "Start Symptom Check"}
+              Start Symptom Check
             </Link>
-
-            {/* Demo seed button — only show for "self" with 0 entries */}
             {(filterBy === "self" || filterBy === "") && !searchQuery && (
               <button
                 type="button"
@@ -343,33 +323,29 @@ function HistoryInner() {
                       id: "demo_1",
                       date: new Date(Date.now() - 86400000 * 2).toISOString(),
                       symptom_query: "I have a mild runny nose and cold",
-                      ai_response:
-                        "Rest, drink warm fluids like ginger tea or broth, and take over-the-counter decongestants if needed.",
+                      ai_response: "Rest, drink warm fluids, and take over-the-counter decongestants if needed.",
                       severity: "green",
                     },
                     {
                       id: "demo_2",
                       date: new Date(Date.now() - 86400000).toISOString(),
                       symptom_query: "Persistent headache and mild nausea for 2 days",
-                      ai_response:
-                        "Stay hydrated, rest in a dark room, and consider seeing a doctor if symptoms do not improve within 24 hours.",
+                      ai_response: "Stay hydrated and consider seeing a doctor if symptoms do not improve.",
                       severity: "yellow",
                     },
                     {
                       id: "demo_3",
                       date: new Date().toISOString(),
                       symptom_query: "Sudden severe chest tightness and breathlessness",
-                      ai_response:
-                        "Emergency: Seek immediate medical attention or call emergency medical services immediately.",
+                      ai_response: "Emergency: Seek immediate medical attention or call 108 immediately.",
                       severity: "red",
                     },
                   ];
                   sampleEntries.forEach((entry) => addHistoryEntry(entry));
                   setAllHistory(getHistory());
                 }}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-800 hover:bg-teal-100 dark:hover:bg-teal-900 px-4 py-2.5 rounded-xl transition-all"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 px-5 py-3 rounded-md transition-all duration-200"
               >
-                <Sparkles className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
                 Load Sample Entries
               </button>
             )}
@@ -377,15 +353,13 @@ function HistoryInner() {
         </div>
       ) : (
         <div className="space-y-3">
-          <h2 className="text-xs font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider px-1">
-            Timeline — {filterLabel} ({history.length}{" "}
-            {history.length === 1 ? "Entry" : "Entries"})
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">
+            Timeline — {filterLabel} ({history.length} {history.length === 1 ? "Entry" : "Entries"})
           </h2>
 
           {history.map((item, index) => {
             const entryId = item.id || `hist_${index}`;
             const isExpanded = !!expandedIds[entryId];
-            // Show the family member name if viewing "Everyone"
             const memberName =
               filterBy === "" && item.familyMemberId
                 ? familyMembers.find((m) => m.id === item.familyMemberId)?.name
@@ -394,22 +368,22 @@ function HistoryInner() {
             return (
               <div
                 key={entryId}
-                className="bg-white dark:bg-slate-900 border border-gray-200/80 dark:border-gray-800 rounded-2xl p-4 shadow-xs hover:shadow-md transition-shadow cursor-pointer relative group"
+                className="bg-white border-2 border-gray-100 rounded-lg p-5 hover:scale-[1.01] transition-all duration-200 cursor-pointer"
                 onClick={() => toggleExpand(entryId)}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1 flex-1 min-w-0">
+                  <div className="space-y-1.5 flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[11px] font-medium text-gray-400 dark:text-slate-500">
+                      <span className="text-xs font-medium text-gray-400">
                         {formatDate(item.date)}
                       </span>
                       {memberName && (
-                        <span className="text-[10px] font-bold text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/60 border border-teal-100 dark:border-teal-800 px-1.5 py-0.5 rounded-full">
+                        <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase tracking-wider">
                           {memberName}
                         </span>
                       )}
                     </div>
-                    <p className="text-sm font-semibold text-gray-900 dark:text-white leading-snug truncate pr-6 sm:pr-0">
+                    <p className="text-sm font-bold text-gray-900 leading-snug truncate pr-6 sm:pr-0">
                       {item.symptom_query}
                     </p>
                   </div>
@@ -420,17 +394,17 @@ function HistoryInner() {
                       type="button"
                       onClick={(e) => handleDeleteSingle(e, item.id)}
                       title="Delete entry"
-                      className="text-gray-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400 p-1 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
+                      className="text-gray-400 hover:text-red-500 p-1.5 rounded hover:bg-red-50 transition-colors"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                     <button
                       type="button"
                       aria-label="Toggle details"
-                      className="text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 p-1"
+                      className="text-gray-400 hover:text-gray-600 p-1.5"
                     >
                       {isExpanded ? (
-                        <ChevronUp className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                        <ChevronUp className="w-4 h-4 text-blue-500" />
                       ) : (
                         <ChevronDown className="w-4 h-4" />
                       )}
@@ -439,12 +413,12 @@ function HistoryInner() {
                 </div>
 
                 {isExpanded && (
-                  <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
-                    <p className="text-xs font-bold text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" />
-                      AI Health Assistant Guidance:
+                  <div className="mt-4 pt-4 border-t-2 border-gray-100">
+                    <p className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <Activity className="w-3.5 h-3.5 text-blue-500" />
+                      AI Guidance:
                     </p>
-                    <p className="text-xs text-gray-600 dark:text-slate-300 leading-relaxed bg-gray-50 dark:bg-slate-800/80 p-3 rounded-xl border border-gray-100 dark:border-gray-700/60 whitespace-pre-wrap">
+                    <p className="text-xs text-gray-800 leading-relaxed bg-gray-100 p-4 rounded-md whitespace-pre-wrap font-medium">
                       {item.ai_response || "No detailed advice text saved."}
                     </p>
                   </div>
@@ -460,11 +434,7 @@ function HistoryInner() {
 
 export default function HistoryPage() {
   return (
-    <Suspense
-      fallback={
-        <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto transition-colors pb-24 md:pb-8 overflow-x-hidden" />
-      }
-    >
+    <Suspense fallback={<main className="min-h-screen bg-gray-100" />}>
       <HistoryInner />
     </Suspense>
   );

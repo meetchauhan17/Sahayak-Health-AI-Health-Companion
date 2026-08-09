@@ -1,84 +1,74 @@
 "use client";
 
-import React, { useState } from "react";
-import { Heart, Activity, Stethoscope, Lightbulb, ShieldCheck, Download } from "lucide-react";
-import SeverityBadge from "@/components/SeverityBadge";
+import { useState } from "react";
+import { Activity, Stethoscope, Lightbulb, Download, X, Users, Check } from "lucide-react";
 import { generateHealthPDF } from "@/lib/generatePDF";
-import { getUserProfile } from "@/lib/userProfile";
-import { getHistory } from "@/lib/history";
-
-// ─── Types ───────────────────────────────────────────────────────────────────
 
 export interface HealthSummaryData {
-  symptoms_discussed: string;
-  advice_given: string;
-  overall_severity: string;
-  recommendation: string;
+  primary_symptom: string;
+  possible_causes: string;
+  recommended_action: string;
+  severity: "green" | "yellow" | "red" | string;
 }
 
 interface HealthSummaryProps {
   summary: HealthSummaryData;
-  onClose: () => void;
-  /** Pass the family member ID if this summary is for a family member */
+  onClose?: () => void;
   familyMemberId?: string;
   familyMemberName?: string;
   familyMemberRelation?: string;
 }
 
-// ─── Field config ─────────────────────────────────────────────────────────────
-
-const FIELDS: {
-  key: keyof HealthSummaryData;
+const SECTION_CONFIG: {
+  key: keyof Omit<HealthSummaryData, "severity">;
   label: string;
   icon: React.ReactNode;
 }[] = [
   {
-    key: "symptoms_discussed",
-    label: "Symptoms Discussed",
-    icon: <Activity className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" strokeWidth={2.5} />,
+    key: "primary_symptom",
+    label: "Primary Symptom",
+    icon: <Activity className="w-4 h-4 text-blue-500" strokeWidth={2.5} />,
   },
   {
-    key: "advice_given",
-    label: "Advice Given",
-    icon: <Stethoscope className="w-3.5 h-3.5 text-teal-500 dark:text-teal-400" strokeWidth={2.5} />,
+    key: "possible_causes",
+    label: "Possible Causes",
+    icon: <Stethoscope className="w-4 h-4 text-emerald-500" strokeWidth={2.5} />,
   },
   {
-    key: "recommendation",
-    label: "Recommendation",
-    icon: <Lightbulb className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" strokeWidth={2.5} />,
+    key: "recommended_action",
+    label: "Recommended Action",
+    icon: <Lightbulb className="w-4 h-4 text-amber-500" strokeWidth={2.5} />,
   },
 ];
-
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function HealthSummary({
   summary,
   onClose,
-  familyMemberId,
   familyMemberName,
   familyMemberRelation,
 }: HealthSummaryProps) {
   const [downloading, setDownloading] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   const handleDownloadPDF = async () => {
     setDownloading(true);
     try {
-      const profile = getUserProfile();
-      const history = getHistory(familyMemberId ?? "self");
-
       await generateHealthPDF({
-        patient: familyMemberId
-          ? {
-              name: familyMemberName,
-              relation: familyMemberRelation,
-            }
-          : {
-              name: profile?.name,
-              age: profile?.age,
-            },
-        summary,
-        history,
+        patient: familyMemberName
+          ? { name: familyMemberName, relation: familyMemberRelation }
+          : undefined,
+        history: [
+          {
+            date: new Date().toISOString(),
+            symptom_query: summary.primary_symptom,
+            ai_response: `Possible Causes:\n${summary.possible_causes}\n\nRecommended Action:\n${summary.recommended_action}`,
+            severity: summary.severity,
+          },
+        ],
+        filename: `sahayak-health-summary-${Date.now()}.pdf`,
       });
+      setDownloadSuccess(true);
+      setTimeout(() => setDownloadSuccess(false), 3000);
     } catch (err) {
       console.error("PDF generation failed:", err);
     } finally {
@@ -87,64 +77,72 @@ export default function HealthSummary({
   };
 
   return (
-    <div className="w-full bg-white dark:bg-slate-900 border border-teal-100 dark:border-teal-900/60 rounded-2xl shadow-md overflow-hidden animate-msg-in">
-      {/* Gradient header */}
-      <div className="bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-600 dark:to-cyan-700 px-4 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center flex-shrink-0">
-            <Heart className="w-3.5 h-3.5 text-white" strokeWidth={2.5} />
+    <div className="w-full bg-white border-2 border-gray-100 rounded-lg overflow-hidden animate-msg-in">
+      <div className="bg-blue-500 px-5 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded bg-white/20 flex items-center justify-center text-white">
+            <Activity className="w-4 h-4" strokeWidth={2.5} />
           </div>
           <div>
-            <p className="text-white font-bold text-sm leading-tight">Sahayak Health</p>
-            <p className="text-teal-100 text-[10px] leading-tight">Health Conversation Summary</p>
+            <h3 className="text-sm font-extrabold text-white leading-tight">
+              Health Summary
+            </h3>
+            {familyMemberName && (
+              <p className="text-[10px] text-blue-100 font-medium">
+                For {familyMemberName} ({familyMemberRelation})
+              </p>
+            )}
           </div>
         </div>
 
-        <button
-          onClick={onClose}
-          aria-label="Close summary"
-          className="flex-shrink-0 w-6 h-6 rounded-full bg-white/15 hover:bg-white/30 text-white flex items-center justify-center transition-colors text-xs"
-        >
-          ✕
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleDownloadPDF}
+            disabled={downloading}
+            className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-100 text-blue-600 text-xs font-bold px-3 py-1.5 rounded-md transition-all duration-200 hover:scale-105 disabled:opacity-60"
+          >
+            {downloadSuccess ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Saved PDF</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-3.5 h-3.5" />
+                <span>{downloading ? "Generating..." : "Download PDF"}</span>
+              </>
+            )}
+          </button>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="text-white/80 hover:text-white p-1 rounded-md transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Severity row */}
-      <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-50/60 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-800">
-        <ShieldCheck className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 flex-shrink-0" strokeWidth={2.5} />
-        <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
-          Overall Severity
-        </span>
-        <SeverityBadge severity={summary.overall_severity} />
-      </div>
-
-      {/* Summary fields */}
-      <div className="divide-y divide-slate-100 dark:divide-slate-800">
-        {FIELDS.map(({ key, label, icon }) => (
-          <div key={key} className="px-4 py-3.5">
-            <div className="flex items-center gap-1.5 mb-1.5">
+      <div className="divide-y-2 divide-gray-100">
+        {SECTION_CONFIG.map(({ key, label, icon }) => (
+          <div key={key} className="p-4 space-y-1">
+            <div className="flex items-center gap-2 mb-1">
               {icon}
-              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">
                 {label}
               </span>
             </div>
-            <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed">{summary[key]}</p>
+            <p className="text-xs font-semibold text-gray-900 leading-relaxed pl-6">
+              {summary[key]}
+            </p>
           </div>
         ))}
       </div>
 
-      {/* Download PDF + Disclaimer footer */}
-      <div className="px-4 py-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800 flex flex-col gap-2">
-        <button
-          onClick={handleDownloadPDF}
-          disabled={downloading}
-          className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-teal-500 to-cyan-500 hover:opacity-90 active:scale-95 disabled:opacity-60 text-white text-xs font-semibold py-2.5 rounded-xl transition-all shadow-xs"
-        >
-          <Download className="w-3.5 h-3.5" />
-          {downloading ? "Generating PDF…" : "Download PDF Report"}
-        </button>
-        <p className="text-[10px] text-slate-400 dark:text-slate-500 text-center leading-relaxed">
-          For informational purposes only · Not a substitute for professional medical advice
+      <div className="px-4 py-3 bg-gray-50 border-t-2 border-gray-100 flex flex-col gap-2">
+        <p className="text-[10px] text-gray-400 text-center font-medium">
+          Informational summary generated by Sahayak Health AI. Always consult a medical professional.
         </p>
       </div>
     </div>

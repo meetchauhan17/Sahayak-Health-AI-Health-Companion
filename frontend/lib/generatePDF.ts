@@ -10,35 +10,29 @@ import type { HistoryEntry } from "@/lib/history";
 export interface ReportPatient {
   name?: string;
   age?: number | string;
-  relation?: string; // set for family members
+  relation?: string;
 }
 
 export interface PDFReportOptions {
-  patient: ReportPatient;
+  patient?: ReportPatient;
   summary?: HealthSummaryData | null;
   history: HistoryEntry[];
   filename?: string;
 }
 
-// ─── Colour helpers ──────────────────────────────────────────────────────────
-
-function severityColor(
-  sev: string
-): [number, number, number] {
+function severityColor(sev?: string): [number, number, number] {
   const s = (sev || "").toLowerCase().trim();
-  if (s === "green" || s === "low" || s === "self-care") return [22, 163, 74];   // green-600
-  if (s === "red"   || s === "high" || s === "emergency") return [220, 38, 38]; // red-600
-  return [217, 119, 6]; // amber-600 = yellow/medium
+  if (s === "green" || s === "low" || s === "self-care") return [16, 185, 129];  // emerald-500
+  if (s === "red"   || s === "high" || s === "emergency") return [239, 68, 68];  // red-500
+  return [245, 158, 11]; // amber-500 = yellow/medium
 }
 
-function severityLabel(sev: string): string {
+function severityLabel(sev?: string): string {
   const s = (sev || "").toLowerCase().trim();
   if (s === "green" || s === "low" || s === "self-care") return "Self-Care (Low Risk)";
   if (s === "red"   || s === "high" || s === "emergency") return "Emergency (High Risk)";
-  return "See a Doctor (Moderate)";
+  return "See a Doctor (Moderate Risk)";
 }
-
-// ─── Text wrapping helper ────────────────────────────────────────────────────
 
 function wrapText(
   doc: import("jspdf").jsPDF,
@@ -53,8 +47,6 @@ function wrapText(
   return y + lines.length * lineHeight;
 }
 
-// ─── Main generator ──────────────────────────────────────────────────────────
-
 export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
@@ -64,9 +56,9 @@ export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
   const CONTENT_W = PAGE_W - MARGIN * 2;
   const LINE_H = 6;
   const now = new Date();
-  const dateStr = now.toLocaleDateString("en-IN", {
+  const dateStr = now.toLocaleDateString("en-US", {
     day: "2-digit",
-    month: "long",
+    month: "short",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
@@ -74,8 +66,8 @@ export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
 
   let y = MARGIN;
 
-  // ── Teal header bar ─────────────────────────────────────────────────────────
-  doc.setFillColor(13, 148, 136); // teal-600
+  // Header bar — solid blue-500
+  doc.setFillColor(59, 130, 246);
   doc.rect(0, 0, PAGE_W, 28, "F");
 
   doc.setTextColor(255, 255, 255);
@@ -91,12 +83,13 @@ export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
 
   y = 36;
 
-  // ── Patient info block ───────────────────────────────────────────────────────
-  doc.setFillColor(240, 253, 250); // teal-50
-  doc.setDrawColor(204, 251, 241); // teal-100
-  doc.roundedRect(MARGIN, y, CONTENT_W, opts.patient.relation ? 20 : 16, 3, 3, "FD");
+  // Patient info block
+  const patient = opts.patient || {};
+  doc.setFillColor(243, 244, 246);
+  doc.setDrawColor(229, 231, 235);
+  doc.rect(MARGIN, y, CONTENT_W, patient.relation ? 20 : 16, "FD");
 
-  doc.setTextColor(17, 94, 89); // teal-900
+  doc.setTextColor(17, 24, 39);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
   doc.text("PATIENT INFORMATION", MARGIN + 4, y + 6);
@@ -105,50 +98,47 @@ export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
   doc.setFontSize(10);
   doc.setTextColor(30, 30, 30);
 
-  const patientName = opts.patient.name ?? "Unknown Patient";
-  const ageStr = opts.patient.age ? `${opts.patient.age} years` : "—";
+  const patientName = patient.name ?? "User";
+  const ageStr = patient.age ? `${patient.age} years` : "—";
 
   doc.text(`Name: ${patientName}`, MARGIN + 4, y + 12);
   doc.text(`Age: ${ageStr}`, MARGIN + 80, y + 12);
 
-  if (opts.patient.relation) {
-    doc.text(`Relation: ${opts.patient.relation}`, MARGIN + 4, y + 18);
+  if (patient.relation) {
+    doc.text(`Relation: ${patient.relation}`, MARGIN + 4, y + 18);
   }
 
-  y += (opts.patient.relation ? 20 : 16) + 8;
+  y += (patient.relation ? 20 : 16) + 8;
 
-  // ── Health Summary section ───────────────────────────────────────────────────
+  // Health Summary section
   if (opts.summary) {
-    // Section header
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
-    doc.setTextColor(13, 148, 136);
+    doc.setTextColor(59, 130, 246);
     doc.text("HEALTH SUMMARY", MARGIN, y);
     y += 1;
-    doc.setDrawColor(13, 148, 136);
+    doc.setDrawColor(59, 130, 246);
     doc.setLineWidth(0.4);
     doc.line(MARGIN, y + 1, PAGE_W - MARGIN, y + 1);
     y += 6;
 
-    // Overall severity colored chip
-    const sevColor = severityColor(opts.summary.overall_severity);
+    const sevColor = severityColor(opts.summary.severity);
     doc.setFillColor(...sevColor);
-    doc.roundedRect(MARGIN, y, 60, 8, 2, 2, "F");
+    doc.rect(MARGIN, y, 60, 8, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(8.5);
     doc.text(
-      `Overall Severity: ${severityLabel(opts.summary.overall_severity)}`,
+      `Severity: ${severityLabel(opts.summary.severity)}`,
       MARGIN + 3,
       y + 5.5
     );
     y += 13;
 
-    // Summary fields
     const summaryFields = [
-      { label: "Symptoms Discussed", value: opts.summary.symptoms_discussed },
-      { label: "Advice Given",       value: opts.summary.advice_given },
-      { label: "Recommendation",     value: opts.summary.recommendation },
+      { label: "Primary Symptom",    value: opts.summary.primary_symptom },
+      { label: "Possible Causes",    value: opts.summary.possible_causes },
+      { label: "Recommended Action", value: opts.summary.recommended_action },
     ];
 
     for (const field of summaryFields) {
@@ -168,9 +158,8 @@ export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
     y += 4;
   }
 
-  // ── History table ────────────────────────────────────────────────────────────
+  // History table
   if (opts.history.length > 0) {
-    // Check if we need a new page
     if (y > 240) {
       doc.addPage();
       y = MARGIN;
@@ -178,21 +167,20 @@ export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(11);
-    doc.setTextColor(13, 148, 136);
+    doc.setTextColor(59, 130, 246);
     doc.text("CONSULTATION HISTORY", MARGIN, y);
     y += 1;
-    doc.setDrawColor(13, 148, 136);
+    doc.setDrawColor(59, 130, 246);
     doc.setLineWidth(0.4);
     doc.line(MARGIN, y + 1, PAGE_W - MARGIN, y + 1);
     y += 7;
 
-    // Table header
     const colDate   = MARGIN;
     const colQuery  = MARGIN + 34;
     const colSev    = MARGIN + 148;
     const ROW_H     = 8;
 
-    doc.setFillColor(13, 148, 136);
+    doc.setFillColor(59, 130, 246);
     doc.rect(MARGIN, y, CONTENT_W, ROW_H, "F");
 
     doc.setTextColor(255, 255, 255);
@@ -203,21 +191,17 @@ export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
     doc.text("Severity", colSev + 1, y + 5.5);
     y += ROW_H;
 
-    // Table rows
     let alternate = false;
     for (const entry of opts.history) {
-      // Estimate row height for the query text
       doc.setFontSize(8);
       const queryLines = doc.splitTextToSize(entry.symptom_query, 108);
       const rowH = Math.max(ROW_H, queryLines.length * 5 + 4);
 
-      // New page if needed
       if (y + rowH > 280) {
         doc.addPage();
         y = MARGIN;
 
-        // Repeat table header on new page
-        doc.setFillColor(13, 148, 136);
+        doc.setFillColor(59, 130, 246);
         doc.rect(MARGIN, y, CONTENT_W, ROW_H, "F");
         doc.setTextColor(255, 255, 255);
         doc.setFont("helvetica", "bold");
@@ -228,35 +212,30 @@ export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
         y += ROW_H;
       }
 
-      // Row background
-      doc.setFillColor(alternate ? 245 : 255, alternate ? 250 : 255, alternate ? 250 : 255);
+      doc.setFillColor(alternate ? 245 : 255, alternate ? 245 : 255, alternate ? 245 : 255);
       doc.rect(MARGIN, y, CONTENT_W, rowH, "F");
 
-      // Row border
       doc.setDrawColor(230, 230, 230);
       doc.setLineWidth(0.2);
       doc.rect(MARGIN, y, CONTENT_W, rowH);
 
-      // Date
       doc.setTextColor(80, 80, 80);
       doc.setFont("helvetica", "normal");
       doc.setFontSize(7.5);
       const d = new Date(entry.date);
       const dStr = isNaN(d.getTime())
         ? entry.date
-        : d.toLocaleDateString("en-IN", {
+        : d.toLocaleDateString("en-US", {
             day: "2-digit",
             month: "short",
             year: "numeric",
           });
       doc.text(dStr, colDate + 1, y + 5);
 
-      // Symptom query (wrapped)
       doc.setFontSize(8);
       doc.setTextColor(30, 30, 30);
       doc.text(queryLines, colQuery + 1, y + 5);
 
-      // Severity badge (colored text)
       const [r, g, b] = severityColor(entry.severity);
       doc.setTextColor(r, g, b);
       doc.setFont("helvetica", "bold");
@@ -274,11 +253,11 @@ export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
     y += 6;
   }
 
-  // ── Disclaimer footer ────────────────────────────────────────────────────────
+  // Footer
   const footerY = 285;
-  doc.setFillColor(248, 250, 252);
+  doc.setFillColor(243, 244, 246);
   doc.rect(0, footerY - 2, PAGE_W, 15, "F");
-  doc.setDrawColor(203, 213, 225);
+  doc.setDrawColor(229, 231, 235);
   doc.setLineWidth(0.3);
   doc.line(0, footerY - 2, PAGE_W, footerY - 2);
 
@@ -298,7 +277,6 @@ export async function generateHealthPDF(opts: PDFReportOptions): Promise<void> {
     { align: "center" }
   );
 
-  // ── Save ─────────────────────────────────────────────────────────────────────
   const fileName =
     opts.filename ??
     `sahayak-health-report-${patientName.replace(/\s+/g, "-").toLowerCase()}-${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}.pdf`;
