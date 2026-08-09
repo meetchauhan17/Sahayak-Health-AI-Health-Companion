@@ -247,7 +247,7 @@ function LanguageSelector({
 
 // ─── Empty State ─────────────────────────────────────────────────────────────
 
-function EmptyState() {
+function EmptyState({ onHintClick }: { onHintClick?: (msg: string) => void }) {
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
@@ -274,12 +274,14 @@ function EmptyState() {
           "मुझे सिरदर्द है",
           "મને માથાનો દુખાવો છે",
         ].map((hint) => (
-          <span
+          <button
             key={hint}
-            className="text-xs bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-slate-200 rounded-md px-3 py-1.5 font-medium"
+            type="button"
+            onClick={() => onHintClick?.(hint)}
+            className="text-xs bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-slate-200 hover:bg-blue-500 hover:text-white dark:hover:bg-blue-500 dark:hover:text-white hover:border-blue-500 transition-all duration-200 rounded-md px-3 py-1.5 font-medium cursor-pointer"
           >
             {hint}
-          </span>
+          </button>
         ))}
       </div>
     </div>
@@ -606,7 +608,7 @@ function ChatInner() {
       <main className="flex-1 overflow-y-auto bg-white dark:bg-[#090d16]">
         <div className="max-w-3xl mx-auto px-4 py-6 flex flex-col min-h-full">
           {messages.length === 0 ? (
-            <EmptyState />
+            <EmptyState onHintClick={sendWithText} />
           ) : (
             <>
               {messages.map((msg) =>
