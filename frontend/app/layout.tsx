@@ -37,7 +37,7 @@ export default function RootLayout({ children }: LayoutProps) {
       className={`${outfit.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen flex flex-col md:flex-row bg-white dark:bg-[#090d16] text-gray-900 dark:text-slate-100 transition-colors duration-150">
+      <body className="min-h-screen flex flex-col md:flex-row bg-white dark:bg-[#0a0f1d] text-gray-900 dark:text-slate-100 transition-colors duration-150">
         <Script
           id="sahayak-theme-init"
           strategy="beforeInteractive"
@@ -56,7 +56,7 @@ export default function RootLayout({ children }: LayoutProps) {
         />
         <OnboardingGuard>
           <Navigation />
-          <div className="flex-1 flex flex-col min-w-0 bg-white dark:bg-[#090d16] transition-colors duration-150">
+          <div className="flex-1 flex flex-col min-w-0 bg-white dark:bg-[#0a0f1d] transition-colors duration-150">
             {children}
           </div>
         </OnboardingGuard>

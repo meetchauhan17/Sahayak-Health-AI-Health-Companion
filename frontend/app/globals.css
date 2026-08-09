@@ -3,10 +3,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ─── Design Tokens — Flat Theme ─────────────────────────────────────────────
+/* ─── Design Tokens — Sahayak Health Theme ─────────────────────────────────────
    Light Mode:
      Background: #ffffff
-     Foreground: #111827
+     Foreground: #111827 (gray-900)
      Primary:    #3b82f6 (blue-500)
      Secondary:  #10b981 (emerald-500)
      Accent:     #f59e0b (amber-500)
@@ -14,13 +14,13 @@
      Border:     #e5e7eb (gray-200)
 
    Dark Mode (.dark):
-     Background: #0f172a (slate-900) / #020617 (slate-950)
+     Background: #0a0f1d (deep midnight slate)
      Foreground: #f8fafc (slate-50)
      Primary:    #3b82f6 (blue-500)
      Secondary:  #10b981 (emerald-500)
      Accent:     #f59e0b (amber-500)
-     Muted:      #1e293b (slate-800)
-     Border:     #334155 (slate-700)
+     Muted:      #151d30 (slate-900 surface)
+     Border:     #1e293b (slate-800 border)
    ────────────────────────────────────────────────────────────────────────── */
 
 :root {
@@ -34,12 +34,12 @@
 }
 
 .dark {
-  --background: #090d16;
+  --background: #0a0f1d;
   --foreground: #f8fafc;
   --primary: #3b82f6;
   --secondary: #10b981;
   --accent: #f59e0b;
-  --muted: #1e293b;
+  --muted: #151d30;
   --border: #1e293b;
 }
 
@@ -59,6 +59,7 @@ body {
   color: var(--foreground);
   font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 @utility scrollbar-hide {
