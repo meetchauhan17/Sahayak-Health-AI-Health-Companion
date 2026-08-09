@@ -137,7 +137,7 @@ export default function NavBar() {
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-md text-xs font-bold text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-750 transition-all duration-200"
+            className="w-full flex items-center justify-between px-3 py-2.5 rounded-md text-xs font-bold text-gray-800 dark:text-slate-100 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 transition-all duration-150 cursor-pointer"
             aria-label="Toggle Theme"
           >
             <span className="flex items-center gap-2">
@@ -148,9 +148,15 @@ export default function NavBar() {
               )}
               <span>{theme === "dark" ? "Dark Mode" : "Light Mode"}</span>
             </span>
-            <span className="text-[10px] text-gray-400 dark:text-gray-500 uppercase font-extrabold">
-              {theme === "dark" ? "On" : "Off"}
-            </span>
+
+            {/* Slider Switch Pill */}
+            <div
+              className={`w-8 h-4.5 rounded-full p-0.5 transition-colors duration-200 flex items-center ${
+                theme === "dark" ? "bg-blue-500 justify-end" : "bg-gray-300 justify-start"
+              }`}
+            >
+              <div className="w-3.5 h-3.5 rounded-full bg-white shadow-sm" />
+            </div>
           </button>
 
           {/* Profile Dropdown Trigger */}
