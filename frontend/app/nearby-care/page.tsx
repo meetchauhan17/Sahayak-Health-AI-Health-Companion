@@ -119,11 +119,25 @@ function CareCard({ entry }: { entry: CareEntry }) {
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
 
+import { getUserProfile, UserProfile } from "@/lib/userProfile";
+import { useEffect } from "react";
+import { Map, Grid, Compass } from "lucide-react";
+
 export default function NearbyCare() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
+
+  useEffect(() => {
+    setProfile(getUserProfile());
+  }, []);
 
   const entries = hospitalsData as CareEntry[];
+
+  const userCity = profile?.city || "Surat, Gujarat";
+  const userLat = profile?.lat || 21.1702;
+  const userLng = profile?.lng || 72.8311;
 
   const filtered = useMemo(() => {
     let result = entries;
@@ -155,24 +169,62 @@ export default function NearbyCare() {
     return c;
   }, [entries]);
 
+  // Generate free OpenStreetMap embed URL
+  const osmEmbedUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${userLng - 0.08}%2C${userLat - 0.08}%2C${userLng + 0.08}%2C${userLat + 0.08}&layer=mapnik&marker=${userLat}%2C${userLng}`;
+
   return (
     <main className="min-h-screen bg-gray-50/60 dark:bg-slate-950 p-4 sm:p-6 lg:p-8 max-w-6xl w-full mx-auto pb-24 md:pb-8 transition-colors overflow-x-hidden">
       {/* ── Header ── */}
-      <div className="flex items-center gap-3 mb-4">
-        <Link
-          href="/dashboard"
-          className="w-8 h-8 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors shadow-2xs"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </Link>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
-            <MapPin className="w-6 h-6 text-teal-600 dark:text-teal-400" />
-            Nearby Care
-          </h1>
-          <p className="text-xs text-gray-500 dark:text-slate-400">
-            Hospitals, clinics, pharmacies &amp; blood banks in Surat
-          </p>
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/dashboard"
+            className="w-8 h-8 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors shadow-2xs"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
+              <MapPin className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+              Nearby Care
+            </h1>
+            <p className="text-xs text-gray-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5">
+              <span>Healthcare facilities in</span>
+              <span className="font-semibold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/60 px-2 py-0.5 rounded-full border border-teal-200 dark:border-teal-800/60 flex items-center gap-1">
+                <Compass className="w-3 h-3" />
+                {userCity}
+              </span>
+              <Link href="/onboarding" className="text-[10px] text-gray-400 hover:underline">
+                (Change)
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* View Mode Toggle Button */}
+        <div className="flex items-center bg-gray-200/70 dark:bg-slate-800 p-1 rounded-xl">
+          <button
+            onClick={() => setViewMode("grid")}
+            className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+              viewMode === "grid"
+                ? "bg-white dark:bg-slate-900 text-teal-600 dark:text-teal-400 shadow-xs"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            }`}
+          >
+            <Grid className="w-3.5 h-3.5" />
+            <span>List View</span>
+          </button>
+          <button
+            onClick={() => setViewMode("map")}
+            className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
+              viewMode === "map"
+                ? "bg-white dark:bg-slate-900 text-teal-600 dark:text-teal-400 shadow-xs"
+                : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            }`}
+          >
+            <Map className="w-3.5 h-3.5" />
+            <span>Free Map View</span>
+          </button>
         </div>
       </div>
 
@@ -261,8 +313,41 @@ export default function NearbyCare() {
         })}
       </div>
 
-      {/* ── Results ── */}
-      {filtered.length === 0 ? (
+      {/* ── Map View vs List View ── */}
+      {viewMode === "map" ? (
+        <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm p-3">
+          <div className="flex items-center justify-between mb-3 px-2">
+            <span className="text-xs font-bold text-gray-700 dark:text-gray-200 flex items-center gap-1.5">
+              <MapPin className="w-4 h-4 text-teal-500" />
+              OpenStreetMap Free Interactive Map — {userCity}
+            </span>
+            <a
+              href={`https://www.openstreetmap.org/?mlat=${userLat}&mlon=${userLng}#map=14/${userLat}/${userLng}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] font-semibold text-teal-600 dark:text-teal-400 hover:underline"
+            >
+              Open Fullscreen OSM ↗
+            </a>
+          </div>
+          <div className="relative w-full h-[450px] rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800">
+            <iframe
+              title="OpenStreetMap Free Care Locations"
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              scrolling="no"
+              marginHeight={0}
+              marginWidth={0}
+              src={osmEmbedUrl}
+              className="w-full h-full"
+            />
+          </div>
+          <p className="text-[11px] text-gray-400 dark:text-slate-500 text-center mt-2.5">
+            Powered by OpenStreetMap (Free Open-Source Map API) • Centered on {userCity} ({userLat.toFixed(2)}°, {userLng.toFixed(2)}°)
+          </p>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-10 text-center shadow-xs">
           <Search className="w-10 h-10 text-gray-300 dark:text-gray-600 mx-auto mb-3" />
           <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300">No results found</h3>

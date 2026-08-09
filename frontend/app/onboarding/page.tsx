@@ -3,7 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Heart, User, Calendar, Globe, Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
+import { Heart, User, Calendar, Globe, Sparkles, ArrowRight, ArrowLeft, MapPin, Navigation2 } from "lucide-react";
 import { saveUserProfile, getUserProfile, UserProfile } from "@/lib/userProfile";
 
 const LANGUAGES: Array<UserProfile["language"]> = ["English", "हिंदी", "ગુજરાતી"];
@@ -19,6 +19,12 @@ export default function OnboardingPage() {
   const [language, setLanguage] = useState<UserProfile["language"]>("English");
   const [error, setError] = useState("");
 
+  const [city, setCity] = useState("Surat, Gujarat");
+  const [lat, setLat] = useState<number | undefined>(21.1702);
+  const [lng, setLng] = useState<number | undefined>(72.8311);
+  const [locating, setLocating] = useState(false);
+  const [locStatus, setLocStatus] = useState("");
+
   useEffect(() => {
     const p = getUserProfile();
     if (p) {
@@ -27,8 +33,59 @@ export default function OnboardingPage() {
       setAge(p.age ? String(p.age) : "");
       setGender(p.gender || "");
       if (p.language) setLanguage(p.language);
+      if (p.city) setCity(p.city);
+      if (p.lat) setLat(p.lat);
+      if (p.lng) setLng(p.lng);
     }
   }, []);
+
+  const detectLocation = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by your browser.");
+      return;
+    }
+    setLocating(true);
+    setLocStatus("Detecting GPS coordinates...");
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const latitude = pos.coords.latitude;
+        const longitude = pos.coords.longitude;
+        setLat(latitude);
+        setLng(longitude);
+
+        try {
+          setLocStatus("Fetching city name from OpenStreetMap...");
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          );
+          const data = await res.json();
+          const addr = data.address || {};
+          const detectedCity =
+            addr.city ||
+            addr.town ||
+            addr.suburb ||
+            addr.county ||
+            addr.state_district ||
+            "Surat";
+          const detectedState = addr.state || "Gujarat";
+          const formatted = `${detectedCity}, ${detectedState}`;
+          setCity(formatted);
+          setLocStatus(`Detected: ${formatted}`);
+        } catch {
+          setCity(`${latitude.toFixed(2)}°N, ${longitude.toFixed(2)}°E`);
+          setLocStatus("Coordinates acquired!");
+        } finally {
+          setLocating(false);
+        }
+      },
+      () => {
+        setLocating(false);
+        setLocStatus("Location access denied. Used default location.");
+      },
+      { timeout: 10000 }
+    );
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -48,6 +105,9 @@ export default function OnboardingPage() {
       age: age.trim(),
       gender: gender || undefined,
       language,
+      city: city.trim() || "Surat, Gujarat",
+      lat,
+      lng,
     };
 
     saveUserProfile(profile);
@@ -145,6 +205,37 @@ export default function OnboardingPage() {
                 </button>
               ))}
             </div>
+          </div>
+
+          {/* Location Setting */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                <MapPin className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                City / Location
+              </label>
+              <button
+                type="button"
+                onClick={detectLocation}
+                disabled={locating}
+                className="text-[11px] font-semibold text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1 disabled:opacity-50"
+              >
+                <Navigation2 className={`w-3 h-3 ${locating ? "animate-spin" : ""}`} />
+                <span>{locating ? "Locating..." : "Auto-Detect (GPS)"}</span>
+              </button>
+            </div>
+            <input
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="e.g. Surat, Gujarat"
+              className="w-full text-sm px-3.5 py-2.5 bg-gray-50 dark:bg-slate-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:bg-white dark:focus:bg-slate-900 transition-all text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+            />
+            {locStatus && (
+              <p className="text-[10px] text-teal-600 dark:text-teal-400 mt-1 flex items-center gap-1">
+                <span>📍</span> {locStatus}
+              </p>
+            )}
           </div>
 
           {/* Preferred Language */}

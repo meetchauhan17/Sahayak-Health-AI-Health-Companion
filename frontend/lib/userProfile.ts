@@ -3,6 +3,9 @@ export interface UserProfile {
   age: string;
   gender?: string;
   language: "English" | "हिंदी" | "ગુજરાતી";
+  city?: string;
+  lat?: number;
+  lng?: number;
 }
 
 const STORAGE_KEY = "sahayak_user_profile";
