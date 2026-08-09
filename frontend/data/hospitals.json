@@ -1,0 +1,65 @@
+[
+  {
+    "id": "1",
+    "name": "Kiran Multi Super Speciality Hospital",
+    "address": "Vasta Devdi Road, Near Katargam GIDC, Surat, Gujarat 395004",
+    "phone": "tel:+912617110000",
+    "distance": "1.8 km"
+  },
+  {
+    "id": "2",
+    "name": "Sunshine Global Hospital",
+    "address": "Dumas Road, Near Piplod, Surat, Gujarat 395007",
+    "phone": "tel:+912612230000",
+    "distance": "2.4 km"
+  },
+  {
+    "id": "3",
+    "name": "Apple Hospital",
+    "address": "Ring Road, Near Udhna Darwaja, Surat, Gujarat 395002",
+    "phone": "tel:+912612630000",
+    "distance": "3.1 km"
+  },
+  {
+    "id": "4",
+    "name": "New Civil Hospital",
+    "address": "Majura Gate, Ring Road, Surat, Gujarat 395001",
+    "phone": "tel:+912612244456",
+    "distance": "3.5 km"
+  },
+  {
+    "id": "5",
+    "name": "BAPS Yogiji Maharaj Hospital",
+    "address": "L.P. Savani Road, Adajan, Surat, Gujarat 395009",
+    "phone": "tel:+912612730000",
+    "distance": "4.2 km"
+  },
+  {
+    "id": "6",
+    "name": "SMIMER Hospital",
+    "address": "Sahara Darwaja, Ring Road, Surat, Gujarat 395010",
+    "phone": "tel:+912612330000",
+    "distance": "4.8 km"
+  },
+  {
+    "id": "7",
+    "name": "Mahavir Cardiac Hospital",
+    "address": "Athwa Lines, Near Nanpura, Surat, Gujarat 395001",
+    "phone": "tel:+912612470000",
+    "distance": "5.3 km"
+  },
+  {
+    "id": "8",
+    "name": "Care Hospital",
+    "address": "Near Athwa Gate, Ring Road, Surat, Gujarat 395001",
+    "phone": "tel:+912616110000",
+    "distance": "5.9 km"
+  },
+  {
+    "id": "9",
+    "name": "Lotus Hospital",
+    "address": "Varachha Main Road, Surat, Gujarat 395006",
+    "phone": "tel:+912612540000",
+    "distance": "6.5 km"
+  }
+]

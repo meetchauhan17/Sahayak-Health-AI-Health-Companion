@@ -1,0 +1,332 @@
+[
+  {
+    "symptom": "Fever",
+    "causes": [
+      "Viral or bacterial infections such as flu, COVID-19, or urinary tract infections",
+      "Inflammatory conditions like rheumatoid arthritis or inflammatory bowel disease",
+      "Heat exhaustion or prolonged sun exposure"
+    ],
+    "self_care": [
+      "Rest adequately and drink plenty of fluids like water, oral rehydration solution, or clear broths to prevent dehydration",
+      "Take over-the-counter antipyretics such as paracetamol (acetaminophen) or ibuprofen as directed on the label",
+      "Wear light, breathable clothing and use a lukewarm sponge bath to help bring temperature down"
+    ],
+    "see_doctor_if": [
+      "Fever persists for more than 3 days or keeps returning after temporarily subsiding",
+      "Temperature exceeds 39.4°C (103°F) in adults or is accompanied by severe headache, stiff neck, or unexplained rash"
+    ],
+    "emergency_if": [
+      "Fever is accompanied by confusion, difficulty breathing, persistent chest pain, or seizures",
+      "Infant younger than 3 months has a rectal temperature of 38°C (100.4°F) or higher"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Cough",
+    "causes": [
+      "Upper respiratory viral infections such as the common cold or influenza",
+      "Allergies, postnasal drip, or exposure to environmental irritants like smoke or dust",
+      "Acid reflux (GERD) causing irritation of the throat and airways"
+    ],
+    "self_care": [
+      "Stay well-hydrated with warm liquids like honey-lemon water or herbal tea to soothe the throat",
+      "Use a humidifier or inhale steam from a bowl of hot water to moisten airways and loosen mucus",
+      "Suck on throat lozenges or hard candy and avoid known irritants such as cigarette smoke"
+    ],
+    "see_doctor_if": [
+      "Cough persists for more than 3 weeks or produces thick green, yellow, or blood-tinged mucus",
+      "Cough is accompanied by unexplained weight loss, night sweats, or a persistent low-grade fever"
+    ],
+    "emergency_if": [
+      "Coughing up significant amounts of blood or blood-streaked sputum",
+      "Sudden severe shortness of breath, wheezing, or inability to speak in full sentences"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Common Cold",
+    "causes": [
+      "Infection by rhinoviruses, which spread through airborne droplets or contaminated surfaces",
+      "Weakened immune defenses from lack of sleep, high stress, or poor nutrition",
+      "Close contact with infected individuals, especially in crowded or enclosed spaces"
+    ],
+    "self_care": [
+      "Rest as much as possible and increase fluid intake to keep mucous membranes moist",
+      "Use saline nasal spray or drops to relieve nasal congestion and flush out irritants",
+      "Gargle with warm salt water to soothe a sore throat and take OTC decongestants if needed"
+    ],
+    "see_doctor_if": [
+      "Symptoms worsen after 7-10 days or are accompanied by a high fever above 39°C (102°F)",
+      "You develop ear pain, severe sinus pressure, or a persistent productive cough suggesting a secondary bacterial infection"
+    ],
+    "emergency_if": [
+      "Sudden difficulty breathing, persistent chest tightness, or bluish discoloration of lips",
+      "High fever with severe headache, stiff neck, or confusion suggesting meningitis"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Headache",
+    "causes": [
+      "Tension from stress, poor posture, eye strain, or prolonged screen use",
+      "Dehydration, skipped meals, lack of sleep, or excessive caffeine consumption",
+      "Migraine triggered by hormonal changes, certain foods, bright lights, or weather shifts"
+    ],
+    "self_care": [
+      "Take an OTC pain reliever such as paracetamol or ibuprofen and rest in a quiet, dimly lit room",
+      "Apply a cold or warm compress to the forehead or neck and gently massage the temples",
+      "Drink water to rehydrate and practice relaxation techniques like deep breathing or gentle stretching"
+    ],
+    "see_doctor_if": [
+      "Headaches become more frequent or severe over weeks, or usual pain medications stop working",
+      "Headache follows a head injury or is accompanied by fever, stiff neck, or vision changes"
+    ],
+    "emergency_if": [
+      "Sudden, extremely severe 'thunderclap' headache that reaches peak intensity within seconds",
+      "Headache with confusion, weakness on one side of the body, slurred speech, or loss of consciousness"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Stomach Pain",
+    "causes": [
+      "Indigestion, gas, bloating, or overeating rich and spicy foods",
+      "Gastritis, acid reflux (GERD), or peptic ulcers aggravated by stress or NSAIDs",
+      "Food intolerance (e.g., lactose intolerance) or mild food poisoning"
+    ],
+    "self_care": [
+      "Eat small, bland meals (rice, toast, bananas) and avoid spicy, fatty, or acidic foods temporarily",
+      "Sip clear fluids like water or ginger tea and try an OTC antacid for acid-related discomfort",
+      "Apply a warm compress or heating pad to the abdomen and rest in a comfortable position"
+    ],
+    "see_doctor_if": [
+      "Pain persists for more than 48 hours, keeps recurring, or is accompanied by unexplained weight loss",
+      "You notice blood in your stool, persistent vomiting, or pain that wakes you from sleep"
+    ],
+    "emergency_if": [
+      "Sudden, severe abdominal pain with a rigid or board-like abdomen suggesting perforation or peritonitis",
+      "Abdominal pain with high fever, vomiting blood, or signs of shock such as rapid pulse and clammy skin"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Diarrhea",
+    "causes": [
+      "Viral gastroenteritis (stomach flu) caused by rotavirus, norovirus, or similar pathogens",
+      "Bacterial infection from contaminated food or water (e.g., Salmonella, E. coli)",
+      "Food intolerance, medication side effects (especially antibiotics), or stress"
+    ],
+    "self_care": [
+      "Drink oral rehydration solution (ORS), clear broths, or water frequently to replace lost fluids and electrolytes",
+      "Follow the BRAT diet (bananas, rice, applesauce, toast) and avoid dairy, caffeine, and greasy foods",
+      "Take OTC loperamide for symptom relief if no fever or bloody stools are present"
+    ],
+    "see_doctor_if": [
+      "Diarrhea lasts more than 2 days in adults or 24 hours in children, or is accompanied by a fever above 39°C",
+      "Signs of dehydration appear: very dry mouth, little or no urination, severe weakness, or dizziness"
+    ],
+    "emergency_if": [
+      "Bloody or black tarry stools, or diarrhea accompanied by severe abdominal cramping and high fever",
+      "Signs of severe dehydration: sunken eyes, inability to keep any fluids down, or altered consciousness"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Vomiting",
+    "causes": [
+      "Food poisoning, viral gastroenteritis, or overeating and excessive alcohol consumption",
+      "Motion sickness, pregnancy-related morning sickness, or medication side effects",
+      "Migraine, strong emotional stress, or inner-ear disorders like labyrinthitis"
+    ],
+    "self_care": [
+      "Sip small amounts of clear fluids (water, ORS, diluted ginger ale) every 15 minutes to stay hydrated",
+      "Avoid solid food until vomiting stops, then reintroduce bland items like crackers, rice, or plain toast",
+      "Rest in an upright or side-lying position and avoid strong odors that may trigger nausea"
+    ],
+    "see_doctor_if": [
+      "Vomiting persists for more than 24 hours in adults or 12 hours in children, preventing any fluid intake",
+      "Vomiting is accompanied by severe abdominal pain, headache, stiff neck, or high fever"
+    ],
+    "emergency_if": [
+      "Vomiting blood (bright red or coffee-ground appearance) or vomiting after a head injury",
+      "Signs of severe dehydration: no urination for 8+ hours, rapid heartbeat, confusion, or fainting"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Body Ache",
+    "causes": [
+      "Viral infections such as influenza, COVID-19, or dengue that cause systemic inflammation",
+      "Overexertion, strenuous exercise, or poor ergonomics during prolonged sitting or standing",
+      "Stress and tension causing muscle tightness, or early signs of conditions like fibromyalgia"
+    ],
+    "self_care": [
+      "Rest the affected muscles and apply alternating warm and cold compresses to reduce pain and inflammation",
+      "Take OTC pain relievers such as paracetamol or ibuprofen and stay well-hydrated",
+      "Perform gentle stretching exercises and ensure adequate sleep to support muscle recovery"
+    ],
+    "see_doctor_if": [
+      "Body aches persist beyond a week without improvement or are accompanied by joint swelling and stiffness",
+      "Pain is localized, severe, or associated with unexplained weight loss, fever, or night sweats"
+    ],
+    "emergency_if": [
+      "Sudden severe muscle pain with dark-colored urine suggesting rhabdomyolysis",
+      "Body aches with high fever, rash, and stiff neck, which may indicate meningitis or sepsis"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Skin Rash",
+    "causes": [
+      "Allergic reaction to foods, medications, detergents, cosmetics, or plant contact (e.g., poison ivy)",
+      "Viral infections such as chickenpox, measles, or hand-foot-and-mouth disease",
+      "Fungal infections (ringworm, athlete's foot), eczema, or contact dermatitis"
+    ],
+    "self_care": [
+      "Keep the area clean and dry, apply a fragrance-free moisturizer, and avoid scratching to prevent secondary infection",
+      "Use OTC hydrocortisone cream (1%) or calamine lotion to relieve itching and inflammation",
+      "Take an oral antihistamine like cetirizine or diphenhydramine if itching is widespread"
+    ],
+    "see_doctor_if": [
+      "Rash spreads rapidly, does not improve within a week, or is accompanied by fever and joint pain",
+      "Rash shows signs of infection: increasing warmth, swelling, pus, or red streaks spreading from the area"
+    ],
+    "emergency_if": [
+      "Rash appears suddenly with difficulty breathing, throat swelling, or dizziness suggesting anaphylaxis",
+      "Widespread blistering, peeling skin, or painful rash around the eyes and mouth (possible Stevens-Johnson syndrome)"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Chest Pain",
+    "causes": [
+      "Musculoskeletal strain from heavy lifting, coughing, or sudden movements",
+      "Acid reflux (GERD) or esophageal spasm causing a burning sensation behind the breastbone",
+      "Anxiety or panic attacks that mimic cardiac symptoms with rapid heartbeat and tightness"
+    ],
+    "self_care": [
+      "If pain is clearly related to muscle strain, rest the area and apply a warm compress gently",
+      "For suspected acid reflux, take an OTC antacid and avoid lying down immediately after eating",
+      "Practice slow, deep breathing if the chest tightness seems anxiety-related, and try to stay calm"
+    ],
+    "see_doctor_if": [
+      "Chest pain recurs with exertion, lasts more than a few minutes, or is a new and unexplained symptom",
+      "Pain is accompanied by persistent cough, difficulty swallowing, or unexplained weight loss"
+    ],
+    "emergency_if": [
+      "Crushing or squeezing chest pain radiating to the jaw, left arm, or back — call emergency services immediately",
+      "Chest pain with sudden shortness of breath, sweating, nausea, or loss of consciousness"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Breathing Difficulty",
+    "causes": [
+      "Asthma exacerbation triggered by allergens, cold air, exercise, or respiratory infections",
+      "Anxiety or panic attacks causing hyperventilation and a sensation of air hunger",
+      "Respiratory infections such as pneumonia, bronchitis, or COVID-19 affecting the lungs"
+    ],
+    "self_care": [
+      "Sit upright in a comfortable position and practice slow, pursed-lip breathing to regulate airflow",
+      "Use a prescribed rescue inhaler (e.g., salbutamol) if you have known asthma, following your action plan",
+      "Remove yourself from potential triggers like smoke, allergens, or dusty environments and get fresh air"
+    ],
+    "see_doctor_if": [
+      "Shortness of breath worsens gradually over days, occurs with mild activity, or disrupts sleep",
+      "You need to use your rescue inhaler more than twice a week or your peak flow readings are dropping"
+    ],
+    "emergency_if": [
+      "Severe breathlessness at rest, inability to speak in full sentences, or blue/grey discoloration of lips and fingertips",
+      "Sudden onset of breathing difficulty with chest pain, especially after prolonged immobility (possible pulmonary embolism)"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Dizziness",
+    "causes": [
+      "Sudden drop in blood pressure (orthostatic hypotension) from standing up too quickly",
+      "Inner-ear disorders such as benign paroxysmal positional vertigo (BPPV) or labyrinthitis",
+      "Dehydration, low blood sugar, anemia, or side effects of medications like blood pressure drugs"
+    ],
+    "self_care": [
+      "Sit or lie down immediately when feeling dizzy and avoid sudden head movements",
+      "Drink water or a sugary beverage if dehydration or low blood sugar is suspected",
+      "Rise slowly from sitting or lying positions, and avoid driving or operating heavy machinery until symptoms pass"
+    ],
+    "see_doctor_if": [
+      "Dizziness is recurrent, lasts more than a few days, or is accompanied by hearing loss or ringing in the ears",
+      "Episodes occur with fainting, persistent imbalance, or after starting a new medication"
+    ],
+    "emergency_if": [
+      "Dizziness with sudden severe headache, vision changes, slurred speech, or limb weakness (possible stroke)",
+      "Fainting with irregular heartbeat, chest pain, or after a head injury"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Fatigue",
+    "causes": [
+      "Poor sleep quality, chronic sleep deprivation, or irregular sleep schedules",
+      "High stress, burnout, depression, or anxiety affecting energy levels",
+      "Nutritional deficiencies (iron, vitamin B12, vitamin D), anemia, or thyroid disorders"
+    ],
+    "self_care": [
+      "Prioritize 7-9 hours of quality sleep per night with a consistent bedtime routine",
+      "Eat balanced meals with iron-rich foods, whole grains, and fresh fruits and vegetables, and stay hydrated",
+      "Incorporate moderate exercise like walking 30 minutes daily and take short breaks during work"
+    ],
+    "see_doctor_if": [
+      "Fatigue persists for more than 2 weeks despite adequate rest, nutrition, and stress management",
+      "Accompanied by unexplained weight change, persistent low-grade fever, or excessive thirst and urination"
+    ],
+    "emergency_if": [
+      "Sudden extreme fatigue with chest pain, shortness of breath, or irregular heartbeat",
+      "Fatigue with confusion, inability to stay awake, or yellowing of the skin and eyes (jaundice)"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Allergic Reaction",
+    "causes": [
+      "Food allergens such as peanuts, tree nuts, shellfish, eggs, or dairy products",
+      "Insect stings or bites from bees, wasps, or fire ants triggering an immune response",
+      "Medications (e.g., penicillin, NSAIDs), latex, or environmental allergens like pollen and pet dander"
+    ],
+    "self_care": [
+      "Take an OTC oral antihistamine such as cetirizine or loratadine for mild hives, sneezing, or itching",
+      "Apply a cold compress to localized swelling or itchy areas and avoid further contact with the suspected allergen",
+      "For mild nasal allergy symptoms, use a saline nasal rinse and stay in a clean, well-ventilated environment"
+    ],
+    "see_doctor_if": [
+      "Allergic symptoms recur frequently, interfere with daily life, or do not respond to OTC antihistamines",
+      "You develop swelling of the face, lips, or tongue, or experience stomach cramps and vomiting after exposure"
+    ],
+    "emergency_if": [
+      "Signs of anaphylaxis: throat tightness, difficulty breathing, rapid pulse, dizziness, or collapse — use epinephrine auto-injector (EpiPen) and call emergency services",
+      "Widespread hives with wheezing, drop in blood pressure, or loss of consciousness"
+    ],
+    "severity_default": "green"
+  },
+  {
+    "symptom": "Minor Cuts and Burns",
+    "causes": [
+      "Kitchen accidents involving knives, graters, or hot surfaces, oil splashes, and steam",
+      "Scrapes and abrasions from falls, sports activities, or contact with rough surfaces",
+      "Minor thermal burns from touching hot utensils, irons, or brief contact with open flames"
+    ],
+    "self_care": [
+      "For cuts: clean the wound gently with running water, apply antiseptic, and cover with a sterile adhesive bandage",
+      "For burns: cool the area under cool (not ice-cold) running water for at least 10 minutes, then cover loosely with a sterile non-stick dressing",
+      "Apply an OTC antibiotic ointment to cuts to prevent infection and take OTC pain relief if needed"
+    ],
+    "see_doctor_if": [
+      "A cut is deep, gaping, won't stop bleeding after 10 minutes of direct pressure, or may need stitches",
+      "A burn is larger than 3 inches, blisters significantly, or is located on the face, hands, feet, or joints"
+    ],
+    "emergency_if": [
+      "Severe uncontrolled bleeding that soaks through bandages, or a deep wound exposing bone or tendon",
+      "Large or deep burn with charred or white/waxy skin (third-degree), or burn caused by chemicals or electricity"
+    ],
+    "severity_default": "green"
+  }
+]

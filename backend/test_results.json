@@ -1,0 +1,17 @@
+{
+  "en": {
+    "response": "You have a mild fever, which can be caused by a viral or bacterial infection, inflammatory conditions, or heat exhaustion. It's important to rest, drink plenty of fluids, and take over-the-counter antipyretics as directed to help manage your symptoms.",
+    "severity": "green",
+    "advice": "Rest adequately, drink plenty of water or other fluids, and consider taking paracetamol or ibuprofen as directed. However, if your fever worsens or lasts more than 3 days, you should consult a doctor. Remember, this is not a medical diagnosis, and you should consult a qualified healthcare professional for proper evaluation and advice."
+  },
+  "hi": {
+    "response": "आपको हल्का बुखार है जो कल से शुरू हुआ है, यह आमतौर पर वायरल या बैक्टीरियल संक्रमण के कारण हो सकता है। घर पर आराम करें और पर्याप्त तरल पदार्थ पीने का प्रयास करें।",
+    "severity": "green",
+    "advice": "पर्याप्त आराम करें, पानी और अन्य तरल पदार्थ पिएं, और यदि आवश्यक हो तो ओवर-द-काउंटर दवाएं लें। यदि बुखार तीन दिन से अधिक समय तक रहता है या अन्य गंभीर लक्षण दिखाई देते हैं, तो डॉक्टर से परामर्श लेना महत्वपूर्ण है। यह जानकारी चिकित्सा निदान नहीं है, कृपया एक योग्य स्वास्थ्य पेशेवर से परामर्श लें।"
+  },
+  "gu": {
+    "response": "તમને હળવો તાવ છે, તે સામાન્ય રીતે વાઇરલ અથવા બેક્ટેરિયલ ઇન્ફેક્શનને કારણે થઈ શકે છે. તમે પર્યાપ્ત આરામ કરો અને પુષ્કળ પ્રમાણમાં પાણી પીવું જોઈએ. તમારો તાવ 39.4°C (103°F) કરતાં વધુ ન થાય તેનું ધ્યાન રાખો. જો તમારો તાવ વધુ સમય સુધી રહે અથવા તમને અન્ય ગંભીર લક્ષણો દેખાય તો તરત જ ડૉક્ટરની સલાહ લેવી જોઈએ. આ માહિતી એક ડાયાગ્નોસિસ નથી અને તમારે યોગ્ય ડૉક્ટરની સલાહ લેવી જોઈએ.",
+    "severity": "green",
+    "advice": "પર્યાપ્ત આરામ કરો, પુષ્કળ પાણી પીઓ અને જો તમારો તાવ વધુ સમય સુધી રહે અથવા તમને અન્ય ગંભીર લક્ષણો દેખાય તો તરત જ ડૉક્ટરની સલાહ લેવી જોઈએ."
+  }
+}
